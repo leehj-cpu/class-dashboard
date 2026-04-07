@@ -198,7 +198,7 @@
             const targetDate = new Date(2026, 3, 24);
             const dDayDiff = Math.round((targetDate - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / (1000 * 60 * 60 * 24));
             const dDayText = dDayDiff > 0 ? `D-${dDayDiff}` : (dDayDiff === 0 ? "D-Day" : "완료");
-            document.querySelector('.main-title').innerHTML = `🏫 2학년 7반 대시보드 <span style="color:#e74c3c; margin-left:15px; font-size:1.8rem; background: #fee2e2; padding: 5px 15px; border-radius: 20px;">🔥 중간고사 ${dDayText}</span>`;
+            document.querySelector('.main-title').innerHTML = `🏫 2학년 7반 대시보드 <span style="color:#e74c3c; margin-left:15px; font-size:1.8rem; background: #fee2e2; padding: 5px 15px; border-radius: 20px;">🔥 중간고사 ${dDayText} 🔥</span>`;
         }
 
         function renderCalendar(schedules) {
