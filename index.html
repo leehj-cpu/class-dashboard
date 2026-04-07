@@ -31,7 +31,105 @@
         .side-column { display: grid; grid-template-rows: 1.5fr 1fr; gap: 25px; height: 100%; }
 
         /* 시간표 및 급식 리스트 */
-        .time-slot, .meal-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; margin-bottom: 8px; background: #f8fafc; border-radius: 10px; }
+        /* ✨ 화려해진 시간표 스타일 */
+        .time-slot {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 18px; margin-bottom: 12px;
+            background: #ffffff; border-radius: 18px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+            border: 1px solid #f1f2f6;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        /* 마우스를 올렸을 때 살짝 뜨는 효과 */
+        .time-slot:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+            border-color: #dfe6e9;
+        }
+
+        /* 교시 번호 (알록달록 파스텔 그라데이션) */
+        .period-num {
+            width: 38px; height: 38px; color: white; 
+            display: flex; justify-content: center; align-items: center;
+            border-radius: 12px; font-weight: 900; font-size: 1.1rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        /* 교시별로 각기 다른 예쁜 그라데이션 색상 적용 */
+        .time-slot:nth-child(7n+1) .period-num { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); } /* 피치 핑크 */
+        .time-slot:nth-child(7n+2) .period-num { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); } /* 선샤인 오렌지 */
+        .time-slot:nth-child(7n+3) .period-num { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); } /* 애플 민트 */
+        .time-slot:nth-child(7n+4) .period-num { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); } /* 스카이 블루 */
+        .time-slot:nth-child(7n+5) .period-num { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); } /* 코랄 살구 */
+        .time-slot:nth-child(7n+6) .period-num { background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%); color: #2d3436; text-shadow:none;} /* 실버 라이트 */
+        .time-slot:nth-child(7n+7) .period-num { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); } /* 솜사탕 보라 */
+
+        .subject-name { font-weight: 800; font-size: 1.25rem; flex: 1; margin-left: 16px; color: #2d3436; letter-spacing: -0.5px;}
+        
+        .status-badge {
+            background: #f1f2f6; color: #576574;
+            font-size: 0.8rem; padding: 6px 12px; border-radius: 20px; font-weight: 800;
+        }
+
+        /* 🚨 현재 진행 중인 수업 (화려한 보라색 하이라이트 + 심장박동 애니메이션) */
+        @keyframes pulse-shadow {
+            0% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(108, 92, 231, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0); }
+        }
+        
+        .time-slot.current { 
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            color: white; 
+            transform: scale(1.03) translateY(-2px); 
+            border: none;
+            animation: pulse-shadow 2.5s infinite; /* 빛이 퍼져나가는 효과 */
+        }
+        
+        .time-slot.current .period-num { background: rgba(255,255,255,0.25); color: white; box-shadow: none; text-shadow:none;}
+        .time-slot.current .subject-name { color: white; }
+        .time-slot.current .status-badge { background: white; color: #6c5ce7; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+        /* ✨ 알록달록 귀여운 급식 패널 스타일 */
+        #meal-content {
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        
+        .meal-item { 
+            display: flex; align-items: center; gap: 12px; 
+            padding: 12px 18px; 
+            border-radius: 20px; /* 동글동글한 모서리 */
+            font-weight: 800; font-size: 1.15rem; 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+        
+        /* 마우스(또는 터치)를 올렸을 때 살짝 위로 떠오르는 효과 */
+        .meal-item:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .meal-emoji {
+            font-size: 1.4rem;
+            background: rgba(255, 255, 255, 0.7);
+            width: 38px; height: 38px;
+            display: flex; justify-content: center; align-items: center;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .meal-name { flex: 1; letter-spacing: -0.5px; }
+
+        /* 메뉴 순서대로 파스텔 배경 & 진한 글씨색 무한 반복 적용 */
+        .meal-item:nth-child(6n+1) { background: #fff3cd; color: #d35400; } /* 커스터드 노랑 */
+        .meal-item:nth-child(6n+2) { background: #ffe4e1; color: #c0392b; } /* 딸기우유 핑크 */
+        .meal-item:nth-child(6n+3) { background: #dff9fb; color: #00b894; } /* 소다수 민트 */
+        .meal-item:nth-child(6n+4) { background: #e0f7fa; color: #0984e3; } /* 솜사탕 하늘 */
+        .meal-item:nth-child(6n+5) { background: #f3e5f5; color: #8e44ad; } /* 라벤더 보라 */
+        .meal-item:nth-child(6n+6) { background: #ffebd2; color: #e67e22; } /* 살구 오렌지 */ /*.meal-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; margin-bottom: 8px; background: #f8fafc; border-radius: 10px; }*/
+
         .period-num { width: 28px; height: 28px; background: #e2e8f0; color: #64748b; display: flex; justify-content: center; align-items: center; border-radius: 6px; font-weight: 800; font-size: 0.9rem; }
         .subject-name, .meal-name { font-weight: 700; font-size: 1.1rem; flex: 1; margin-left: 12px; }
         .status-badge { background: #e2e8f0; color: #64748b; font-size: 0.75rem; padding: 4px 8px; border-radius: 5px; font-weight: 600; }
@@ -52,8 +150,45 @@
         .event-item.birthday { background: #fff0f5; color: #e84393; border-left: 3px solid #fd79a8; }
         .event-item.default { background: #edf7ed; color: #2e7d32; border-left: 3px solid #4CAF50; }
 
-        .notice-list { list-style: none; padding: 0; margin: 0; }
-        .notice-list li { background: #f8fafc; padding: 12px; border-radius: 10px; margin-bottom: 10px; font-weight: 500; display: flex; gap: 8px; }
+        /* ✨ 큼직하고 알록달록해진 공지사항 스타일 */
+        .notice-panel { overflow-y: auto; }
+        .notice-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
+        
+        .notice-list li {
+            padding: 16px 20px; 
+            border-radius: 18px;
+            font-size: 1.35rem; /* 글씨 크기 대폭 확대 (기존 1.15 -> 1.35) */
+            line-height: 1.4; 
+            font-weight: 900; /* 글씨 아주 굵게 */
+            display: flex; gap: 12px; align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            transition: transform 0.2s ease;
+        }
+
+        /* 마우스 올렸을 때 살짝 반응하는 효과 */
+        .notice-list li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+        }
+
+        /* 확성기 아이콘에 동그란 배경 추가해서 강조 */
+        .notice-list li::before { 
+            content: '📣'; 
+            font-size: 1.5rem; 
+            background: rgba(255, 255, 255, 0.6);
+            width: 42px; height: 42px;
+            display: flex; justify-content: center; align-items: center;
+            border-radius: 50%;
+            flex-shrink: 0; /* 글씨가 길어져도 아이콘이 찌그러지지 않게 방지 */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* 항목별로 다른 파스텔 배경 & 찰떡인 진한 글씨색 무한 반복 */
+        .notice-list li:nth-child(5n+1) { background: #fff9c4; color: #d35400; } /* 개나리 노랑 */
+        .notice-list li:nth-child(5n+2) { background: #ffebee; color: #c0392b; } /* 벚꽃 핑크 */
+        .notice-list li:nth-child(5n+3) { background: #e8f5e9; color: #27ae60; } /* 새싹 초록 */
+        .notice-list li:nth-child(5n+4) { background: #e3f2fd; color: #2980b9; } /* 뭉게구름 파랑 */
+        .notice-list li:nth-child(5n+5) { background: #f3e5f5; color: #8e44ad; } /* 라일락 보라 */
         .photo-panel { padding: 0; }
         #class-photo { width: 100%; height: 100%; object-fit: cover; }
     </style>
@@ -89,7 +224,7 @@
                 <ul class="notice-list" id="notice-content"><li>로딩 중...</li></ul>
             </div>
             <div class="panel photo-panel">
-                <img id="class-photo" src="우리반_사진_주소" alt="우리반 사진">
+                <img id="class-photo" src="april207.jpg" alt="우리반 사진">
             </div>
         </div>
     </main>
