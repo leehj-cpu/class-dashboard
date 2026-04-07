@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>강동고등학교 2학년 7반 대시보드</title>
+    <style>
+        :root {
+            --bg-color: #f0f4f8; 
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #95a5a6;
+            --accent-color: #4CAF50;
+            --info-color: #3498db;
+            --Sunday-color: #e74c3c;
+            --Saturday-color: #3498db;
+            --border-radius: 20px;
+        }
+
+        body {
+            margin: 0; padding: 25px;
+            font-family: 'Pretendard', sans-serif;
+            background-color: var(--bg-color);
+            height: 100vh; display: grid;
+            grid-template-rows: 60px 1fr; gap: 20px;
+            box-sizing: border-box;
+            color: var(--text-main);
+        }
+
+        header {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr; 
+            align-items: center;
+            padding: 0 10px; 
+        }
+        .date-header { font-size: 1.5rem; color: #7f8c8d; letter-spacing: -0.5px; font-weight: bold; justify-self: start; }
+        .main-title { font-size: 2.2rem; font-weight: 900; color: #1a252f; justify-self: center; letter-spacing: -1px; display: flex; align-items: center; gap: 10px; }
+        .clock { font-size: 2.5rem; color: var(--accent-color); font-weight: 800; letter-spacing: 1px; justify-self: end; }
+
+        main {
+            display: grid;
+            grid-template-columns: 1fr 2.2fr 1fr;
+            gap: 20px; height: 100%;
+        }
+
+        .panel {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            display: flex; flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-title {
+            font-size: 1.4rem; margin-bottom: 15px; margin-top: 0;
+            display: flex; align-items: center; gap: 10px;
+            font-weight: 800; color: #1a252f;
+        }
+
+        /* 좌우 컬럼 레이아웃 세부 조정 */
+        .side-column { display: grid; gap: 20px; height: 100%; }
+        
+        /* 왼쪽: 시간표가 차지하는 만큼만 쓰고 급식이 바로 따라오도록 설정 */
+        .left-column { grid-template-rows: auto 1fr; } 
+        
+        /* ✨ 오른쪽: 알림판을 콤팩트하게 만들고 사진 영역을 확실하게 확보 (최대 50% 제한 적용) */
+        .right-column { grid-template-rows: auto 1fr; }
+        .notice-panel { min-height: 50%; overflow-y: auto; } /* 알림판 최소 50% 확보 */
+        .photo-panel { max-height: 50%; padding: 0; overflow: hidden; } /* 사진은 최대 50%까지만 */
+
+        /* ⏰ 시간표 스타일 */
+        .time-slot {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 15px; margin-bottom: 8px;
+            background: #ffffff; border-radius: 15px;
+            border: 1px solid #f1f2f6; transition: all 0.3s ease;
+        }
+        .period-num {
+            width: 34px; height: 34px; color: white; display: flex;
+            justify-content: center; align-items: center; border-radius: 10px; font-weight: 900;
+        }
+        .time-slot:nth-child(7n+1) .period-num { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+        .time-slot:nth-child(7n+2) .period-num { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+        .time-slot:nth-child(7n+3) .period-num { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
+        .time-slot:nth-child(7n+4) .period-num { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+        .time-slot:nth-child(7n+5) .period-num { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+        .time-slot:nth-child(7n+6) .period-num { background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%); color: #2d3436;}
+        .time-slot:nth-child(7n+7) .period-num { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
+
+        .subject-name { font-weight: 800; font-size: 1.15rem; flex: 1; margin-left: 12px; color: #2d3436; }
+        
+        .time-slot.current { 
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            color: white; transform: scale(1.02); border: none;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.2);
+        }
+        .time-slot.current .period-num { background: rgba(255,255,255,0.2); }
+        .time-slot.current .subject-name { color: white; }
+
+        /* 🍱 급식 스타일 */
+        #meal-content { display: flex; flex-direction: column; gap: 8px; }
+        .meal-item { 
+            display: flex; align-items: center; gap: 10px; 
+            padding: 10px 15px; border-radius: 15px;
+            font-weight: 800; font-size: 1.1rem;
+        }
+        .meal-emoji { font-size: 1.2rem; }
+        .meal-item:nth-child(6n+1) { background: #fff3cd; color: #d35400; }
+        .meal-item:nth-child(6n+2) { background: #ffe4e1; color: #c0392b; }
+        .meal-item:nth-child(6n+3) { background: #dff9fb; color: #00b894; }
+        .meal-item:nth-child(6n+4) { background: #e0f7fa; color: #0984e3; }
+        .meal-item:nth-child(6n+5) { background: #f3e5f5; color: #8e44ad; }
+        .meal-item:nth-child(6n+6) { background: #ffebd2; color: #e67e22; }
+
+        /* 📅 달력 스타일 (주말 색상 & 오늘 날짜 동그라미 추가) */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; height: 100%; }
+        .cal-header { text-align: center; font-weight: 800; font-size: 0.95rem; padding-bottom: 5px; color: var(--text-muted); }
+        .cal-header.sun { color: #e74c3c; } /* 일요일 헤더 */
+        .cal-header.sat { color: #3498db; } /* 토요일 헤더 */
+
+        .cal-day { 
+            background: #f8fafc; border-radius: 12px; padding: 6px; 
+            display: flex; flex-direction: column; min-height: 70px; 
+            border: 2px solid transparent; 
+        }
+        .cal-day.empty { background: transparent; border: none; }
+
+        /* ✨ 주말 배경 및 숫자 색상 설정 */
+        .cal-day.sun-day { background-color: #fff5f5; } /* 일요일: 연한 빨강 배경 */
+        .cal-day.sun-day .day-num { color: #e74c3c; }   /* 일요일: 빨강 글씨 */
+        
+        .cal-day.sat-day { background-color: #f0f7ff; } /* 토요일: 연한 파랑 배경 */
+        .cal-day.sat-day .day-num { color: #3498db; }   /* 토요일: 파랑 글씨 */
+
+        /* 날짜 숫자 기본 스타일 (동그라미 모양 준비) */
+        .day-num { 
+            font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; 
+            display: inline-flex; justify-content: center; align-items: center; 
+            width: 26px; height: 26px; border-radius: 50%; 
+            color: #2d3436; align-self: flex-start;
+        }
+
+        /* 🚨 오늘 날짜 강조 (파란색 작고 귀여운 동그라미) */
+        .cal-day.today { 
+            background: #ffffff; 
+            border: 2px solid #3498db; /* 칸 전체 파란 테두리 */
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15); 
+        }
+        .cal-day.today .day-num { 
+            background: #3498db; /* 파란색 배경 */
+            color: white !important; /* 글씨 흰색 */
+            box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4); 
+        }
+
+        .event-item { font-size: 0.75rem; padding: 3px 6px; border-radius: 5px; font-weight: 600; margin-bottom: 2px; }
+        .event-item.exam { background: #fee2e2; color: #c0392b; border-left: 3px solid #e74c3c; }
+        .event-item.performance { background: #f3e5f5; color: #8e44ad; border-left: 3px solid #9b59b6; }
+        .event-item.birthday { background: #fff0f5; color: #e84393; border-left: 3px solid #fd79a8; }
+        .event-item.default { background: #edf7ed; color: #2e7d32; border-left: 3px solid #4CAF50; }
+
+        /* 📣 알림판 스타일 (굵고 크게 원복) */
+        .notice-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
+        .notice-list li {
+            padding: 16px 20px; border-radius: 18px;
+            font-size: 1.35rem; line-height: 1.4; 
+            font-weight: 900; display: flex; gap: 12px; align-items: center;
+        }
+        .notice-list li::before { 
+            content: '📣'; font-size: 1.5rem; background: rgba(255, 255, 255, 0.6);
+            width: 42px; height: 42px; display: flex; justify-content: center; align-items: center; border-radius: 50%;
+        }
+        .notice-list li:nth-child(5n+1) { background: #fff9c4; color: #d35400; }
+        .notice-list li:nth-child(5n+2) { background: #ffebee; color: #c0392b; }
+        .notice-list li:nth-child(5n+3) { background: #e8f5e9; color: #27ae60; }
+        .notice-list li:nth-child(5n+4) { background: #e3f2fd; color: #2980b9; }
+        .notice-list li:nth-child(5n+5) { background: #f3e5f5; color: #8e44ad; }
+
+        /* 🖼️ 사진 영역 복구 (50% 공간 활용) */
+        .photo-panel { display: flex; justify-content: center; align-items: center; }
+        #class-photo { 
+            width: 100%; height: 100%; 
+            object-fit: cover; /* 비율 유지하며 채우기 */
+            border-radius: var(--border-radius);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="date-header" id="date-header">날짜 로딩 중...</div>
+        <div class="main-title">🏫 2학년 7반 대시보드 ✨</div>
+        <div class="clock" id="clock">00:00:00</div>
+    </header>
+
+    <main>
+        <div class="side-column left-column">
+            <div class="panel">
+                <h2 class="panel-title">⏰ 시간표</h2>
+                <div id="timetable-content">로딩 중...</div>
+            </div>
+            <div class="panel">
+                <h2 class="panel-title">🍱 오늘의 급식</h2>
+                <div id="meal-content">로딩 중...</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2 class="panel-title" id="calendar-title">📅 학급 일정</h2>
+            <div class="calendar-grid" id="calendar-grid"></div>
+        </div>
+
+        <div class="side-column right-column">
+            <div class="panel notice-panel">
+                <h2 class="panel-title">📢 알림판</h2>
+                <ul class="notice-list" id="notice-content"><li>로딩 중...</li></ul>
+            </div>
+            <div class="panel photo-panel">
+                <img id="class-photo" src="april207.jpg" alt="우리반 단체 사진">
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 🚨 여기에 실제 깃허브로 배포한 구글 앱스 스크립트 웹앱 주소를 넣어주세요!
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwfvim9T5dqii87-RDmEVv_lIV3Aoc7Wsl1Aq5fdfgXVvNxIAY9txD2DSkPOdVWvD_7aA/exec";
+
+        const classTimes = {
+            "조회": { start: 800, end: 810 }, "준비": { start: 810, end: 820 },
+            "1": { start: 820, end: 910 }, "2": { start: 920, end: 1010 },
+            "3": { start: 1020, end: 1110 }, "4": { start: 1120, end: 1210 },
+            "중식": { start: 1210, end: 1310 }, "5": { start: 1310, end: 1400 },
+            "6": { start: 1410, end: 1500 }, "7": { start: 1510, end: 1600 }
+        };
+
+        async function fetchData() {
+            try {
+                const response = await fetch(GAS_URL);
+                const data = await response.json();
+                updateDashboard(data);
+            } catch (e) { console.error("데이터 오류:", e); }
+        }
+
+        function updateDashboard(data) {
+            const now = new Date();
+            const actualDay = now.getDay();
+            let timetableDay = (actualDay === 0 || actualDay === 6) ? 1 : actualDay;
+
+            document.getElementById('date-header').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
+            document.getElementById('calendar-title').innerHTML = `📅 ${now.getMonth()+1}월 학급 일정`;
+
+            document.getElementById('timetable-content').innerHTML = (data.weeklyTimetable[timetableDay] || []).map(item => `
+                <div class="time-slot" data-period="${item.period}">
+                    <div class="period-num">${item.period}</div>
+                    <div class="subject-name">${item.subject}</div>
+                </div>
+            `).join('');
+
+            const foodEmojis = ['🍚', '🍲', '🍖', '🥗', '🍤', '🍳', '🍝', '🥪'];
+            document.getElementById('meal-content').innerHTML = data.lunchMenu.map((menu, index) => `
+                <div class="meal-item">
+                    <div class="meal-emoji">${foodEmojis[index % foodEmojis.length]}</div>
+                    <div class="meal-name">${menu}</div>
+                </div>
+            `).join('');
+
+            const todaysNotices = data.weeklyNotices[timetableDay] || [];
+            document.getElementById('notice-content').innerHTML = todaysNotices.length > 0 ? todaysNotices.map(t => `<li><span>${t}</span></li>`).join('') : '<li><span>오늘의 공지사항이 없습니다.</span></li>';
+
+            renderCalendar(data.schedules);
+            highlightCurrentPeriod();
+
+            // 🔥 D-Day 계산 (3/24 중간고사 기준 고정)
+            const targetDate = new Date(2026, 3, 24); 
+            const dDayDiff = Math.round((targetDate - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / (1000 * 60 * 60 * 24));
+            const dDayText = dDayDiff > 0 ? `D-${dDayDiff}` : (dDayDiff === 0 ? "D-Day" : "완료");
+            document.querySelector('.main-title').innerHTML = `🏫 2학년 7반 대시보드 <span style="color:#e74c3c; margin-left:15px; font-size:1.8rem; background: #fee2e2; padding: 5px 15px; border-radius: 20px;">🔥 중간고사 ${dDayText} 🔥</span>`;
+        }
+
+        // 📅 달력 렌더링 함수
+        function renderCalendar(schedules) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+            const grid = document.getElementById('calendar-grid');
+            
+            // 헤더(요일)에도 일, 토요일 색상 클래스 부여
+            let html = ['일','월','화','수','목','금','토'].map((d, i) => `<div class="cal-header ${i==0?'sun':i==6?'sat':''}">${d}</div>`).join('');
+            
+            for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
+
+            for (let d = 1; d <= lastDate; d++) {
+                const isToday = d === now.getDate() ? 'today' : '';
+                const dayIdx = (firstDay + d - 1) % 7; // 0은 일요일, 6은 토요일
+                
+                // ✨ 주말 클래스 판별 로직
+                let weekendClass = '';
+                if (dayIdx === 0) weekendClass = 'sun-day';
+                if (dayIdx === 6) weekendClass = 'sat-day';
+
+                const dayEvents = schedules.filter(s => { const sDate = new Date(s.date); return sDate.getDate() === d && sDate.getMonth() === month; });
+                const eventHtml = dayEvents.map(e => {
+                    let c = 'default';
+                    if (e.event.includes('생일')) c = 'birthday';
+                    else if (e.event.includes('수행') || e.event.includes('평가')) c = 'performance';
+                    else if (e.event.includes('시험') || e.event.includes('고사')) c = 'exam';
+                    return `<div class="event-item ${c}">${e.event}</div>`;
+                }).join('');
+                
+                // 각 날짜 칸에 오늘 여부와 주말 클래스를 추가
+                html += `<div class="cal-day ${isToday} ${weekendClass}">
+                            <span class="day-num">${d}</span>
+                            ${eventHtml}
+                         </div>`;
+            }
+            grid.innerHTML = html;
+        }
+
+        function highlightCurrentPeriod() {
+            const now = new Date();
+            const curMin = now.getHours() * 60 + now.getMinutes();
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('current');
+                const p = String(slot.dataset.period);
+                const t = classTimes[p];
+                if (t) {
+                    const sMin = Math.floor(t.start / 100) * 60 + (t.start % 100);
+                    const eMin = Math.floor(t.end / 100) * 60 + (t.end % 100);
+                    if (curMin >= sMin && curMin <= eMin) slot.classList.add('current');
+                }
+            });
+        }
+
+        function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('ko-KR', { hour12: false }); highlightCurrentPeriod(); }
+        setInterval(updateClock, 1000); setInterval(fetchData, 60000);
+        updateClock(); fetchData();
+    </script>
+</body>
+</html>
