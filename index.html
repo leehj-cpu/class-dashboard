@@ -125,26 +125,52 @@
         .meal-item:nth-child(6n+5) { background: #f3e5f5; color: #8e44ad; }
         .meal-item:nth-child(6n+6) { background: #ffebd2; color: #e67e22; }
 
-        /* 달력 스타일 */
+       /* 📅 달력 스타일 (주말 색상 & 오늘 날짜 강조 추가) */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; height: 100%; }
-        .cal-header { text-align: center; font-weight: 700; color: var(--text-muted); font-size: 0.9rem; }
-        .cal-day { background: #f8fafc; border-radius: 12px; padding: 6px; display: flex; flex-direction: column; min-height: 70px; }
-        .cal-day.today { background: #ffffff; border: 1px solid rgba(52, 152, 219, 0.2); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .day-num { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
-        .cal-day.today .day-num { color: var(--info-color); }
+        .cal-header { text-align: center; font-weight: 800; font-size: 0.95rem; padding-bottom: 5px; color: var(--text-muted); }
+        .cal-header.sun { color: #e74c3c; } /* 일요일 헤더 글씨 빨강 */
+        .cal-header.sat { color: #3498db; } /* 토요일 헤더 글씨 파랑 */
+
+        .cal-day { 
+            background: #f8fafc; border-radius: 12px; padding: 6px; 
+            display: flex; flex-direction: column; min-height: 70px; 
+            border: 2px solid transparent; 
+        }
+        .cal-day.empty { background: transparent; border: none; }
+
+        /* ✨ 주말 배경 및 숫자 색상 설정 */
+        .cal-day.sun-day { background-color: #fff5f5; } /* 일요일: 연한 빨강 배경 */
+        .cal-day.sun-day .day-num { color: #e74c3c; }   /* 일요일: 빨강 글씨 */
+        
+        .cal-day.sat-day { background-color: #f0f7ff; } /* 토요일: 연한 파랑 배경 */
+        .cal-day.sat-day .day-num { color: #3498db; }   /* 토요일: 파랑 글씨 */
+
+        /* 날짜 숫자 기본 스타일 (동그라미 모양 준비) */
+        .day-num { 
+            font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; 
+            display: inline-flex; justify-content: center; align-items: center; 
+            width: 26px; height: 26px; border-radius: 50%; 
+            color: #2d3436; align-self: flex-start;
+        }
+
+        /* 🚨 오늘 날짜 강조 (파란색 작고 귀여운 동그라미) */
+        .cal-day.today { 
+            background: #ffffff; 
+            border: 2px solid #3498db; /* 칸 전체에도 파란 테두리 */
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15); 
+        }
+        .cal-day.today .day-num { 
+            background: #3498db; /* 파란색 배경 */
+            color: white !important; /* 글씨는 무조건 흰색 */
+            box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4); 
+        }
+
+        /* 일정 칩 디자인 */
         .event-item { font-size: 0.75rem; padding: 3px 6px; border-radius: 5px; font-weight: 600; margin-bottom: 2px; }
         .event-item.exam { background: #fee2e2; color: #c0392b; border-left: 3px solid #e74c3c; }
         .event-item.performance { background: #f3e5f5; color: #8e44ad; border-left: 3px solid #9b59b6; }
         .event-item.birthday { background: #fff0f5; color: #e84393; border-left: 3px solid #fd79a8; }
         .event-item.default { background: #edf7ed; color: #2e7d32; border-left: 3px solid #4CAF50; }
-
-        /* 알림판 스타일 */
-        .notice-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-        .notice-list li {
-            padding: 14px 16px; border-radius: 15px;
-            font-size: 1.25rem; font-weight: 900;
-            display: flex; gap: 10px; align-items: center;
-        }
         .notice-list li::before { content: '📣'; font-size: 1.3rem; }
         .notice-list li:nth-child(5n+1) { background: #fff9c4; color: #d35400; }
         .notice-list li:nth-child(5n+2) { background: #ffebee; color: #c0392b; }
@@ -251,6 +277,7 @@
             document.querySelector('.main-title').innerHTML = `🏫 2학년 7반 대시보드 <span style="color:#e74c3c; margin-left:15px; font-size:1.8rem; background: #fee2e2; padding: 5px 15px; border-radius: 20px;">🔥 중간고사 ${dDayText}</span>`;
         }
 
+        // 📅 달력 렌더링 함수
         function renderCalendar(schedules) {
             const now = new Date();
             const year = now.getFullYear();
@@ -259,11 +286,20 @@
             const lastDate = new Date(year, month + 1, 0).getDate();
             const grid = document.getElementById('calendar-grid');
             
+            // 헤더(요일)에도 일, 토요일 색상 클래스 부여
             let html = ['일','월','화','수','목','금','토'].map((d, i) => `<div class="cal-header ${i==0?'sun':i==6?'sat':''}">${d}</div>`).join('');
+            
             for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
 
             for (let d = 1; d <= lastDate; d++) {
                 const isToday = d === now.getDate() ? 'today' : '';
+                const dayIdx = (firstDay + d - 1) % 7; // 0은 일요일, 6은 토요일
+                
+                // ✨ 주말 클래스 판별 로직
+                let weekendClass = '';
+                if (dayIdx === 0) weekendClass = 'sun-day';
+                if (dayIdx === 6) weekendClass = 'sat-day';
+
                 const dayEvents = schedules.filter(s => { const sDate = new Date(s.date); return sDate.getDate() === d && sDate.getMonth() === month; });
                 const eventHtml = dayEvents.map(e => {
                     let c = 'default';
@@ -272,7 +308,12 @@
                     else if (e.event.includes('시험') || e.event.includes('고사')) c = 'exam';
                     return `<div class="event-item ${c}">${e.event}</div>`;
                 }).join('');
-                html += `<div class="cal-day ${isToday}"><span class="day-num">${d}</span>${eventHtml}</div>`;
+                
+                // 각 날짜 칸에 오늘 여부와 주말 클래스를 추가
+                html += `<div class="cal-day ${isToday} ${weekendClass}">
+                            <span class="day-num">${d}</span>
+                            ${eventHtml}
+                         </div>`;
             }
             grid.innerHTML = html;
         }
