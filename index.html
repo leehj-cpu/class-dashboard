@@ -40,7 +40,6 @@
         .history-panel { flex: 1; max-height: 280px; overflow-y: auto; background: #fffcf8; border: 2px dashed #f3e5ab; } 
         .photo-panel { flex: 1.5; min-height: 250px; padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; } 
 
-        /* 시간표 스타일 */
         .time-slot { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 8px; background: #ffffff; border-radius: 15px; border: 1px solid #f1f2f6; transition: all 0.3s ease; }
         .period-num { width: 34px; height: 34px; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px; font-weight: 900; }
         .time-slot:nth-child(7n+1) .period-num { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
@@ -54,7 +53,6 @@
         .time-slot.current .period-num { background: rgba(255,255,255,0.2); }
         .time-slot.current .subject-name { color: white; }
 
-        /* 급식 스타일 */
         #meal-content { display: flex; flex-direction: column; gap: 8px; }
         .meal-item { display: flex; align-items: center; gap: 10px; padding: 10px 15px; border-radius: 15px; font-weight: 800; font-size: 1.1rem; }
         .meal-item:nth-child(6n+1) { background: #fff3cd; color: #d35400; }
@@ -63,7 +61,6 @@
         .meal-item:nth-child(6n+4) { background: #e0f7fa; color: #0984e3; }
         .meal-item:nth-child(6n+5) { background: #f3e5f5; color: #8e44ad; }
 
-        /* 달력 스타일 */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; height: 100%; }
         .cal-header { text-align: center; font-weight: 800; font-size: 0.95rem; padding-bottom: 5px; color: var(--text-muted); }
         .cal-header.sun { color: #e74c3c; } .cal-header.sat { color: #3498db; }
@@ -75,14 +72,12 @@
         .cal-day.today { background: #ffffff; border: 2px solid #3498db; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15); }
         .cal-day.today .day-num { background: #3498db; color: white !important; box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4); }
         
-        /* ✨ 일정 칩 색상 복구 */
         .event-item { font-size: 0.75rem; padding: 3px 6px; border-radius: 5px; font-weight: 600; margin-bottom: 2px; }
-        .event-item.birthday { background: #fff0f5; color: #e84393; border-left: 3px solid #fd79a8; } /* 핑크 생일 */
-        .event-item.performance { background: #f3e5f5; color: #8e44ad; border-left: 3px solid #9b59b6; } /* 보라 수행 */
-        .event-item.exam { background: #fee2e2; color: #c0392b; border-left: 3px solid #e74c3c; } /* 빨강 시험 */
+        .event-item.birthday { background: #fff0f5; color: #e84393; border-left: 3px solid #fd79a8; } 
+        .event-item.performance { background: #f3e5f5; color: #8e44ad; border-left: 3px solid #9b59b6; } 
+        .event-item.exam { background: #fee2e2; color: #c0392b; border-left: 3px solid #e74c3c; } 
         .event-item.default { background: #edf7ed; color: #2e7d32; border-left: 3px solid #4CAF50; }
 
-        /* 알림판 & 호출내역 스타일 */
         .notice-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
         .notice-list li { padding: 16px 20px; border-radius: 18px; font-size: 1.35rem; line-height: 1.4; font-weight: 900; display: flex; gap: 12px; align-items: center; }
         .notice-list li::before { content: '📣'; font-size: 1.5rem; background: rgba(255, 255, 255, 0.6); width: 42px; height: 42px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
@@ -94,11 +89,13 @@
         .history-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
         .history-list li { background: #ffffff; border: 1px solid #f1e9d2; border-left: 4px solid #f39c12; padding: 12px 15px; border-radius: 12px; font-size: 1.2rem; font-weight: 800; color: #2c3e50; display: flex; align-items: center; gap: 12px; }
         .history-list li .time { font-size: 1rem; color: #e67e22; background: #fef5e7; padding: 4px 10px; border-radius: 8px; font-weight: 900; }
+        
+        /* 🔔 알림 켜기 버튼 (안드로이드 권한용) */
+        .noti-btn { background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800; cursor: pointer; }
         .clear-btn { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800; cursor: pointer; }
 
         #class-photo { width: 100%; height: 100%; object-fit: cover; border-radius: var(--border-radius); }
 
-        /* 🚨 학생 호출 팝업 */
         #call-popup {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(231, 76, 60, 0.95); z-index: 9999; display: flex; flex-direction: column;
@@ -151,7 +148,10 @@
             <div class="panel history-panel">
                 <h2 class="panel-title">
                     <span>📱 최근 호출 내역</span>
-                    <button class="clear-btn" onclick="clearCallHistory()">모두 삭제 🗑️</button>
+                    <div>
+                        <button class="noti-btn" onclick="requestNotificationPermission()">알림 켜기 🔔</button>
+                        <button class="clear-btn" onclick="clearCallHistory()">모두 삭제 🗑️</button>
+                    </div>
                 </h2>
                 <ul class="history-list" id="history-content"></ul>
             </div>
@@ -163,6 +163,19 @@
 
     <script>
         const GAS_URL = "https://script.google.com/macros/s/AKfycbwfvim9T5dqii87-RDmEVv_lIV3Aoc7Wsl1Aq5fdfgXVvNxIAY9txD2DSkPOdVWvD_7aA/exec";
+
+        // ✨ 푸시 알림 권한 요청 함수 (버튼 클릭 시 실행)
+        function requestNotificationPermission() {
+            if (!("Notification" in window)) {
+                alert("이 브라우저는 알림을 지원하지 않습니다.");
+            } else if (Notification.permission === "granted") {
+                alert("이미 알림이 켜져 있습니다!");
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") alert("알림이 켜졌습니다! 🔔");
+                });
+            }
+        }
 
         const classTimes = {
             "조회": { start: 800, end: 810 }, "준비": { start: 810, end: 820 },
@@ -180,14 +193,35 @@
             } catch (e) { console.error("데이터 오류:", e); }
         }
 
+        // ✨ 중복 알림 방지를 위한 변수
+        let lastNotifiedStudent = null;
+
         async function fetchCallStatus() {
             try {
                 const response = await fetch(GAS_URL + "?action=check_call");
                 const data = await response.json();
+                
                 const popup = document.getElementById('call-popup');
                 const nameSpan = document.getElementById('call-name');
-                if (data.callStudent) { nameSpan.textContent = data.callStudent; popup.classList.add('show'); } 
-                else { popup.classList.remove('show'); }
+                
+                if (data.callStudent) { 
+                    nameSpan.textContent = data.callStudent; 
+                    popup.classList.add('show'); 
+                    
+                    // ✨ 푸시 알림 띄우기 (새로운 학생이 호출됐을 때 딱 한 번만!)
+                    if (lastNotifiedStudent !== data.callStudent) {
+                        if ("Notification" in window && Notification.permission === "granted") {
+                            new Notification("🚨 2-7 호출 알림", {
+                                body: `${data.callStudent} 학생! 지금 바로 교무실로 와주세요.`,
+                            });
+                        }
+                        lastNotifiedStudent = data.callStudent; // 기록 저장
+                    }
+                } 
+                else { 
+                    popup.classList.remove('show'); 
+                    lastNotifiedStudent = null; // 호출 종료되면 리셋
+                }
 
                 if (data.callHistory && data.callHistory.length > 0) {
                     document.getElementById('history-content').innerHTML = data.callHistory.map(h => `<li><span class="time">${h.time}</span><span>${h.text}</span></li>`).join('');
@@ -239,7 +273,6 @@
                 
                 const dayEvents = schedules.filter(s => { const sDate = new Date(s.date); return sDate.getDate() === d && sDate.getMonth() === month; });
                 
-                // ✨ 일정 종류별 색상 매칭 로직 복구
                 const eventHtml = dayEvents.map(e => {
                     let c = 'default';
                     if (e.event.includes('생일')) c = 'birthday'; 
