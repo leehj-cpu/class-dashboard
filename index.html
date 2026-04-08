@@ -14,8 +14,8 @@
 
         body {
             margin: 0; padding: 25px; font-family: 'Pretendard', sans-serif;
-            background-color: var(--bg-color); height: 100vh; display: grid;
-            grid-template-rows: 60px 1fr; gap: 20px; box-sizing: border-box; color: var(--text-main);
+            background-color: var(--bg-color); min-height: 100vh;
+            display: grid; grid-template-rows: 60px 1fr; gap: 20px; box-sizing: border-box; color: var(--text-main);
         }
 
         header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 10px; }
@@ -23,7 +23,7 @@
         .main-title { font-size: 2.2rem; font-weight: 900; color: #1a252f; justify-self: center; letter-spacing: -1px; display: flex; align-items: center; gap: 10px; }
         .clock { font-size: 2.5rem; color: var(--accent-color); font-weight: 800; letter-spacing: 1px; justify-self: end; }
 
-        main { display: grid; grid-template-columns: 1fr 2.2fr 1fr; gap: 20px; height: 100%; overflow: hidden; }
+        main { display: grid; grid-template-columns: 1fr 2.2fr 1fr; gap: 20px; }
 
         .panel {
             background: var(--card-bg); border-radius: var(--border-radius);
@@ -35,17 +35,10 @@
         .side-column { display: grid; gap: 20px; height: 100%; }
         .left-column { grid-template-rows: auto 1fr; } 
         
-        /* ✨ 우측 레이아웃 동적 분배 마법 */
-        .right-column { display: flex; flex-direction: column; gap: 20px; height: 100%; overflow: hidden; }
-        
-        /* 알림판: 내용만큼 늘어나되 최대 45%까지만 (스크롤 발생) */
-        .notice-panel { flex: 0 1 auto; max-height: 45%; overflow-y: auto; } 
-        
-        /* 호출 내역: 내용만큼 늘어나되 최대 35%까지만 */
-        .history-panel { flex: 0 1 auto; max-height: 35%; overflow-y: auto; background: #fffcf8; border: 2px dashed #f3e5ab; } 
-        
-        /* 사진: 남은 공간을 모두 싹쓸이해서 꽉 채움! */
-        .photo-panel { flex: 1 1 auto; padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; } 
+        .right-column { display: flex; flex-direction: column; gap: 20px; }
+        .notice-panel { flex: 1; max-height: 350px; overflow-y: auto; } 
+        .history-panel { flex: 1; max-height: 280px; overflow-y: auto; background: #fffcf8; border: 2px dashed #f3e5ab; } 
+        .photo-panel { flex: 1.5; min-height: 250px; padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; } 
 
         /* 시간표 스타일 */
         .time-slot { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 8px; background: #ffffff; border-radius: 15px; border: 1px solid #f1f2f6; transition: all 0.3s ease; }
@@ -56,7 +49,6 @@
         .time-slot:nth-child(7n+4) .period-num { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
         .time-slot:nth-child(7n+5) .period-num { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
         .time-slot:nth-child(7n+6) .period-num { background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%); color: #2d3436;}
-        .time-slot:nth-child(7n+7) .period-num { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
         .subject-name { font-weight: 800; font-size: 1.15rem; flex: 1; margin-left: 12px; color: #2d3436; }
         .time-slot.current { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); color: white; transform: scale(1.02); border: none; box-shadow: 0 5px 15px rgba(108, 92, 231, 0.2); }
         .time-slot.current .period-num { background: rgba(255,255,255,0.2); }
@@ -70,7 +62,6 @@
         .meal-item:nth-child(6n+3) { background: #dff9fb; color: #00b894; }
         .meal-item:nth-child(6n+4) { background: #e0f7fa; color: #0984e3; }
         .meal-item:nth-child(6n+5) { background: #f3e5f5; color: #8e44ad; }
-        .meal-item:nth-child(6n+6) { background: #ffebd2; color: #e67e22; }
 
         /* 달력 스타일 */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; height: 100%; }
@@ -83,40 +74,28 @@
         .day-num { font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; display: inline-flex; justify-content: center; align-items: center; width: 26px; height: 26px; border-radius: 50%; color: #2d3436; align-self: flex-start; }
         .cal-day.today { background: #ffffff; border: 2px solid #3498db; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15); }
         .cal-day.today .day-num { background: #3498db; color: white !important; box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4); }
+        
+        /* ✨ 일정 칩 색상 복구 */
         .event-item { font-size: 0.75rem; padding: 3px 6px; border-radius: 5px; font-weight: 600; margin-bottom: 2px; }
-        .event-item.exam { background: #fee2e2; color: #c0392b; border-left: 3px solid #e74c3c; }
-        .event-item.performance { background: #f3e5f5; color: #8e44ad; border-left: 3px solid #9b59b6; }
+        .event-item.birthday { background: #fff0f5; color: #e84393; border-left: 3px solid #fd79a8; } /* 핑크 생일 */
+        .event-item.performance { background: #f3e5f5; color: #8e44ad; border-left: 3px solid #9b59b6; } /* 보라 수행 */
+        .event-item.exam { background: #fee2e2; color: #c0392b; border-left: 3px solid #e74c3c; } /* 빨강 시험 */
         .event-item.default { background: #edf7ed; color: #2e7d32; border-left: 3px solid #4CAF50; }
 
-        /* 알림판 스타일 */
+        /* 알림판 & 호출내역 스타일 */
         .notice-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
         .notice-list li { padding: 16px 20px; border-radius: 18px; font-size: 1.35rem; line-height: 1.4; font-weight: 900; display: flex; gap: 12px; align-items: center; }
         .notice-list li::before { content: '📣'; font-size: 1.5rem; background: rgba(255, 255, 255, 0.6); width: 42px; height: 42px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
         .notice-list li:nth-child(5n+1) { background: #fff9c4; color: #d35400; }
         .notice-list li:nth-child(5n+2) { background: #ffebee; color: #c0392b; }
         .notice-list li:nth-child(5n+3) { background: #e8f5e9; color: #27ae60; }
-        .notice-list li:nth-child(5n+4) { background: #e3f2fd; color: #2980b9; }
-
-        /* 호출 내역 리스트 스타일 */
+        
         .history-panel .panel-title { color: #d35400; justify-content: space-between; }
         .history-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-        .history-list li {
-            background: #ffffff; border: 1px solid #f1e9d2; border-left: 4px solid #f39c12;
-            padding: 12px 15px; border-radius: 12px; font-size: 1.2rem; font-weight: 800; color: #2c3e50;
-            display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
+        .history-list li { background: #ffffff; border: 1px solid #f1e9d2; border-left: 4px solid #f39c12; padding: 12px 15px; border-radius: 12px; font-size: 1.2rem; font-weight: 800; color: #2c3e50; display: flex; align-items: center; gap: 12px; }
         .history-list li .time { font-size: 1rem; color: #e67e22; background: #fef5e7; padding: 4px 10px; border-radius: 8px; font-weight: 900; }
+        .clear-btn { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800; cursor: pointer; }
 
-        /* ✨ 삭제 버튼 디자인 */
-        .clear-btn {
-            background: #e74c3c; color: white; border: none; padding: 6px 12px;
-            border-radius: 8px; font-size: 0.9rem; font-weight: 800; cursor: pointer;
-            box-shadow: 0 2px 5px rgba(231, 76, 60, 0.3); transition: all 0.2s ease;
-        }
-        .clear-btn:hover { background: #c0392b; transform: scale(1.05); }
-        .clear-btn:active { transform: scale(0.95); }
-
-        /* 사진 영역 */
         #class-photo { width: 100%; height: 100%; object-fit: cover; border-radius: var(--border-radius); }
 
         /* 🚨 학생 호출 팝업 */
@@ -151,11 +130,11 @@
         <div class="side-column left-column">
             <div class="panel">
                 <h2 class="panel-title">⏰ 시간표</h2>
-                <div id="timetable-content">로딩 중...</div>
+                <div id="timetable-content"></div>
             </div>
             <div class="panel">
                 <h2 class="panel-title">🍱 오늘의 급식</h2>
-                <div id="meal-content">로딩 중...</div>
+                <div id="meal-content"></div>
             </div>
         </div>
 
@@ -167,19 +146,15 @@
         <div class="side-column right-column">
             <div class="panel notice-panel">
                 <h2 class="panel-title">📢 알림판</h2>
-                <ul class="notice-list" id="notice-content"><li>로딩 중...</li></ul>
+                <ul class="notice-list" id="notice-content"></ul>
             </div>
-            
             <div class="panel history-panel">
                 <h2 class="panel-title">
                     <span>📱 최근 호출 내역</span>
                     <button class="clear-btn" onclick="clearCallHistory()">모두 삭제 🗑️</button>
                 </h2>
-                <ul class="history-list" id="history-content">
-                    <li><span style="color:#95a5a6; font-size:1rem;">최근 호출 기록이 없습니다.</span></li>
-                </ul>
+                <ul class="history-list" id="history-content"></ul>
             </div>
-
             <div class="panel photo-panel">
                 <img id="class-photo" src="april207.jpg" alt="우리반 단체 사진">
             </div>
@@ -209,42 +184,24 @@
             try {
                 const response = await fetch(GAS_URL + "?action=check_call");
                 const data = await response.json();
-                
                 const popup = document.getElementById('call-popup');
                 const nameSpan = document.getElementById('call-name');
-                if (data.callStudent) {
-                    nameSpan.textContent = data.callStudent;
-                    popup.classList.add('show');
-                } else {
-                    popup.classList.remove('show');
-                }
+                if (data.callStudent) { nameSpan.textContent = data.callStudent; popup.classList.add('show'); } 
+                else { popup.classList.remove('show'); }
 
                 if (data.callHistory && data.callHistory.length > 0) {
-                    const historyHtml = data.callHistory.map(h => 
-                        `<li><span class="time">${h.time}</span><span>${h.text}</span></li>`
-                    ).join('');
-                    document.getElementById('history-content').innerHTML = historyHtml;
+                    document.getElementById('history-content').innerHTML = data.callHistory.map(h => `<li><span class="time">${h.time}</span><span>${h.text}</span></li>`).join('');
                 } else {
                     document.getElementById('history-content').innerHTML = `<li><span style="color:#95a5a6; font-size:1rem;">최근 호출 기록이 없습니다.</span></li>`;
                 }
             } catch (e) { }
         }
 
-        // ✨ [새 기능] 호출 내역 삭제 함수
         async function clearCallHistory() {
-            // 실수로 누르는 것을 방지하기 위한 확인 창
             if(!confirm("최근 호출 내역을 모두 지우시겠습니까?")) return;
-            
-            // 1. 화면에서 먼저 즉시 지워줍니다 (빠른 반응속도를 위해)
             document.getElementById('history-content').innerHTML = `<li><span style="color:#95a5a6; font-size:1rem;">최근 호출 기록이 없습니다.</span></li>`;
-            document.getElementById('call-popup').classList.remove('show'); // 혹시 팝업이 떠있다면 닫기
-            
-            // 2. 구글 스크립트에 삭제 명령을 보냅니다.
-            try {
-                await fetch(GAS_URL + "?action=clear_history");
-            } catch(e) { 
-                console.error("삭제 통신 오류:", e); 
-            }
+            document.getElementById('call-popup').classList.remove('show');
+            try { await fetch(GAS_URL + "?action=clear_history"); } catch(e) { }
         }
 
         function updateDashboard(data) {
@@ -279,10 +236,15 @@
                 const isToday = d === now.getDate() ? 'today' : '';
                 const dayIdx = (firstDay + d - 1) % 7; 
                 let weekendClass = dayIdx === 0 ? 'sun-day' : (dayIdx === 6 ? 'sat-day' : '');
+                
                 const dayEvents = schedules.filter(s => { const sDate = new Date(s.date); return sDate.getDate() === d && sDate.getMonth() === month; });
+                
+                // ✨ 일정 종류별 색상 매칭 로직 복구
                 const eventHtml = dayEvents.map(e => {
                     let c = 'default';
-                    if (e.event.includes('생일')) c = 'birthday'; else if (e.event.includes('수행') || e.event.includes('평가')) c = 'performance'; else if (e.event.includes('시험') || e.event.includes('고사')) c = 'exam';
+                    if (e.event.includes('생일')) c = 'birthday'; 
+                    else if (e.event.includes('수행') || e.event.includes('평가')) c = 'performance'; 
+                    else if (e.event.includes('시험') || e.event.includes('고사')) c = 'exam';
                     return `<div class="event-item ${c}">${e.event}</div>`;
                 }).join('');
                 html += `<div class="cal-day ${isToday} ${weekendClass}"><span class="day-num">${d}</span>${eventHtml}</div>`;
@@ -302,11 +264,9 @@
         }
 
         function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('ko-KR', { hour12: false }); highlightCurrentPeriod(); }
-        
         setInterval(updateClock, 1000); 
         setInterval(fetchData, 3600000); 
         setInterval(fetchCallStatus, 3000); 
-        
         updateClock(); fetchData(); fetchCallStatus(); 
     </script>
 </body>
