@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>🚨 2-7 리모컨</title>
+    <style>
+        :root { --ios-bg: #f2f2f7; --ios-blue: #007aff; --ios-red: #ff3b30; }
+        body { 
+            margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, "Pretendard", sans-serif;
+            background-color: var(--ios-bg); color: #000;
+            display: flex; flex-direction: column; height: 100vh; box-sizing: border-box;
+        }
+        
+        .header { text-align: center; margin-top: 20px; margin-bottom: 25px; }
+        .header h1 { font-size: 1.8rem; margin: 0; font-weight: 800; letter-spacing: -0.5px; }
+        .header p { color: #8e8e93; font-size: 0.9rem; margin-top: 5px; }
+
+        /* 🛑 호출 종료 (초대형 버튼) */
+        .stop-btn {
+            background: var(--ios-red); color: white; border: none;
+            padding: 20px; border-radius: 16px; font-size: 1.3rem; font-weight: 800;
+            width: 100%; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+            transition: transform 0.1s;
+        }
+        .stop-btn:active { transform: scale(0.96); }
+
+        /* 👩‍🎓 학생 명단 버튼 그리드 */
+        .student-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+            overflow-y: auto; padding-bottom: 40px;
+        }
+        .student-btn {
+            background: white; border: none; padding: 16px 5px;
+            border-radius: 14px; font-size: 1.1rem; font-weight: 600; color: #1c1c1e;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: all 0.1s;
+        }
+        .student-btn:active { background: #e5e5ea; transform: scale(0.95); }
+
+        /* 로딩 팝업 */
+        #toast {
+            position: fixed; top: -50px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.8); color: white; padding: 12px 24px;
+            border-radius: 20px; font-weight: 600; transition: top 0.3s ease; z-index: 999;
+        }
+        #toast.show { top: 50px; }
+    </style>
+</head>
+<body>
+
+    <div id="toast">전송 중...</div>
+
+    <div class="header">
+        <h1>🚨 2학년 7반 호출 리모컨</h1>
+        <p>터치하면 교실 칠판에 사이렌 팝업이 뜹니다.</p>
+    </div>
+
+    <button class="stop-btn" onclick="callStudent('🛑 호출 종료')">🛑 화면 복구 (호출 종료)</button>
+
+    <div class="student-grid" id="student-grid">
+        </div>
+
+    <script>
+        // 🚨 1. 여기에 선생님의 구글 앱스 스크립트 웹앱(GAS) 주소를 꼭 넣어주세요!!
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwfvim9T5dqii87-RDmEVv_lIV3Aoc7Wsl1Aq5fdfgXVvNxIAY9txD2DSkPOdVWvD_7aA/exec";
+
+        // 💡 2. 우리 반 학생 명단을 여기에 적어주세요. (몇 명이든 상관없이 알아서 버튼을 만들어줍니다)
+        
+        const students = [
+            "서윤하", "양가영", "이가윤", "이서빈", "정문경",
+            "정시은", "주예나", "강민성", "강민수", "김남일",
+            "김동휘", "김범", "김태민", "김하진", "노희찬",
+            "박준영", "박태호", "백찬민", "엄유찬", "이다솔",
+            "이세담", "이윤성", "이준서", "임건우", "임승현",
+            "장은찬", "최민준", "현선민"
+        ];
+
+        // 학생 버튼 자동으로 그리기
+        const grid = document.getElementById('student-grid');
+        students.forEach(name => {
+            const btn = document.createElement('button');
+            btn.className = 'student-btn';
+            btn.textContent = name;
+            btn.onclick = () => callStudent(name);
+            grid.appendChild(btn);
+        });
+
+        // 🚀 GAS로 신호 보내기
+        function callStudent(name) {
+            // 시각적 피드백 (토스트 메시지)
+            const toast = document.getElementById('toast');
+            toast.textContent = `${name} 호출 중...`;
+            toast.classList.add('show');
+
+            // GAS로 'call' 액션과 '이름'을 묶어서 전송!
+            const url = `${GAS_URL}?action=call&name=${encodeURIComponent(name)}`;
+            
+            fetch(url)
+                .then(response => response.text())
+                .then(result => {
+                    toast.textContent = "전송 완료! ✅";
+                    setTimeout(() => toast.classList.remove('show'), 1500);
+                })
+                .catch(error => {
+                    toast.textContent = "통신 오류 ❌";
+                    setTimeout(() => toast.classList.remove('show'), 1500);
+                });
+        }
+    </script>
+</body>
+</html>
