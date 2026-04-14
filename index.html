@@ -73,7 +73,7 @@
         .cal-day.today { background: #ffffff; border: 2px solid #3498db; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15); }
         .cal-day.today .day-num { background: #3498db; color: white !important; box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4); }
         
-        /* ✨ 캘린더 색상 (키워드 기반 복구) */
+        /* 캘린더 색상 */
         .event-item { 
             font-size: 0.85rem; padding: 4px 8px; border-radius: 6px; 
             font-weight: 900; margin-bottom: 3px; letter-spacing: -0.5px; 
@@ -84,21 +84,24 @@
         .event-item.exam { background: #fee2e2; color: #b71c1c; border-left: 4px solid #e74c3c; } 
         .event-item.default { background: #edf7ed; color: #1b5e20; border-left: 4px solid #4CAF50; }
 
-        /* 이동 버튼 */
+        /* 달력 이동 버튼 */
         .cal-nav-btn { border:none; background:#f0f4f8; border-radius:8px; cursor:pointer; padding:5px 12px; font-weight:bold; color:#2c3e50; transition: transform 0.1s; }
         .cal-nav-btn:active { transform: scale(0.9); }
         .cal-today-btn { border:none; background:#3498db; color:white; border-radius:8px; cursor:pointer; padding:5px 12px; font-size:0.85rem; font-weight:bold; transition: transform 0.1s; }
 
+        /* ✨ 알림판 색상 복구! */
         .notice-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
         .notice-list li { padding: 16px 20px; border-radius: 18px; font-size: 1.35rem; line-height: 1.4; font-weight: 900; display: flex; gap: 12px; align-items: center; }
         .notice-list li::before { content: '📣'; font-size: 1.5rem; background: rgba(255, 255, 255, 0.6); width: 42px; height: 42px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
+        .notice-list li:nth-child(5n+1) { background: #fff9c4; color: #d35400; }
+        .notice-list li:nth-child(5n+2) { background: #ffebee; color: #c0392b; }
+        .notice-list li:nth-child(5n+3) { background: #e8f5e9; color: #27ae60; }
         
         .history-panel .panel-title { color: #d35400; justify-content: space-between; }
         .history-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
         .history-list li { background: #ffffff; border: 1px solid #f1e9d2; border-left: 4px solid #f39c12; padding: 12px 15px; border-radius: 12px; font-size: 1.2rem; font-weight: 800; color: #2c3e50; display: flex; align-items: center; gap: 12px; }
-        .history-list li .time { font-size: 1rem; color: #e67e22; background: #fef5e7; padding: 4px 10px; border-radius: 8px; font-weight: 900; }
         
-        /* ✨ 실수로 빠졌던 알림 켜기 / 모두 삭제 버튼 스타일 복구! */
+        /* 알림 켜기 / 모두 삭제 버튼 색상 복구 */
         .noti-btn { background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: background 0.2s; }
         .noti-btn:hover { background: #2980b9; }
         .clear-btn { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: background 0.2s; }
