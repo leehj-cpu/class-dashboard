@@ -42,7 +42,6 @@
 
         .time-slot { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 8px; background: #ffffff; border-radius: 15px; border: 1px solid #f1f2f6; transition: all 0.3s ease; }
         .period-num { width: 34px; height: 34px; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px; font-weight: 900; }
-       /* 시간표 교시별 무지개 색상 */
         .time-slot:nth-child(7n+1) .period-num { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
         .time-slot:nth-child(7n+2) .period-num { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
         .time-slot:nth-child(7n+3) .period-num { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
@@ -74,73 +73,58 @@
         .cal-day.today { background: #ffffff; border: 2px solid #3498db; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15); }
         .cal-day.today .day-num { background: #3498db; color: white !important; box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4); }
         
+        /* ✨ 캘린더 색상 (키워드 기반 복구) */
         .event-item { 
             font-size: 0.85rem; padding: 4px 8px; border-radius: 6px; 
             font-weight: 900; margin-bottom: 3px; letter-spacing: -0.5px; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left-width: 4px !important; 
         }
-        
         .event-item.birthday { background: #fff0f5; color: #c81d6d; border-left: 4px solid #fd79a8; } 
         .event-item.performance { background: #f3e5f5; color: #6a1b9a; border-left: 4px solid #9b59b6; } 
         .event-item.exam { background: #fee2e2; color: #b71c1c; border-left: 4px solid #e74c3c; } 
-        .event-item.holiday { background: #fff5f5; color: #e74c3c; border-left: 4px solid #ff7675; }
         .event-item.default { background: #edf7ed; color: #1b5e20; border-left: 4px solid #4CAF50; }
+
+        /* 이동 버튼 */
+        .cal-nav-btn { border:none; background:#f0f4f8; border-radius:8px; cursor:pointer; padding:5px 12px; font-weight:bold; color:#2c3e50; transition: transform 0.1s; }
+        .cal-nav-btn:active { transform: scale(0.9); }
+        .cal-today-btn { border:none; background:#3498db; color:white; border-radius:8px; cursor:pointer; padding:5px 12px; font-size:0.85rem; font-weight:bold; transition: transform 0.1s; }
 
         .notice-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
         .notice-list li { padding: 16px 20px; border-radius: 18px; font-size: 1.35rem; line-height: 1.4; font-weight: 900; display: flex; gap: 12px; align-items: center; }
         .notice-list li::before { content: '📣'; font-size: 1.5rem; background: rgba(255, 255, 255, 0.6); width: 42px; height: 42px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
-        .notice-list li:nth-child(5n+1) { background: #fff9c4; color: #d35400; }
-        .notice-list li:nth-child(5n+2) { background: #ffebee; color: #c0392b; }
-        .notice-list li:nth-child(5n+3) { background: #e8f5e9; color: #27ae60; }
         
         .history-panel .panel-title { color: #d35400; justify-content: space-between; }
         .history-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
         .history-list li { background: #ffffff; border: 1px solid #f1e9d2; border-left: 4px solid #f39c12; padding: 12px 15px; border-radius: 12px; font-size: 1.2rem; font-weight: 800; color: #2c3e50; display: flex; align-items: center; gap: 12px; }
-        .history-list li .time { font-size: 1rem; color: #e67e22; background: #fef5e7; padding: 4px 10px; border-radius: 8px; font-weight: 900; }
         
-        .noti-btn { background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800; cursor: pointer; }
-        .clear-btn { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800; cursor: pointer; }
-
         #class-photo { width: 100%; height: 100%; object-fit: cover; border-radius: var(--border-radius); }
 
-        /* 선생님이 학생을 부를 때의 빨간 사이렌 팝업 */
         #call-popup {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(231, 76, 60, 0.95); z-index: 9999; display: flex; flex-direction: column;
             justify-content: center; align-items: center; color: white; font-size: 5rem; font-weight: 900;
-            text-shadow: 0 10px 20px rgba(0,0,0,0.3); animation: siren-glow 1s infinite alternate;
             opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
         }
         #call-popup.show { opacity: 1; pointer-events: auto; }
-        .siren-emoji { font-size: 8rem; margin-bottom: 20px; animation: spin 2s infinite linear; }
         
-        /* ✨ 학생이 선생님을 부를 때 뜨는 풀스크린 팝업창 (디자인 대폭 수정!) */
         #teacher-call-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
             background: linear-gradient(135deg, rgba(108, 92, 231, 0.95) 0%, rgba(162, 155, 254, 0.95) 100%); 
             z-index: 1000; flex-direction: column; justify-content: center; align-items: center; 
             backdrop-filter: blur(8px);
         }
-        .modal-content-box {
-            text-align: center; color: white; width: 90%; max-width: 600px;
-        }
-        .modal-emoji { font-size: 7rem; margin-bottom: 10px; animation: float 2s infinite ease-in-out; }
+        .modal-content-box { text-align: center; color: white; width: 90%; max-width: 600px; }
         .modal-input {
             width: 100%; padding: 25px; margin-bottom: 20px; background: rgba(255, 255, 255, 0.95); 
             border: none; border-radius: 20px; font-size: 1.5rem; font-weight: 800; color: #2c3e50; 
             box-sizing: border-box; box-shadow: 0 15px 35px rgba(0,0,0,0.2); outline: none;
         }
-        .modal-input::placeholder { color: #a5b1c2; }
-        
-        @keyframes siren-glow { from { box-shadow: inset 0 0 50px rgba(192, 57, 43, 0.5); } to { box-shadow: inset 0 0 200px rgba(192, 57, 43, 1); } }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
     </style>
 </head>
 <body>
 
     <div id="call-popup">
-        <div class="siren-emoji">🚨</div>
+        <div style="font-size: 8rem; margin-bottom: 20px;">🚨</div>
         <div><span id="call-name" style="color:#ffeaa7;">학생</span> 학생!</div>
         <div style="font-size: 3rem; margin-top: 20px;">지금 바로 교무실로 와주세요</div>
     </div>
@@ -164,7 +148,14 @@
         </div>
 
         <div class="panel">
-            <h2 class="panel-title" id="calendar-title">📅 학급 일정</h2>
+            <h2 class="panel-title" style="justify-content: space-between;">
+                <span id="calendar-title-text">📅 학급 일정</span>
+                <div style="display: flex; gap: 8px;">
+                    <button class="cal-nav-btn" onclick="changeMonth(-1)">◀</button>
+                    <button class="cal-nav-btn" onclick="changeMonth(1)">▶</button>
+                    <button class="cal-today-btn" onclick="resetMonth()">이번 달</button>
+                </div>
+            </h2>
             <div class="calendar-grid" id="calendar-grid"></div>
         </div>
 
@@ -195,16 +186,12 @@
 
         <div id="teacher-call-modal">
             <div class="modal-content-box">
-                <div class="modal-emoji">🙋‍♂️</div>
-                <h2 style="font-size: 3.5rem; margin-top: 0; margin-bottom: 30px; font-weight: 900; text-shadow: 0 5px 15px rgba(0,0,0,0.3);">선생님 호출하기</h2>
-                
-                <input type="text" id="student-name" class="modal-input" placeholder="이름을 적어주세요 (예: 홍길동)">
-                
-                <textarea id="call-reason" class="modal-input" placeholder="무슨 일인가요? 사유를 간단히 적어주세요." style="height: 180px; resize: none; font-family: inherit;"></textarea>
-                
+                <h2 style="font-size: 3.5rem; margin-top: 0; margin-bottom: 30px; font-weight: 900;">선생님 호출하기</h2>
+                <input type="text" id="student-name" class="modal-input" placeholder="이름을 적어주세요">
+                <textarea id="call-reason" class="modal-input" placeholder="사유를 간단히 적어주세요" style="height: 180px; resize: none; font-family: inherit;"></textarea>
                 <div style="display: flex; gap: 20px; margin-top: 10px;">
-                    <button onclick="closeCallModal()" style="flex: 1; padding: 20px; background: rgba(255,255,255,0.15); color: white; border: 3px solid rgba(255,255,255,0.5); border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer; transition: background 0.3s;">취소</button>
-                    <button onclick="sendTeacherCall()" style="flex: 2; padding: 20px; background: #f1c40f; color: #2c3e50; border: none; border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer; box-shadow: 0 10px 25px rgba(241, 196, 15, 0.4); transition: transform 0.2s;">🚀 전송하기</button>
+                    <button onclick="closeCallModal()" style="flex: 1; padding: 20px; background: rgba(255,255,255,0.15); color: white; border: 3px solid rgba(255,255,255,0.5); border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer;">취소</button>
+                    <button onclick="sendTeacherCall()" style="flex: 2; padding: 20px; background: #f1c40f; color: #2c3e50; border: none; border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer;">🚀 전송하기</button>
                 </div>
             </div>
         </div>
@@ -213,16 +200,12 @@
     <script>
         const GAS_URL = "https://script.google.com/macros/s/AKfycby-7oPViRkyABIkin2dTVCoPH6IG43NdEorGbUnV4SOXSbk0emWwnnINfUG61Hw0joEPA/exec";
 
+        let currentSchedules = [];
+        let displayDate = new Date();
+
         function requestNotificationPermission() {
-            if (!("Notification" in window)) {
-                alert("이 브라우저는 알림을 지원하지 않습니다.");
-            } else if (Notification.permission === "granted") {
-                alert("이미 알림이 켜져 있습니다!");
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") alert("알림이 켜졌습니다! 🔔");
-                });
-            }
+            if (!("Notification" in window)) { alert("알림 지원 안 함"); } 
+            else { Notification.requestPermission(); }
         }
 
         const classTimes = {
@@ -238,147 +221,84 @@
                 const response = await fetch(GAS_URL);
                 const data = await response.json();
                 updateDashboard(data);
-            } catch (e) { console.error("데이터 오류:", e); }
+            } catch (e) { }
         }
-
-        let lastNotifiedStudent = null;
 
         async function fetchCallStatus() {
             try {
                 const response = await fetch(GAS_URL + "?action=check_call");
                 const data = await response.json();
-                
                 const popup = document.getElementById('call-popup');
                 const nameSpan = document.getElementById('call-name');
-                
                 if (data.callStudent) { 
                     nameSpan.textContent = data.callStudent; 
                     popup.classList.add('show'); 
-                    
-                    if (lastNotifiedStudent !== data.callStudent) {
-                        if ("Notification" in window && Notification.permission === "granted") {
-                            new Notification("🚨 2-7 호출 알림", {
-                                body: `${data.callStudent} 학생! 지금 바로 교무실로 와주세요.`,
-                            });
-                        }
-                        lastNotifiedStudent = data.callStudent;
-                    }
-                } 
-                else { 
-                    popup.classList.remove('show'); 
-                    lastNotifiedStudent = null; 
-                }
-
-                if (data.callHistory && data.callHistory.length > 0) {
+                } else { popup.classList.remove('show'); }
+                if (data.callHistory) {
                     document.getElementById('history-content').innerHTML = data.callHistory.map(h => `<li><span class="time">${h.time}</span><span>${h.text}</span></li>`).join('');
-                } else {
-                    document.getElementById('history-content').innerHTML = `<li><span style="color:#95a5a6; font-size:1rem;">최근 호출 기록이 없습니다.</span></li>`;
                 }
             } catch (e) { }
         }
 
         async function clearCallHistory() {
-            if(!confirm("최근 호출 내역을 모두 지우시겠습니까?")) return;
-            document.getElementById('history-content').innerHTML = `<li><span style="color:#95a5a6; font-size:1rem;">최근 호출 기록이 없습니다.</span></li>`;
-            document.getElementById('call-popup').classList.remove('show');
+            if(!confirm("기록을 삭제하시겠습니까?")) return;
             try { await fetch(GAS_URL + "?action=clear_history"); } catch(e) { }
         }
 
         function updateDashboard(data) {
             const now = new Date(); const actualDay = now.getDay(); let timetableDay = (actualDay === 0 || actualDay === 6) ? 1 : actualDay;
             document.getElementById('date-header').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
-            document.getElementById('calendar-title').innerHTML = `📅 ${now.getMonth()+1}월 학급 일정`;
-
             document.getElementById('timetable-content').innerHTML = (data.weeklyTimetable[timetableDay] || []).map(item => `<div class="time-slot" data-period="${item.period}"><div class="period-num">${item.period}</div><div class="subject-name">${item.subject}</div></div>`).join('');
-            
-            const foodEmojis = ['🍚', '🍲', '🍖', '🥗', '🍤', '🍳', '🍝', '🥪'];
-            document.getElementById('meal-content').innerHTML = data.lunchMenu.map((menu, index) => `<div class="meal-item"><div class="meal-emoji">${foodEmojis[index % foodEmojis.length]}</div><div class="meal-name">${menu}</div></div>`).join('');
-            
+            document.getElementById('meal-content').innerHTML = data.lunchMenu.map(menu => `<div class="meal-item">${menu}</div>`).join('');
             const todaysNotices = data.weeklyNotices[timetableDay] || [];
             document.getElementById('notice-content').innerHTML = todaysNotices.length > 0 ? todaysNotices.map(t => `<li><span>${t}</span></li>`).join('') : '<li><span>오늘의 공지사항이 없습니다.</span></li>';
-
-            renderCalendar(data.schedules);
-            highlightCurrentPeriod();
-
-            const targetDate = new Date(2026, 3, 24); 
-            const dDayDiff = Math.round((targetDate - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / (1000 * 60 * 60 * 24));
-            const dDayText = dDayDiff > 0 ? `D-${dDayDiff}` : (dDayDiff === 0 ? "D-Day" : "완료");
-            document.querySelector('.main-title').innerHTML = `🏫 2학년 7반 대시보드 <span style="color:#e74c3c; margin-left:15px; font-size:1.8rem; background: #fee2e2; padding: 5px 15px; border-radius: 20px;">🔥 중간고사 ${dDayText} 🔥</span>`;
+            currentSchedules = data.schedules;
+            updateCalendarUI();
         }
 
-        function openCallModal() {
-            document.getElementById('teacher-call-modal').style.display = 'flex';
+        function changeMonth(offset) { displayDate.setMonth(displayDate.getMonth() + offset); updateCalendarUI(); }
+        function resetMonth() { displayDate = new Date(); updateCalendarUI(); }
+        function updateCalendarUI() {
+            document.getElementById('calendar-title-text').innerText = `📅 ${displayDate.getFullYear()}년 ${displayDate.getMonth()+1}월 학급 일정`;
+            renderCalendar(currentSchedules);
         }
 
-        function closeCallModal() {
-            document.getElementById('teacher-call-modal').style.display = 'none';
-            document.getElementById('student-name').value = '';
-            document.getElementById('call-reason').value = '';
-        }
+        function openCallModal() { document.getElementById('teacher-call-modal').style.display = 'flex'; }
+        function closeCallModal() { document.getElementById('teacher-call-modal').style.display = 'none'; }
 
         async function sendTeacherCall() {
             const name = document.getElementById('student-name').value;
             const reason = document.getElementById('call-reason').value;
-
-            if (!name || !reason) {
-                alert("이름과 사유를 모두 적어주세요!");
-                return;
-            }
-
-            // 전송 중 표시
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = "전송 중... ⏳";
-            btn.disabled = true;
-
+            if (!name || !reason) { alert("입력 필요"); return; }
             try {
-                const response = await fetch(`${GAS_URL}?action=student_call&name=${encodeURIComponent(name)}&reason=${encodeURIComponent(reason)}`);
-                if (response.ok) {
-                    alert("선생님께 성공적으로 메시지를 보냈습니다! 🚀");
-                    closeCallModal();
-                }
-            } catch (e) {
-                alert("전송 실패: 인터넷 연결을 확인해주세요.");
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
+                await fetch(`${GAS_URL}?action=student_call&name=${encodeURIComponent(name)}&reason=${encodeURIComponent(reason)}`);
+                alert("전송 완료! 🚀"); closeCallModal();
+            } catch (e) { }
         }
 
-        // 구글 캘린더 색상 ID와 실제 색상 매핑 표
-        const googleColorMap = {
-            "1": "#a4bdfc", "2": "#7ae7bf", "3": "#dbadff", "4": "#ff887c", "5": "#fbd75b",
-            "6": "#ffb878", "7": "#46d6db", "8": "#e1e1e1", "9": "#5484ed", "10": "#51b749", "11": "#dc182f"
-        };
-
         function renderCalendar(schedules) {
-            const now = new Date(); const year = now.getFullYear(); const month = now.getMonth();
+            const year = displayDate.getFullYear(); const month = displayDate.getMonth(); const today = new Date();
             const firstDay = new Date(year, month, 1).getDay(); const lastDate = new Date(year, month + 1, 0).getDate();
             const grid = document.getElementById('calendar-grid');
             let html = ['일','월','화','수','목','금','토'].map((d, i) => `<div class="cal-header ${i==0?'sun':i==6?'sat':''}">${d}</div>`).join('');
-            
             for (let i = 0; i < firstDay; i++) html += `<div class="cal-day empty"></div>`;
-            
             for (let d = 1; d <= lastDate; d++) {
-                const isToday = d === now.getDate() ? 'today' : '';
+                const isToday = (d === today.getDate() && month === today.getMonth() && year === today.getFullYear()) ? 'today' : '';
                 const dayIdx = (firstDay + d - 1) % 7; 
                 let weekendClass = dayIdx === 0 ? 'sun-day' : (dayIdx === 6 ? 'sat-day' : '');
-                
                 const dayEvents = schedules.filter(s => { 
                     const sDate = new Date(s.date); 
-                    return sDate.getDate() === d && sDate.getMonth() === month; 
+                    return sDate.getDate() === d && sDate.getMonth() === month && sDate.getFullYear() === year; 
                 });
                 
                 const eventHtml = dayEvents.map(e => {
-                    // 구글 캘린더에서 온 색상이 ID(숫자)면 매핑표에서 찾고, Hex(#) 형식이면 그대로 사용
-                    const bgColor = googleColorMap[e.color] || e.color || "#4CAF50";
-                    
-                    // 글씨가 잘 보이도록 배경색에 따라 흰색/검은색 폰트 결정 (선택 사항)
-                    const textColor = bgColor === "#fbd75b" || bgColor === "#ffb878" ? "#2c3e50" : "white";
-
-                    return `<div class="event-item" style="background: ${bgColor}; color: ${textColor}; border-left: 4px solid rgba(0,0,0,0.2); border-radius: 6px; padding: 4px 8px; font-weight: 900; margin-bottom: 3px; font-size: 0.85rem;">${e.event}</div>`;
+                    // ✨ 키워드 기반 색상 분류 로직 복구
+                    let c = 'default';
+                    if (e.event.includes('생일')) c = 'birthday'; 
+                    else if (e.event.includes('수행') || e.event.includes('평가')) c = 'performance'; 
+                    else if (e.event.includes('시험') || e.event.includes('고사')) c = 'exam';
+                    return `<div class="event-item ${c}">${e.event}</div>`;
                 }).join('');
-                
                 html += `<div class="cal-day ${isToday} ${weekendClass}"><span class="day-num">${d}</span>${eventHtml}</div>`;
             }
             grid.innerHTML = html;
@@ -396,11 +316,7 @@
         }
 
         function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('ko-KR', { hour12: false }); highlightCurrentPeriod(); }
-        
-        setInterval(updateClock, 1000); 
-        setInterval(fetchData, 3600000); 
-        setInterval(fetchCallStatus, 3000); 
-        
+        setInterval(updateClock, 1000); setInterval(fetchData, 3600000); setInterval(fetchCallStatus, 3000);
         updateClock(); fetchData(); fetchCallStatus(); 
     </script>
 </body>
