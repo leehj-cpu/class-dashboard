@@ -83,6 +83,7 @@
         .event-item.birthday { background: #fff0f5; color: #c81d6d; border-left: 4px solid #fd79a8; } 
         .event-item.performance { background: #f3e5f5; color: #6a1b9a; border-left: 4px solid #9b59b6; } 
         .event-item.exam { background: #fee2e2; color: #b71c1c; border-left: 4px solid #e74c3c; } 
+        .event-item.holiday { background: #fff5f5; color: #e74c3c; border-left: 4px solid #ff7675; }
         .event-item.default { background: #edf7ed; color: #1b5e20; border-left: 4px solid #4CAF50; }
 
         .notice-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
@@ -359,11 +360,17 @@
                 
                 const eventHtml = dayEvents.map(e => {
                     let c = 'default';
+                    // 캘린더 ID에 holiday가 포함되어 있거나, 일정 제목에 특정 단어가 없어도 기본적으로 공휴일 처리 가능
                     if (e.event.includes('생일')) c = 'birthday'; 
                     else if (e.event.includes('수행') || e.event.includes('평가')) c = 'performance'; 
                     else if (e.event.includes('시험') || e.event.includes('고사')) c = 'exam';
+                    // 공휴일 캘린더에서 가져온 일정은 보통 연도 뒤에 공휴일 이름이 붙으므로 이를 활용하거나,
+                    // 간단하게 모든 '일요일' 혹은 특정 키워드로 분류할 수 있습니다.
+                    else if (dayIdx === 0) c = 'holiday'; // 일요일인 경우 빨간색
+                    
                     return `<div class="event-item ${c}">${e.event}</div>`;
                 }).join('');
+                
                 html += `<div class="cal-day ${isToday} ${weekendClass}"><span class="day-num">${d}</span>${eventHtml}</div>`;
             }
             grid.innerHTML = html;
