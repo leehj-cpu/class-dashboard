@@ -299,9 +299,6 @@
         // [여기는 기존에 있던 코드입니다]
         async function clearCallHistory() {
             if(!confirm("최근 호출 내역을 모두 지우시겠습니까?")) return;
-            // ... (중략) ...
-        async function clearCallHistory() {
-            if(!confirm("최근 호출 내역을 모두 지우시겠습니까?")) return;
             document.getElementById('history-content').innerHTML = `<li><span style="color:#95a5a6; font-size:1rem;">최근 호출 기록이 없습니다.</span></li>`;
             document.getElementById('call-popup').classList.remove('show');
             try { await fetch(GAS_URL + "?action=clear_history"); } catch(e) { }
