@@ -122,27 +122,11 @@
         @keyframes siren-glow { from { box-shadow: inset 0 0 50px rgba(192, 57, 43, 0.5); } to { box-shadow: inset 0 0 200px rgba(192, 57, 43, 1); } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         
-        /* ✨ 선생님 수신용 전면 팝업 (블루톤) */
-        #teacher-receive-popup {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(41, 128, 185, 0.95); z-index: 9999; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; color: white; font-size: 3rem; font-weight: 900;
-            text-shadow: 0 5px 15px rgba(0,0,0,0.2); 
-            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
-        }
-        #teacher-receive-popup.show { opacity: 1; pointer-events: auto; }
-        .t-alert-btn { margin-top: 40px; padding: 15px 40px; font-size: 1.5rem; font-weight: 900; color: #2980b9; background: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: transform 0.2s; }
-        .t-alert-btn:hover { transform: scale(1.05); }
+
     </style>
 </head>
 <body>
-    
-    <div id="teacher-receive-popup">
-        <div class="siren-emoji">👨‍🏫</div>
-        <div><span id="t-call-name" style="color:#ffeaa7;">학생</span> 학생의 호출!</div>
-        <div id="t-call-reason" style="font-size: 2rem; margin-top: 20px; font-weight: normal; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 15px; max-width: 80%; text-align: center;">사유가 여기에 뜹니다</div>
-        <button class="t-alert-btn" onclick="closeTeacherAlert()">확인 완료</button>
-    </div>
+
     <div id="call-popup">
         <div class="siren-emoji">🚨</div>
         <div><span id="call-name" style="color:#ffeaa7;">학생</span> 학생!</div>
@@ -280,31 +264,6 @@
             } catch (e) { }
         }
 
-        // ✨ 선생님 알림 체크 (팝업 버전)
-        async function checkTeacherAlert() {
-            try {
-                const response = await fetch(`${GAS_URL}?action=check_teacher_alert`);
-                const newCall = await response.json();
-
-                if (newCall) {
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("📢 2-7 학생 호출", {
-                            body: `${newCall.name} 학생: ${newCall.reason}`,
-                            icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-                        });
-                    }
-                    // alert 창 대신 예쁜 전면 팝업 띄우기
-                    document.getElementById('t-call-name').textContent = newCall.name;
-                    document.getElementById('t-call-reason').textContent = newCall.reason;
-                    document.getElementById('teacher-receive-popup').classList.add('show');
-                }
-            } catch (e) { }
-        }
-
-        // 팝업 닫기 함수
-        function closeTeacherAlert() {
-            document.getElementById('teacher-receive-popup').classList.remove('show');
-        }
 
         async function clearCallHistory() {
             if(!confirm("최근 호출 내역을 모두 지우시겠습니까?")) return;
@@ -405,7 +364,6 @@
         setInterval(updateClock, 1000); 
         setInterval(fetchData, 3600000); 
         setInterval(fetchCallStatus, 3000); 
-        setInterval(checkTeacherAlert, 1000); 
         
         updateClock(); fetchData(); fetchCallStatus(); 
     </script>
