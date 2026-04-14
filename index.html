@@ -42,7 +42,7 @@
 
         .time-slot { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 8px; background: #ffffff; border-radius: 15px; border: 1px solid #f1f2f6; transition: all 0.3s ease; }
         .period-num { width: 34px; height: 34px; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px; font-weight: 900; }
-       /* 시간표 교시별 무지개 색상 (7교시 투명화 문제 해결!) */
+       /* 시간표 교시별 무지개 색상 */
         .time-slot:nth-child(7n+1) .period-num { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
         .time-slot:nth-child(7n+2) .period-num { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
         .time-slot:nth-child(7n+3) .period-num { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
@@ -74,19 +74,12 @@
         .cal-day.today { background: #ffffff; border: 2px solid #3498db; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15); }
         .cal-day.today .day-num { background: #3498db; color: white !important; box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4); }
         
-        /* ✨ 멀리서도 뚜렷하게 보이도록 개선된 일정 칩 스타일 */
         .event-item { 
-            font-size: 0.85rem; /* 1. 글씨 크기 확대 (기존 0.75) */
-            padding: 4px 8px; /* 2. 안쪽 여백을 넓혀서 답답함 해소 */
-            border-radius: 6px; 
-            font-weight: 900; /* 3. 글씨 굵기를 최고 수준으로 진하게! */
-            margin-bottom: 3px; 
-            letter-spacing: -0.5px; /* 글자를 단단하게 뭉쳐서 가독성 향상 */
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* 살짝 튀어나와 보이게 입체감 추가 */
-            border-left-width: 4px !important; /* 왼쪽 띠도 살짝 더 두껍게 */
+            font-size: 0.85rem; padding: 4px 8px; border-radius: 6px; 
+            font-weight: 900; margin-bottom: 3px; letter-spacing: -0.5px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left-width: 4px !important; 
         }
         
-        /* 4. 글씨 색상(color)을 기존보다 훨씬 어둡고 진한 원색에 가깝게 변경 */
         .event-item.birthday { background: #fff0f5; color: #c81d6d; border-left: 4px solid #fd79a8; } 
         .event-item.performance { background: #f3e5f5; color: #6a1b9a; border-left: 4px solid #9b59b6; } 
         .event-item.exam { background: #fee2e2; color: #b71c1c; border-left: 4px solid #e74c3c; } 
@@ -104,12 +97,12 @@
         .history-list li { background: #ffffff; border: 1px solid #f1e9d2; border-left: 4px solid #f39c12; padding: 12px 15px; border-radius: 12px; font-size: 1.2rem; font-weight: 800; color: #2c3e50; display: flex; align-items: center; gap: 12px; }
         .history-list li .time { font-size: 1rem; color: #e67e22; background: #fef5e7; padding: 4px 10px; border-radius: 8px; font-weight: 900; }
         
-        /* 🔔 알림 켜기 버튼 (안드로이드 권한용) */
         .noti-btn { background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800; cursor: pointer; }
         .clear-btn { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800; cursor: pointer; }
 
         #class-photo { width: 100%; height: 100%; object-fit: cover; border-radius: var(--border-radius); }
 
+        /* 선생님이 학생을 부를 때의 빨간 사이렌 팝업 */
         #call-popup {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(231, 76, 60, 0.95); z-index: 9999; display: flex; flex-direction: column;
@@ -119,10 +112,28 @@
         }
         #call-popup.show { opacity: 1; pointer-events: auto; }
         .siren-emoji { font-size: 8rem; margin-bottom: 20px; animation: spin 2s infinite linear; }
+        
+        /* ✨ 학생이 선생님을 부를 때 뜨는 풀스크린 팝업창 (디자인 대폭 수정!) */
+        #teacher-call-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            background: linear-gradient(135deg, rgba(108, 92, 231, 0.95) 0%, rgba(162, 155, 254, 0.95) 100%); 
+            z-index: 1000; flex-direction: column; justify-content: center; align-items: center; 
+            backdrop-filter: blur(8px);
+        }
+        .modal-content-box {
+            text-align: center; color: white; width: 90%; max-width: 600px;
+        }
+        .modal-emoji { font-size: 7rem; margin-bottom: 10px; animation: float 2s infinite ease-in-out; }
+        .modal-input {
+            width: 100%; padding: 25px; margin-bottom: 20px; background: rgba(255, 255, 255, 0.95); 
+            border: none; border-radius: 20px; font-size: 1.5rem; font-weight: 800; color: #2c3e50; 
+            box-sizing: border-box; box-shadow: 0 15px 35px rgba(0,0,0,0.2); outline: none;
+        }
+        .modal-input::placeholder { color: #a5b1c2; }
+        
         @keyframes siren-glow { from { box-shadow: inset 0 0 50px rgba(192, 57, 43, 0.5); } to { box-shadow: inset 0 0 200px rgba(192, 57, 43, 1); } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        
-
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
     </style>
 </head>
 <body>
@@ -177,27 +188,30 @@
         </div>
 
         <div style="position: fixed; bottom: 30px; right: 30px; z-index: 100;">
-            <button onclick="openCallModal()" style="background: #6c5ce7; color: white; border: none; padding: 15px 25px; border-radius: 50px; font-size: 1.2rem; font-weight: 900; box-shadow: 0 5px 15px rgba(0,0,0,0.2); cursor: pointer;">
+            <button onclick="openCallModal()" style="background: #6c5ce7; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-size: 1.3rem; font-weight: 900; box-shadow: 0 10px 25px rgba(108, 92, 231, 0.4); cursor: pointer; transition: transform 0.2s;">
         🙋‍♂️ 선생님 호출하기 </button>
         </div>
 
-        <div id="teacher-call-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
-            <div style="background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; text-align: center;">
-            <h2 style="margin-top: 0;">선생님 호출</h2>
-            <input type="text" id="student-name" placeholder="이름을 적어주세요" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem;">
-            <textarea id="call-reason" placeholder="호출 사유를 간단히 적어주세요" style="width: 100%; height: 100px; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; font-family: inherit;"></textarea>
-            <div style="display: flex; gap: 10px;">
-            <button onclick="closeCallModal()" style="flex: 1; padding: 12px; background: #eee; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">취소</button>
-            <button onclick="sendTeacherCall()" style="flex: 1; padding: 12px; background: #6c5ce7; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer;">전송하기</button>
+        <div id="teacher-call-modal">
+            <div class="modal-content-box">
+                <div class="modal-emoji">🙋‍♂️</div>
+                <h2 style="font-size: 3.5rem; margin-top: 0; margin-bottom: 30px; font-weight: 900; text-shadow: 0 5px 15px rgba(0,0,0,0.3);">선생님 호출하기</h2>
+                
+                <input type="text" id="student-name" class="modal-input" placeholder="이름을 적어주세요 (예: 홍길동)">
+                
+                <textarea id="call-reason" class="modal-input" placeholder="무슨 일인가요? 사유를 간단히 적어주세요." style="height: 180px; resize: none; font-family: inherit;"></textarea>
+                
+                <div style="display: flex; gap: 20px; margin-top: 10px;">
+                    <button onclick="closeCallModal()" style="flex: 1; padding: 20px; background: rgba(255,255,255,0.15); color: white; border: 3px solid rgba(255,255,255,0.5); border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer; transition: background 0.3s;">취소</button>
+                    <button onclick="sendTeacherCall()" style="flex: 2; padding: 20px; background: #f1c40f; color: #2c3e50; border: none; border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer; box-shadow: 0 10px 25px rgba(241, 196, 15, 0.4); transition: transform 0.2s;">🚀 전송하기</button>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
     </main>
 
     <script>
         const GAS_URL = "https://script.google.com/macros/s/AKfycby-7oPViRkyABIkin2dTVCoPH6IG43NdEorGbUnV4SOXSbk0emWwnnINfUG61Hw0joEPA/exec";
 
-        // ✨ 푸시 알림 권한 요청 함수 (버튼 클릭 시 실행)
         function requestNotificationPermission() {
             if (!("Notification" in window)) {
                 alert("이 브라우저는 알림을 지원하지 않습니다.");
@@ -226,7 +240,6 @@
             } catch (e) { console.error("데이터 오류:", e); }
         }
 
-        // ✨ 중복 알림 방지를 위한 변수
         let lastNotifiedStudent = null;
 
         async function fetchCallStatus() {
@@ -241,19 +254,18 @@
                     nameSpan.textContent = data.callStudent; 
                     popup.classList.add('show'); 
                     
-                    // ✨ 푸시 알림 띄우기 (새로운 학생이 호출됐을 때 딱 한 번만!)
                     if (lastNotifiedStudent !== data.callStudent) {
                         if ("Notification" in window && Notification.permission === "granted") {
                             new Notification("🚨 2-7 호출 알림", {
                                 body: `${data.callStudent} 학생! 지금 바로 교무실로 와주세요.`,
                             });
                         }
-                        lastNotifiedStudent = data.callStudent; // 기록 저장
+                        lastNotifiedStudent = data.callStudent;
                     }
                 } 
                 else { 
                     popup.classList.remove('show'); 
-                    lastNotifiedStudent = null; // 호출 종료되면 리셋
+                    lastNotifiedStudent = null; 
                 }
 
                 if (data.callHistory && data.callHistory.length > 0) {
@@ -263,7 +275,6 @@
                 }
             } catch (e) { }
         }
-
 
         async function clearCallHistory() {
             if(!confirm("최근 호출 내역을 모두 지우시겠습니까?")) return;
@@ -300,6 +311,7 @@
 
         function closeCallModal() {
             document.getElementById('teacher-call-modal').style.display = 'none';
+            document.getElementById('student-name').value = '';
             document.getElementById('call-reason').value = '';
         }
 
@@ -312,14 +324,23 @@
                 return;
             }
 
+            // 전송 중 표시
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "전송 중... ⏳";
+            btn.disabled = true;
+
             try {
                 const response = await fetch(`${GAS_URL}?action=student_call&name=${encodeURIComponent(name)}&reason=${encodeURIComponent(reason)}`);
                 if (response.ok) {
-                    alert("선생님께 호출 메시지를 보냈습니다!");
+                    alert("선생님께 성공적으로 메시지를 보냈습니다! 🚀");
                     closeCallModal();
                 }
             } catch (e) {
                 alert("전송 실패: 인터넷 연결을 확인해주세요.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
         }
 
