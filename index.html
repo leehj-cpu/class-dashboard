@@ -290,7 +290,34 @@
             const dDayText = dDayDiff > 0 ? `D-${dDayDiff}` : (dDayDiff === 0 ? "D-Day" : "완료");
             document.querySelector('.main-title').innerHTML = `🏫 2학년 7반 대시보드 <span style="color:#e74c3c; margin-left:15px; font-size:1.8rem; background: #fee2e2; padding: 5px 15px; border-radius: 20px;">🔥 중간고사 ${dDayText} 🔥</span>`;
         }
+        function openCallModal() {
+    document.getElementById('teacher-call-modal').style.display = 'flex';
+}
 
+function closeCallModal() {
+    document.getElementById('teacher-call-modal').style.display = 'none';
+    document.getElementById('call-reason').value = '';
+}
+
+async function sendTeacherCall() {
+    const name = document.getElementById('student-name').value;
+    const reason = document.getElementById('call-reason').value;
+
+    if (!name || !reason) {
+        alert("이름과 사유를 모두 적어주세요!");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${GAS_URL}?action=student_call&name=${encodeURIComponent(name)}&reason=${encodeURIComponent(reason)}`);
+        if (response.ok) {
+            alert("선생님께 호출 메시지를 보냈습니다!");
+            closeCallModal();
+        }
+    } catch (e) {
+        alert("전송 실패: 인터넷 연결을 확인해주세요.");
+    }
+}
         function renderCalendar(schedules) {
             const now = new Date(); const year = now.getFullYear(); const month = now.getMonth();
             const firstDay = new Date(year, month, 1).getDay(); const lastDate = new Date(year, month + 1, 0).getDate();
