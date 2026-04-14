@@ -40,7 +40,6 @@
         .history-panel { flex: 1; max-height: 280px; overflow-y: auto; background: #fffcf8; border: 2px dashed #f3e5ab; } 
         .photo-panel { flex: 1.5; min-height: 250px; padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; } 
 
-        /* 시간표 교시별 무지개 색상 */
         .time-slot { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 8px; background: #ffffff; border-radius: 15px; border: 1px solid #f1f2f6; transition: all 0.3s ease; }
         .period-num { width: 34px; height: 34px; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px; font-weight: 900; }
         .time-slot:nth-child(7n+1) .period-num { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
@@ -55,7 +54,6 @@
         .time-slot.current .period-num { background: rgba(255,255,255,0.2); }
         .time-slot.current .subject-name { color: white; }
 
-        /* 급식 메뉴 스타일 */
         #meal-content { display: flex; flex-direction: column; gap: 8px; }
         .meal-item { display: flex; align-items: center; gap: 10px; padding: 10px 15px; border-radius: 15px; font-weight: 800; font-size: 1.1rem; }
         .meal-item:nth-child(6n+1) { background: #fff3cd; color: #d35400; }
@@ -65,7 +63,6 @@
         .meal-item:nth-child(6n+5) { background: #f3e5f5; color: #8e44ad; }
         .meal-emoji { font-size: 1.4rem; }
 
-        /* 캘린더 그리드 스타일 */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; height: 100%; }
         .cal-header { text-align: center; font-weight: 800; font-size: 0.95rem; padding-bottom: 5px; color: var(--text-muted); }
         .cal-header.sun { color: #e74c3c; } .cal-header.sat { color: #3498db; }
@@ -77,7 +74,7 @@
         .cal-day.today { background: #ffffff; border: 2px solid #3498db; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15); }
         .cal-day.today .day-num { background: #3498db; color: white !important; box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4); }
         
-        /* 캘린더 색상 (키워드 기반) */
+        /* ✨ 캘린더 색상 (공휴일용 빨간색 추가됨!) */
         .event-item { 
             font-size: 0.85rem; padding: 4px 8px; border-radius: 6px; 
             font-weight: 900; margin-bottom: 3px; letter-spacing: -0.5px; 
@@ -86,14 +83,13 @@
         .event-item.birthday { background: #fff0f5; color: #c81d6d; border-left: 4px solid #fd79a8; } 
         .event-item.performance { background: #f3e5f5; color: #6a1b9a; border-left: 4px solid #9b59b6; } 
         .event-item.exam { background: #fee2e2; color: #b71c1c; border-left: 4px solid #e74c3c; } 
+        .event-item.holiday { background: #fff5f5; color: #e74c3c; border-left: 4px solid #ff7675; } 
         .event-item.default { background: #edf7ed; color: #1b5e20; border-left: 4px solid #4CAF50; }
 
-        /* 달력 이동 버튼 */
         .cal-nav-btn { border:none; background:#f0f4f8; border-radius:8px; cursor:pointer; padding:5px 12px; font-weight:bold; color:#2c3e50; transition: transform 0.1s; }
         .cal-nav-btn:hover { background: #e2e8f0; }
         .cal-today-btn { border:none; background:#3498db; color:white; border-radius:8px; cursor:pointer; padding:5px 12px; font-size:0.85rem; font-weight:bold; }
 
-        /* 알림판 색상 */
         .notice-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
         .notice-list li { padding: 16px 20px; border-radius: 18px; font-size: 1.35rem; line-height: 1.4; font-weight: 900; display: flex; gap: 12px; align-items: center; }
         .notice-list li::before { content: '📣'; font-size: 1.5rem; background: rgba(255, 255, 255, 0.6); width: 42px; height: 42px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
@@ -264,20 +260,16 @@
             const now = new Date(); const actualDay = now.getDay(); let timetableDay = (actualDay === 0 || actualDay === 6) ? 1 : actualDay;
             document.getElementById('date-header').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
 
-            // ✨ 디데이(D-Day) 로직 복구
-            const targetDate = new Date(2026, 3, 24); // 2026년 4월 24일 (0부터 시작하므로 4월은 3)
+            const targetDate = new Date(2026, 3, 24); 
             const dDayDiff = Math.round((targetDate - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / (1000 * 60 * 60 * 24));
             const dDayText = dDayDiff > 0 ? `D-${dDayDiff}` : (dDayDiff === 0 ? "D-Day" : "완료");
             document.getElementById('main-title-area').innerHTML = `🏫 2학년 7반 대시보드 <span style="color:#e74c3c; margin-left:15px; font-size:1.8rem; background: #fee2e2; padding: 5px 15px; border-radius: 20px;">🔥 중간고사 ${dDayText} 🔥</span>`;
 
-            // 시간표 업데이트
             document.getElementById('timetable-content').innerHTML = (data.weeklyTimetable[timetableDay] || []).map(item => `<div class="time-slot" data-period="${item.period}"><div class="period-num">${item.period}</div><div class="subject-name">${item.subject}</div></div>`).join('');
             
-            // ✨ 급식 메뉴 이모지 및 스타일 복구
             const foodEmojis = ['🍚', '🍲', '🍖', '🥗', '🍤', '🍳', '🍝', '🥪'];
             document.getElementById('meal-content').innerHTML = data.lunchMenu.map((menu, idx) => `<div class="meal-item"><div class="meal-emoji">${foodEmojis[idx % foodEmojis.length]}</div><div class="meal-name">${menu}</div></div>`).join('');
             
-            // 알림판 업데이트
             const todaysNotices = data.weeklyNotices[timetableDay] || [];
             document.getElementById('notice-content').innerHTML = todaysNotices.length > 0 ? todaysNotices.map(t => `<li><span>${t}</span></li>`).join('') : '<li><span>오늘의 공지사항이 없습니다.</span></li>';
 
@@ -285,7 +277,6 @@
             updateCalendarUI();
         }
 
-        // 달력 이동 함수
         function changeMonth(offset) { displayDate.setMonth(displayDate.getMonth() + offset); updateCalendarUI(); }
         function resetMonth() { displayDate = new Date(); updateCalendarUI(); }
         function updateCalendarUI() {
@@ -323,6 +314,9 @@
                     if (e.event.includes('생일')) c = 'birthday'; 
                     else if (e.event.includes('수행') || e.event.includes('평가')) c = 'performance'; 
                     else if (e.event.includes('시험') || e.event.includes('고사')) c = 'exam';
+                    // ✨ 공휴일, 일요일, 혹은 이름에 특정 키워드가 들어가면 빨간색(.holiday)으로 처리!
+                    else if (dayIdx === 0 || ['날', '절', '추석', '신정', '기독탄신일', '선거'].some(word => e.event.includes(word))) c = 'holiday';
+                    
                     return `<div class="event-item ${c}">${e.event}</div>`;
                 }).join('');
                 html += `<div class="cal-day ${isToday} ${weekendClass}"><span class="day-num">${d}</span>${eventHtml}</div>`;
