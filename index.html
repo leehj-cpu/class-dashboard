@@ -74,11 +74,23 @@
         .cal-day.today { background: #ffffff; border: 2px solid #3498db; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15); }
         .cal-day.today .day-num { background: #3498db; color: white !important; box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4); }
         
-        .event-item { font-size: 0.75rem; padding: 3px 6px; border-radius: 5px; font-weight: 600; margin-bottom: 2px; }
-        .event-item.birthday { background: #fff0f5; color: #e84393; border-left: 3px solid #fd79a8; } 
-        .event-item.performance { background: #f3e5f5; color: #8e44ad; border-left: 3px solid #9b59b6; } 
-        .event-item.exam { background: #fee2e2; color: #c0392b; border-left: 3px solid #e74c3c; } 
-        .event-item.default { background: #edf7ed; color: #2e7d32; border-left: 3px solid #4CAF50; }
+        /* ✨ 멀리서도 뚜렷하게 보이도록 개선된 일정 칩 스타일 */
+        .event-item { 
+            font-size: 0.85rem; /* 1. 글씨 크기 확대 (기존 0.75) */
+            padding: 4px 8px; /* 2. 안쪽 여백을 넓혀서 답답함 해소 */
+            border-radius: 6px; 
+            font-weight: 900; /* 3. 글씨 굵기를 최고 수준으로 진하게! */
+            margin-bottom: 3px; 
+            letter-spacing: -0.5px; /* 글자를 단단하게 뭉쳐서 가독성 향상 */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* 살짝 튀어나와 보이게 입체감 추가 */
+            border-left-width: 4px !important; /* 왼쪽 띠도 살짝 더 두껍게 */
+        }
+        
+        /* 4. 글씨 색상(color)을 기존보다 훨씬 어둡고 진한 원색에 가깝게 변경 */
+        .event-item.birthday { background: #fff0f5; color: #c81d6d; border-left: 4px solid #fd79a8; } 
+        .event-item.performance { background: #f3e5f5; color: #6a1b9a; border-left: 4px solid #9b59b6; } 
+        .event-item.exam { background: #fee2e2; color: #b71c1c; border-left: 4px solid #e74c3c; } 
+        .event-item.default { background: #edf7ed; color: #1b5e20; border-left: 4px solid #4CAF50; }
 
         .notice-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
         .notice-list li { padding: 16px 20px; border-radius: 18px; font-size: 1.35rem; line-height: 1.4; font-weight: 900; display: flex; gap: 12px; align-items: center; }
