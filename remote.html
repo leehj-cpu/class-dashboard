@@ -98,18 +98,22 @@
             } catch(e) {}
         }
 
-        // ✨ 학생이 보낸 호출 확인 로직 (2초마다 체크)
+        // ✨ 선생님용 실시간 수신 대기 함수
         async function checkTeacherAlert() {
             try {
+                // 서버에 "새로 들어온 미확인 호출이 있나요?"라고 묻습니다.
                 const response = await fetch(`${GAS_URL}?action=check_teacher_alert`);
                 const newCall = await response.json();
 
                 if (newCall) {
-                    // 1. 데스크톱 알림 띄우기
+                    // 1. 윈도우 우측 하단 푸시 알림
                     if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("📢 2-7 학생 호출", { body: `${newCall.name}: ${newCall.reason}`, icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" });
+                        new Notification("📢 2-7 학생 호출", { 
+                            body: `${newCall.name}: ${newCall.reason}`, 
+                            icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" 
+                        });
                     }
-                    // 2. 파란색 전면 팝업 띄우기
+                    // 2. 화면을 가득 채우는 파란색 사이렌 팝업
                     document.getElementById('t-call-name').textContent = newCall.name;
                     document.getElementById('t-call-reason').textContent = newCall.reason;
                     document.getElementById('teacher-receive-popup').classList.add('show');
@@ -117,12 +121,13 @@
             } catch (e) { }
         }
 
+        // 2초마다 서버를 확인하도록 설정되어 있는지 확인하세요!
+        setInterval(checkTeacherAlert, 2000);
+
         function closeTeacherAlert() {
             document.getElementById('teacher-receive-popup').classList.remove('show');
         }
 
-        // 2초마다 수신함 확인
-        setInterval(checkTeacherAlert, 2000);
     </script>
 </body>
 </html>
