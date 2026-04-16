@@ -12,8 +12,10 @@
             --border-radius: 20px;
         }
 
+        /* ✨ 이모지가 흑백으로 깨지지 않도록 컬러 이모지 전용 폰트(Apple Color Emoji, Segoe UI Emoji 등)를 추가했습니다! */
         body {
-            margin: 0; padding: 25px; font-family: 'Pretendard', sans-serif;
+            margin: 0; padding: 25px; 
+            font-family: 'Pretendard', 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
             background-color: var(--bg-color); min-height: 100vh;
             display: grid; grid-template-rows: 60px 1fr; gap: 20px; box-sizing: border-box; color: var(--text-main);
         }
@@ -42,7 +44,7 @@
         .history-panel { max-height: 280px; overflow-y: auto; background: #fffcf8; border: 2px dashed #f3e5ab; } 
         .photo-panel { min-height: 250px; padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; } 
 
-        /* 시간표 기본 스타일 */
+        /* 시간표 스마트 알림 */
         .time-slot { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 8px; background: #ffffff; border-radius: 15px; border: 1px solid #f1f2f6; transition: all 0.3s ease; }
         .period-num { width: 34px; height: 34px; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px; font-weight: 900; transition: all 0.3s ease; }
         .time-slot:nth-child(7n+1) .period-num { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
@@ -54,17 +56,14 @@
         .time-slot:nth-child(7n) .period-num { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
         .subject-name { font-weight: 800; font-size: 1.15rem; flex: 1; margin-left: 12px; color: #2d3436; transition: all 0.3s ease; }
         
-        /* 뱃지 컨테이너 및 뱃지 스타일 */
         .status-badge-container { display: flex; align-items: center; }
         .status-badge { font-size: 0.85rem; padding: 4px 10px; border-radius: 12px; font-weight: 900; margin-left: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); letter-spacing: -0.5px; }
 
-        /* ✨ 진행 중인 수업 (파란색) */
         .time-slot.current { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); transform: scale(1.02); border: none; box-shadow: 0 5px 15px rgba(108, 92, 231, 0.2); }
         .time-slot.current .period-num { background: rgba(255,255,255,0.2); color: white; }
         .time-slot.current .subject-name { color: white; }
         .time-slot.current .status-badge { background: rgba(255,255,255,0.25); color: white; }
 
-        /* ✨ 다가오는 수업 - 쉬는 시간 (주황색) */
         .time-slot.upcoming { background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%); transform: scale(1.02); border: none; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.2); }
         .time-slot.upcoming .period-num { background: rgba(255,255,255,0.3); color: white; }
         .time-slot.upcoming .subject-name { color: white; }
@@ -72,7 +71,7 @@
 
         @keyframes pulse { from { transform: scale(1); opacity: 0.9; } to { transform: scale(1.05); opacity: 1; } }
 
-        /* 급식 */
+        /* 급식 (✨ 누락되었던 이모지 크기 및 간격 복구!) */
         #meal-content { display: flex; flex-direction: column; gap: 8px; }
         .meal-item { display: flex; align-items: center; gap: 10px; padding: 10px 15px; border-radius: 15px; font-weight: 800; font-size: 1.1rem; }
         .meal-item:nth-child(6n+1) { background: #fff3cd; color: #d35400; }
@@ -80,6 +79,7 @@
         .meal-item:nth-child(6n+3) { background: #dff9fb; color: #00b894; }
         .meal-item:nth-child(6n+4) { background: #e0f7fa; color: #0984e3; }
         .meal-item:nth-child(6n+5) { background: #f3e5f5; color: #8e44ad; }
+        .meal-emoji { font-size: 1.5rem; display: inline-block; margin-right: 5px; }
 
         /* 커스텀 달력 */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; height: 100%; }
@@ -183,7 +183,7 @@
                 <h2 class="panel-title">
                     <span>📱 최근 호출 내역</span>
                     <div>
-                        <button class="noti-btn" onclick="requestNotificationPermission()">알림 켜기🔔</button>
+                        <button class="noti-btn" onclick="requestNotificationPermission()">알림 켜기 🔔</button>
                         <button class="clear-btn" onclick="clearCallHistory()">모두 삭제 🗑️</button>
                     </div>
                 </h2>
@@ -213,7 +213,7 @@
     </main>
 
     <script>
-        // ✨ 선생님의 최신 GAS URL을 넣어주세요!
+        // ✨ 선생님의 최신 GAS URL을 꼭 확인해서 넣어주세요!
         const GAS_URL = "https://script.google.com/macros/s/AKfycby-7oPViRkyABIkin2dTVCoPH6IG43NdEorGbUnV4SOXSbk0emWwnnINfUG61Hw0joEPA/exec";
 
         let currentSchedules = [];
@@ -227,15 +227,11 @@
             "5": { start: 1310, end: 1400 }, "6": { start: 1410, end: 1500 }, "7": { start: 1510, end: 1600 }
         };
 
-        // ✨ 공지사항에 쓰일 예쁜 파스텔톤 컬러셋 7가지
         const noticeColors = [
-            { bg: '#fff9c4', text: '#d35400' }, // 노랑
-            { bg: '#ffebee', text: '#c0392b' }, // 분홍
-            { bg: '#e8f5e9', text: '#27ae60' }, // 초록
-            { bg: '#e3f2fd', text: '#2980b9' }, // 파랑
-            { bg: '#f3e5f5', text: '#8e44ad' }, // 보라
-            { bg: '#e0f7fa', text: '#0097a7' }, // 민트
-            { bg: '#fff3e0', text: '#e67e22' }  // 주황
+            { bg: '#fff9c4', text: '#d35400' }, { bg: '#ffebee', text: '#c0392b' },
+            { bg: '#e8f5e9', text: '#27ae60' }, { bg: '#e3f2fd', text: '#2980b9' },
+            { bg: '#f3e5f5', text: '#8e44ad' }, { bg: '#e0f7fa', text: '#0097a7' },
+            { bg: '#fff3e0', text: '#e67e22' }
         ];
 
         async function fetchData() {
@@ -275,7 +271,6 @@
             const dDayText = dDayDiff > 0 ? `D-${dDayDiff}` : (dDayDiff === 0 ? "D-Day" : "완료");
             document.getElementById('main-title-area').innerHTML = `🏫 2학년 7반 대시보드 <span style="color:#e74c3c; margin-left:15px; font-size:1.8rem; background: #fee2e2; padding: 5px 15px; border-radius: 20px;">🔥 중간고사 ${dDayText} 🔥</span>`;
 
-            // ✨ 시간표 구조 변경 (뱃지가 들어갈 공간 추가)
             document.getElementById('timetable-content').innerHTML = (data.weeklyTimetable[timetableDay] || []).map(item => `
                 <div class="time-slot" data-period="${item.period}">
                     <div class="period-num">${item.period}</div>
@@ -287,11 +282,9 @@
             const foodEmojis = ['🍚', '🍲', '🍖', '🥗', '🍤', '🍳', '🍝', '🥪'];
             document.getElementById('meal-content').innerHTML = data.lunchMenu.map((menu, idx) => `<div class="meal-item"><div class="meal-emoji">${foodEmojis[idx % foodEmojis.length]}</div><div class="meal-name">${menu}</div></div>`).join('');
             
-            // ✨ 공지사항 랜덤 색상 배정
             const todaysNotices = data.weeklyNotices[timetableDay] || [];
             if (todaysNotices.length > 0) {
                 document.getElementById('notice-content').innerHTML = todaysNotices.map(t => {
-                    // 항목별로 무작위 색상 하나 픽업!
                     const colorPick = noticeColors[Math.floor(Math.random() * noticeColors.length)];
                     return `<li style="background: ${colorPick.bg}; color: ${colorPick.text};"><span>${t}</span></li>`;
                 }).join('');
@@ -319,7 +312,7 @@
             if (!name || !reason) { alert("이름과 사유를 모두 적어주세요!"); return; }
             try {
                 await fetch(`${GAS_URL}?action=student_call&name=${encodeURIComponent(name)}&reason=${encodeURIComponent(reason)}`);
-                alert("선생님께 호출 메시지를 보냈습니다! 🚀"); closeCallModal();
+                alert("선생님 구글챗으로 호출 메시지를 보냈습니다! 🚀"); closeCallModal();
             } catch (e) { alert("전송 실패"); }
         }
 
@@ -341,7 +334,7 @@
                     if (t.includes('생일')) c = 'birthday'; 
                     else if (t.includes('수행') || t.includes('평가')) c = 'performance'; 
                     else if (t.includes('시험') || t.includes('고사')) c = 'exam';
-                    else if (dayIdx === 0 || ['날', '절', '추석', '설날', '신정', '기독탄신일', '선거'].some(w => t.includes(w))) c = 'holiday';
+                    else if (dayIdx === 0 || ['날', '절', '추석', '설날', '신정', '기독탄신일'].some(w => t.includes(w))) c = 'holiday';
                     return `<div class="event-item ${c}">${t}</div>`;
                 }).join('');
                 html += `<div class="cal-day ${isToday} ${weekendClass}"><span class="day-num">${d}</span>${eventHtml}</div>`;
@@ -349,14 +342,13 @@
             grid.innerHTML = html;
         }
 
-        // ✨ 핵심! 시간표 스마트 알림 로직 (수업 중 & n분 전)
         function highlightCurrentPeriod() {
             const now = new Date(); const curMin = now.getHours() * 60 + now.getMinutes();
             
             document.querySelectorAll('.time-slot').forEach(slot => {
                 slot.classList.remove('current', 'upcoming');
                 const badgeContainer = slot.querySelector('.status-badge-container');
-                if(badgeContainer) badgeContainer.innerHTML = ''; // 기존 뱃지 초기화
+                if(badgeContainer) badgeContainer.innerHTML = ''; 
 
                 const p = String(slot.dataset.period); const t = classTimes[p];
                 if (t) {
@@ -364,11 +356,9 @@
                     const eMin = Math.floor(t.end / 100) * 60 + (t.end % 100);
                     
                     if (curMin >= sMin && curMin < eMin) {
-                        // 현재 수업 중인 교시
                         slot.classList.add('current');
                         if(badgeContainer) badgeContainer.innerHTML = '<span class="status-badge">수업 중</span>';
                     } else if (curMin < sMin && curMin >= sMin - 10) { 
-                        // 다가오는 수업 (10분 전부터 표시)
                         slot.classList.add('upcoming');
                         if(badgeContainer) badgeContainer.innerHTML = `<span class="status-badge upcoming-badge">${sMin - curMin}분 전</span>`;
                     }
