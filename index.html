@@ -40,7 +40,8 @@
         .history-panel { flex: 1; max-height: 280px; overflow-y: auto; background: #fffcf8; border: 2px dashed #f3e5ab; } 
         .photo-panel { flex: 1.5; min-height: 250px; padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; } 
 
-        .time-slot { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 8px; background: #ffffff; border-radius: 15px; border: 1px solid #f1f2f6; transition: all 0.3s ease; }
+        /* 시간표 무지개 색상 */
+        .time-slot { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 8px; background: #ffffff; border-radius: 15px; border: 1px solid #f1f2f6; }
         .period-num { width: 34px; height: 34px; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px; font-weight: 900; }
         .time-slot:nth-child(7n+1) .period-num { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
         .time-slot:nth-child(7n+2) .period-num { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
@@ -50,19 +51,19 @@
         .time-slot:nth-child(7n+6) .period-num { background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%); color: #2d3436; }
         .time-slot:nth-child(7n) .period-num { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
         .subject-name { font-weight: 800; font-size: 1.15rem; flex: 1; margin-left: 12px; color: #2d3436; }
-        .time-slot.current { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); color: white; transform: scale(1.02); border: none; box-shadow: 0 5px 15px rgba(108, 92, 231, 0.2); }
+        .time-slot.current { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); color: white; transform: scale(1.02); border: none; }
         .time-slot.current .period-num { background: rgba(255,255,255,0.2); }
         .time-slot.current .subject-name { color: white; }
 
-        #meal-content { display: flex; flex-direction: column; gap: 8px; }
-        .meal-item { display: flex; align-items: center; gap: 10px; padding: 10px 15px; border-radius: 15px; font-weight: 800; font-size: 1.1rem; }
+        /* 급식 */
+        .meal-item { display: flex; align-items: center; gap: 10px; padding: 10px 15px; border-radius: 15px; font-weight: 800; font-size: 1.1rem; margin-bottom: 8px; }
         .meal-item:nth-child(6n+1) { background: #fff3cd; color: #d35400; }
         .meal-item:nth-child(6n+2) { background: #ffe4e1; color: #c0392b; }
         .meal-item:nth-child(6n+3) { background: #dff9fb; color: #00b894; }
         .meal-item:nth-child(6n+4) { background: #e0f7fa; color: #0984e3; }
         .meal-item:nth-child(6n+5) { background: #f3e5f5; color: #8e44ad; }
-        .meal-emoji { font-size: 1.4rem; }
 
+        /* 커스텀 달력 색상 (선생님이 원하신 버전) */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; height: 100%; }
         .cal-header { text-align: center; font-weight: 800; font-size: 0.95rem; padding-bottom: 5px; color: var(--text-muted); }
         .cal-header.sun { color: #e74c3c; } .cal-header.sat { color: #3498db; }
@@ -71,25 +72,21 @@
         .cal-day.sun-day { background-color: #fff5f5; } .cal-day.sun-day .day-num { color: #e74c3c; }
         .cal-day.sat-day { background-color: #f0f7ff; } .cal-day.sat-day .day-num { color: #3498db; }
         .day-num { font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; display: inline-flex; justify-content: center; align-items: center; width: 26px; height: 26px; border-radius: 50%; color: #2d3436; align-self: flex-start; }
-        .cal-day.today { background: #ffffff; border: 2px solid #3498db; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15); }
-        .cal-day.today .day-num { background: #3498db; color: white !important; box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4); }
+        .cal-day.today { background: #ffffff; border: 2px solid #3498db; }
+        .cal-day.today .day-num { background: #3498db; color: white !important; }
         
-        /* ✨ 캘린더 색상 (공휴일용 빨간색 추가됨!) */
-        .event-item { 
-            font-size: 0.85rem; padding: 4px 8px; border-radius: 6px; 
-            font-weight: 900; margin-bottom: 3px; letter-spacing: -0.5px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left-width: 4px !important; 
-        }
-        .event-item.birthday { background: #fff0f5; color: #c81d6d; border-left: 4px solid #fd79a8; } 
-        .event-item.performance { background: #f3e5f5; color: #6a1b9a; border-left: 4px solid #9b59b6; } 
-        .event-item.exam { background: #fee2e2; color: #b71c1c; border-left: 4px solid #e74c3c; } 
-        .event-item.holiday { background: #fff5f5; color: #e74c3c; border-left: 4px solid #ff7675; } 
-        .event-item.default { background: #edf7ed; color: #1b5e20; border-left: 4px solid #4CAF50; }
+        .event-item { font-size: 0.82rem; padding: 4px 8px; border-radius: 6px; font-weight: 900; margin-bottom: 3px; border-left: 4px solid rgba(0,0,0,0.1); }
+        .event-item.birthday { background: #fff0f5; color: #c81d6d; border-left-color: #fd79a8; } 
+        .event-item.performance { background: #f3e5f5; color: #6a1b9a; border-left-color: #9b59b6; } 
+        .event-item.exam { background: #fee2e2; color: #b71c1c; border-left-color: #e74c3c; } 
+        .event-item.holiday { background: #fff5f5; color: #e74c3c; border-left-color: #ff7675; } 
+        .event-item.default { background: #edf7ed; color: #1b5e20; border-left-color: #4CAF50; }
 
-        .cal-nav-btn { border:none; background:#f0f4f8; border-radius:8px; cursor:pointer; padding:5px 12px; font-weight:bold; color:#2c3e50; transition: transform 0.1s; }
-        .cal-nav-btn:hover { background: #e2e8f0; }
-        .cal-today-btn { border:none; background:#3498db; color:white; border-radius:8px; cursor:pointer; padding:5px 12px; font-size:0.85rem; font-weight:bold; }
+        /* 달력 버튼 */
+        .cal-nav-btn { border:none; background:#f0f4f8; border-radius:8px; cursor:pointer; padding: 5px 12px; font-weight:bold; }
+        .cal-today-btn { border:none; background:#3498db; color:white; border-radius:8px; cursor:pointer; padding: 5px 12px; font-size:0.85rem; font-weight:bold; }
 
+        /* 공지사항 */
         .notice-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
         .notice-list li { padding: 16px 20px; border-radius: 18px; font-size: 1.35rem; line-height: 1.4; font-weight: 900; display: flex; gap: 12px; align-items: center; }
         .notice-list li::before { content: '📣'; font-size: 1.5rem; background: rgba(255, 255, 255, 0.6); width: 42px; height: 42px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
@@ -97,23 +94,17 @@
         .notice-list li:nth-child(5n+2) { background: #ffebee; color: #c0392b; }
         .notice-list li:nth-child(5n+3) { background: #e8f5e9; color: #27ae60; }
         
-        .history-panel .panel-title { color: #d35400; justify-content: space-between; }
         .history-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-        .history-list li { background: #ffffff; border: 1px solid #f1e9d2; border-left: 4px solid #f39c12; padding: 12px 15px; border-radius: 12px; font-size: 1.2rem; font-weight: 800; color: #2c3e50; display: flex; align-items: center; gap: 12px; }
+        .history-list li { background: #ffffff; border: 1px solid #f1e9d2; border-left: 4px solid #f39c12; padding: 12px 15px; border-radius: 12px; font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 12px; }
         .history-list li .time { font-size: 1rem; color: #e67e22; background: #fef5e7; padding: 4px 10px; border-radius: 8px; font-weight: 900; }
 
-        .noti-btn { background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: background 0.2s; }
-        .noti-btn:hover { background: #2980b9; }
-        .clear-btn { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.9rem; font-weight: 800; cursor: pointer; transition: background 0.2s; }
-        .clear-btn:hover { background: #c0392b; }
-
-        #class-photo { width: 100%; height: 100%; object-fit: cover; border-radius: var(--border-radius); }
+        .noti-btn { background: #3498db; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+        .clear-btn { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 800; cursor: pointer; }
 
         #call-popup {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(231, 76, 60, 0.95); z-index: 9999; display: flex; flex-direction: column;
             justify-content: center; align-items: center; color: white; font-size: 5rem; font-weight: 900;
-            text-shadow: 0 10px 20px rgba(0,0,0,0.3); animation: siren-glow 1s infinite alternate;
             opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
         }
         #call-popup.show { opacity: 1; pointer-events: auto; }
@@ -121,17 +112,13 @@
         #teacher-call-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
             background: linear-gradient(135deg, rgba(108, 92, 231, 0.95) 0%, rgba(162, 155, 254, 0.95) 100%); 
-            z-index: 1000; flex-direction: column; justify-content: center; align-items: center; 
-            backdrop-filter: blur(8px);
+            z-index: 1000; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(8px);
         }
         .modal-content-box { text-align: center; color: white; width: 90%; max-width: 600px; }
         .modal-input {
             width: 100%; padding: 25px; margin-bottom: 20px; background: rgba(255, 255, 255, 0.95); 
-            border: none; border-radius: 20px; font-size: 1.5rem; font-weight: 800; color: #2c3e50; 
-            box-sizing: border-box; outline: none;
+            border: none; border-radius: 20px; font-size: 1.5rem; font-weight: 800; color: #2c3e50; box-sizing: border-box; outline: none;
         }
-
-        @keyframes siren-glow { from { box-shadow: inset 0 0 50px rgba(192, 57, 43, 0.5); } to { box-shadow: inset 0 0 200px rgba(192, 57, 43, 1); } }
     </style>
 </head>
 <body>
@@ -181,14 +168,14 @@
                 <h2 class="panel-title">
                     <span>📱 최근 호출 내역</span>
                     <div>
-                        <button class="noti-btn" onclick="requestNotificationPermission()">알림 켜기 🔔</button>
-                        <button class="clear-btn" onclick="clearCallHistory()">모두 삭제 🗑️</button>
+                        <button class="noti-btn" onclick="requestNotificationPermission()">알림 🔔</button>
+                        <button class="clear-btn" onclick="clearCallHistory()">삭제 🗑️</button>
                     </div>
                 </h2>
                 <ul class="history-list" id="history-content"></ul>
             </div>
             <div class="panel photo-panel">
-                <img id="class-photo" src="april207.jpg" alt="우리반 단체 사진">
+                <img id="class-photo" src="april207.jpg" alt="우리반 단체 사진" style="width:100%; height:100%; object-fit:cover; border-radius:20px;">
             </div>
         </div>
 
@@ -211,21 +198,18 @@
     </main>
 
     <script>
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbxWoK4EcjUaqSrItNyf3X6cYdcYheR8ZkphoWu-u0fgDzw9GCa23jkUioB-6DJFFHzc/exec";
+        // ✨ 선생님의 최신 GAS URL을 꼭 확인해서 넣어주세요!
+        const GAS_URL = "https://script.google.com/macros/s/AKfycby-7oPViRkyABIkin2dTVCoPH6IG43NdEorGbUnV4SOXSbk0emWwnnINfUG61Hw0joEPA/exec";
 
         let currentSchedules = [];
         let displayDate = new Date();
 
-        function requestNotificationPermission() {
-            if ("Notification" in window) { Notification.requestPermission(); }
-        }
+        function requestNotificationPermission() { if ("Notification" in window) Notification.requestPermission(); }
 
         const classTimes = {
-            "조회": { start: 800, end: 810 }, "준비": { start: 810, end: 820 },
-            "1": { start: 820, end: 910 }, "2": { start: 920, end: 1010 },
-            "3": { start: 1020, end: 1110 }, "4": { start: 1120, end: 1210 },
-            "중식": { start: 1210, end: 1310 }, "5": { start: 1310, end: 1400 },
-            "6": { start: 1410, end: 1500 }, "7": { start: 1510, end: 1600 }
+            "조회": { start: 800, end: 810 }, "1": { start: 820, end: 910 }, "2": { start: 920, end: 1010 },
+            "3": { start: 1020, end: 1110 }, "4": { start: 1120, end: 1210 }, "중식": { start: 1210, end: 1310 },
+            "5": { start: 1310, end: 1400 }, "6": { start: 1410, end: 1500 }, "7": { start: 1510, end: 1600 }
         };
 
         async function fetchData() {
@@ -233,7 +217,7 @@
                 const response = await fetch(GAS_URL);
                 const data = await response.json();
                 updateDashboard(data);
-            } catch (e) { console.error("데이터 오류:", e); }
+            } catch (e) { console.error("데이터 로딩 실패:", e); }
         }
 
         async function fetchCallStatus() {
@@ -252,7 +236,7 @@
         }
 
         async function clearCallHistory() {
-            if(!confirm("최근 호출 내역을 모두 지우시겠습니까?")) return;
+            if(!confirm("기록을 삭제하시겠습니까?")) return;
             try { await fetch(GAS_URL + "?action=clear_history"); } catch(e) { }
         }
 
@@ -260,16 +244,18 @@
             const now = new Date(); const actualDay = now.getDay(); let timetableDay = (actualDay === 0 || actualDay === 6) ? 1 : actualDay;
             document.getElementById('date-header').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
 
+            // 디데이
             const targetDate = new Date(2026, 3, 24); 
             const dDayDiff = Math.round((targetDate - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / (1000 * 60 * 60 * 24));
             const dDayText = dDayDiff > 0 ? `D-${dDayDiff}` : (dDayDiff === 0 ? "D-Day" : "완료");
             document.getElementById('main-title-area').innerHTML = `🏫 2학년 7반 대시보드 <span style="color:#e74c3c; margin-left:15px; font-size:1.8rem; background: #fee2e2; padding: 5px 15px; border-radius: 20px;">🔥 중간고사 ${dDayText} 🔥</span>`;
 
+            // 시간표 & 급식
             document.getElementById('timetable-content').innerHTML = (data.weeklyTimetable[timetableDay] || []).map(item => `<div class="time-slot" data-period="${item.period}"><div class="period-num">${item.period}</div><div class="subject-name">${item.subject}</div></div>`).join('');
-            
             const foodEmojis = ['🍚', '🍲', '🍖', '🥗', '🍤', '🍳', '🍝', '🥪'];
             document.getElementById('meal-content').innerHTML = data.lunchMenu.map((menu, idx) => `<div class="meal-item"><div class="meal-emoji">${foodEmojis[idx % foodEmojis.length]}</div><div class="meal-name">${menu}</div></div>`).join('');
             
+            // 공지사항
             const todaysNotices = data.weeklyNotices[timetableDay] || [];
             document.getElementById('notice-content').innerHTML = todaysNotices.length > 0 ? todaysNotices.map(t => `<li><span>${t}</span></li>`).join('') : '<li><span>오늘의 공지사항이 없습니다.</span></li>';
 
@@ -292,8 +278,9 @@
             const reason = document.getElementById('call-reason').value;
             if (!name || !reason) { alert("이름과 사유를 모두 적어주세요!"); return; }
             try {
-                const response = await fetch(`${GAS_URL}?action=student_call&name=${encodeURIComponent(name)}&reason=${encodeURIComponent(reason)}`);
-                if (response.ok) { alert("선생님께 호출 메시지를 보냈습니다! 🚀"); closeCallModal(); }
+                // 파라미터가 섞이지 않도록 명확하게 전달
+                await fetch(`${GAS_URL}?action=student_call&name=${encodeURIComponent(name)}&reason=${encodeURIComponent(reason)}`);
+                alert("선생님 구글챗으로 호출 메시지를 보냈습니다! 🚀"); closeCallModal();
             } catch (e) { alert("전송 실패"); }
         }
 
@@ -311,13 +298,12 @@
                 
                 const eventHtml = dayEvents.map(e => {
                     let c = 'default';
-                    if (e.event.includes('생일')) c = 'birthday'; 
-                    else if (e.event.includes('수행') || e.event.includes('평가')) c = 'performance'; 
-                    else if (e.event.includes('시험') || e.event.includes('고사')) c = 'exam';
-                    // ✨ 공휴일, 일요일, 혹은 이름에 특정 키워드가 들어가면 빨간색(.holiday)으로 처리!
-                    else if (dayIdx === 0 || ['날', '절', '추석', '신정', '기독탄신일', '선거'].some(word => e.event.includes(word))) c = 'holiday';
-                    
-                    return `<div class="event-item ${c}">${e.event}</div>`;
+                    const t = e.event;
+                    if (t.includes('생일')) c = 'birthday'; 
+                    else if (t.includes('수행') || t.includes('평가')) c = 'performance'; 
+                    else if (t.includes('시험') || t.includes('고사')) c = 'exam';
+                    else if (dayIdx === 0 || ['날', '절', '추석', '설날', '신정', '기독탄신일'].some(w => t.includes(w))) c = 'holiday';
+                    return `<div class="event-item ${c}">${t}</div>`;
                 }).join('');
                 html += `<div class="cal-day ${isToday} ${weekendClass}"><span class="day-num">${d}</span>${eventHtml}</div>`;
             }
