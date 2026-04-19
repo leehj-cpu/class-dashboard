@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>강동고등학교 2학년 7반 대시보드</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/toss/tossface/dist/tossface.css">
     <style>
         :root {
             --bg-color: #f0f4f8; --card-bg: #ffffff;
@@ -15,8 +14,7 @@
 
         body {
             margin: 0; padding: 25px; 
-            /* ✨ 글자는 프리텐다드, 이모지는 토스페이스로 무조건 고정! */
-            font-family: 'Pretendard', 'Tossface', sans-serif; 
+            font-family: 'Pretendard', sans-serif; /* 4월 8일 오리지널 설정 복구 완료! */
             background-color: var(--bg-color); min-height: 100vh;
             display: grid; grid-template-rows: 60px 1fr; gap: 20px; box-sizing: border-box; color: var(--text-main);
         }
@@ -40,12 +38,12 @@
         
         .right-column { display: flex; flex-direction: column; gap: 20px; }
         
-        /* 알림판 높이 고정 해제 */
+        /* 알림판 높이 고정 해제 (자연스럽게 아래로 밀림) */
         .notice-panel { height: auto; } 
         .history-panel { max-height: 280px; overflow-y: auto; background: #fffcf8; border: 2px dashed #f3e5ab; } 
         .photo-panel { min-height: 250px; padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; } 
 
-        /* 시간표 스마트 알림 */
+        /* 시간표 스마트 알림 (수업 중, n분 전) */
         .time-slot { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 8px; background: #ffffff; border-radius: 15px; border: 1px solid #f1f2f6; transition: all 0.3s ease; }
         .period-num { width: 34px; height: 34px; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px; font-weight: 900; transition: all 0.3s ease; }
         .time-slot:nth-child(7n+1) .period-num { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
@@ -104,7 +102,7 @@
         .cal-nav-btn { border:none; background:#f0f4f8; border-radius:8px; cursor:pointer; padding: 5px 12px; font-weight:bold; }
         .cal-today-btn { border:none; background:#3498db; color:white; border-radius:8px; cursor:pointer; padding: 5px 12px; font-size:0.85rem; font-weight:bold; }
 
-        /* 알림판 리스트 */
+        /* 알림판 리스트 (이모지 관련 추가 속성 없음, 오리지널 그대로!) */
         .notice-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
         .notice-list li { padding: 16px 20px; border-radius: 18px; font-size: 1.35rem; line-height: 1.4; font-weight: 900; display: flex; gap: 12px; align-items: center; }
         .notice-list li::before { content: '📣'; font-size: 1.5rem; background: rgba(255, 255, 255, 0.6); width: 42px; height: 42px; display: flex; justify-content: center; align-items: center; border-radius: 50%; flex-shrink: 0; }
@@ -184,8 +182,8 @@
                 <h2 class="panel-title">
                     <span>📱 최근 호출 내역</span>
                     <div>
-                        <button class="noti-btn" onclick="requestNotificationPermission()">알림 켜기🔔</button>
-                        <button class="clear-btn" onclick="clearCallHistory()">내역 삭제 🗑️</button>
+                        <button class="noti-btn" onclick="requestNotificationPermission()">알림 🔔</button>
+                        <button class="clear-btn" onclick="clearCallHistory()">삭제 🗑️</button>
                     </div>
                 </h2>
                 <ul class="history-list" id="history-content"></ul>
@@ -317,7 +315,7 @@
             if (!name || !reason) { alert("이름과 사유를 모두 적어주세요!"); return; }
             try {
                 await fetch(`${GAS_URL}?action=student_call&name=${encodeURIComponent(name)}&reason=${encodeURIComponent(reason)}`);
-                alert("선생님 구글챗으로 호출 메시지를 보냈습니다! 🚀"); closeCallModal();
+                alert("선생님께 호출 메시지를 보냈습니다! 🚀"); closeCallModal();
             } catch (e) { alert("전송 실패"); }
         }
 
