@@ -18,7 +18,7 @@
             display: grid; grid-template-rows: 60px 1fr; gap: 20px; box-sizing: border-box; color: var(--text-main);
         }
 
-        /* ✨ MS Fluent 3D 이모지 전용 스타일 (글자처럼 자연스럽게 배치) */
+        /* ✨ MS Fluent 3D 이모지 스타일 유지 */
         .fluent-emoji {
             height: 1.3em;
             width: 1.3em;
@@ -51,8 +51,9 @@
         .history-panel { flex: 1; max-height: 280px; overflow-y: auto; background: #fffcf8; border: 2px dashed #f3e5ab; } 
         .photo-panel { flex: 1.5; min-height: 250px; padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; } 
 
+        /* ✨ 시간표 뱃지 스타일 부활 (n분전 / 수업 중) */
         .time-slot { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 8px; background: #ffffff; border-radius: 15px; border: 1px solid #f1f2f6; transition: all 0.3s ease; }
-        .period-num { width: 34px; height: 34px; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px; font-weight: 900; }
+        .period-num { width: 34px; height: 34px; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px; font-weight: 900; transition: all 0.3s ease;}
         .time-slot:nth-child(7n+1) .period-num { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
         .time-slot:nth-child(7n+2) .period-num { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
         .time-slot:nth-child(7n+3) .period-num { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
@@ -60,10 +61,22 @@
         .time-slot:nth-child(7n+5) .period-num { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
         .time-slot:nth-child(7n+6) .period-num { background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%); color: #2d3436; }
         .time-slot:nth-child(7n) .period-num { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
-        .subject-name { font-weight: 800; font-size: 1.15rem; flex: 1; margin-left: 12px; color: #2d3436; }
+        .subject-name { font-weight: 800; font-size: 1.15rem; flex: 1; margin-left: 12px; color: #2d3436; transition: all 0.3s ease;}
+        
+        .status-badge-container { display: flex; align-items: center; }
+        .status-badge { font-size: 0.85rem; padding: 4px 10px; border-radius: 12px; font-weight: 900; margin-left: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); letter-spacing: -0.5px; }
+
         .time-slot.current { background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%); color: white; transform: scale(1.02); border: none; box-shadow: 0 5px 15px rgba(108, 92, 231, 0.2); }
-        .time-slot.current .period-num { background: rgba(255,255,255,0.2); }
+        .time-slot.current .period-num { background: rgba(255,255,255,0.2); color: white;}
         .time-slot.current .subject-name { color: white; }
+        .time-slot.current .status-badge { background: rgba(255,255,255,0.25); color: white; }
+
+        .time-slot.upcoming { background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%); transform: scale(1.02); border: none; box-shadow: 0 5px 15px rgba(241, 196, 15, 0.2); }
+        .time-slot.upcoming .period-num { background: rgba(255,255,255,0.3); color: white; }
+        .time-slot.upcoming .subject-name { color: white; }
+        .time-slot.upcoming .status-badge { background: rgba(0,0,0,0.15); color: white; animation: pulse 1s infinite alternate; }
+
+        @keyframes pulse { from { transform: scale(1); opacity: 0.9; } to { transform: scale(1.05); opacity: 1; } }
 
         #meal-content { display: flex; flex-direction: column; gap: 8px; }
         .meal-item { display: flex; align-items: center; gap: 10px; padding: 10px 15px; border-radius: 15px; font-weight: 800; font-size: 1.1rem; }
@@ -72,7 +85,6 @@
         .meal-item:nth-child(6n+3) { background: #dff9fb; color: #00b894; }
         .meal-item:nth-child(6n+4) { background: #e0f7fa; color: #0984e3; }
         .meal-item:nth-child(6n+5) { background: #f3e5f5; color: #8e44ad; }
-        /* 급식 이모지 크기 조정 */
         .meal-emoji { display: flex; align-items: center; justify-content: center; margin-right: 5px; }
         .meal-emoji .fluent-emoji { width: 2.2rem; height: 2.2rem; vertical-align: middle; }
 
@@ -87,6 +99,14 @@
         .cal-day.today { background: #ffffff; border: 2px solid #3498db; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15); }
         .cal-day.today .day-num { background: #3498db; color: white !important; box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4); }
         
+        /* ✨ 선생님의 오리지널 커스텀 달력 스타일 부활! (생일, 수행, 시험) */
+        .event-item { font-size: 0.82rem; padding: 4px 8px; border-radius: 6px; font-weight: 900; margin-bottom: 3px; border-left: 4px solid rgba(0,0,0,0.1); }
+        .event-item.birthday { background: #fff0f5; color: #c81d6d; border-left-color: #fd79a8; } 
+        .event-item.performance { background: #f3e5f5; color: #6a1b9a; border-left-color: #9b59b6; } 
+        .event-item.exam { background: #fee2e2; color: #b71c1c; border-left-color: #e74c3c; } 
+        .event-item.holiday { background: #fff5f5; color: #e74c3c; border-left-color: #ff7675; } 
+        .event-item.default { background: #edf7ed; color: #1b5e20; border-left-color: #4CAF50; }
+
         .cal-nav-btn { border:none; background:#f0f4f8; border-radius:8px; cursor:pointer; padding:5px 12px; font-weight:bold; color:#2c3e50; transition: transform 0.1s; }
         .cal-nav-btn:active { transform: scale(0.9); }
         .cal-today-btn { border:none; background:#3498db; color:white; border-radius:8px; cursor:pointer; padding:5px 12px; font-size:0.85rem; font-weight:bold; transition: transform 0.1s; }
@@ -94,17 +114,6 @@
 
         .notice-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
         .notice-list li { padding: 16px 20px; border-radius: 18px; font-size: 1.35rem; line-height: 1.4; font-weight: 900; display: flex; gap: 12px; align-items: center; }
-        
-        /* ✨ 공지사항 메가폰 3D 이미지 삽입 */
-        .notice-list li::before { 
-            content: ''; 
-            background: url('https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Megaphone/3D/megaphone_3d.png') center/65% no-repeat, rgba(255, 255, 255, 0.6);
-            width: 42px; height: 42px; display: block; border-radius: 50%; flex-shrink: 0; 
-        }
-
-        .notice-list li:nth-child(5n+1) { background: #fff9c4; color: #d35400; }
-        .notice-list li:nth-child(5n+2) { background: #ffebee; color: #c0392b; }
-        .notice-list li:nth-child(5n+3) { background: #e8f5e9; color: #27ae60; }
         
         .history-panel .panel-title { color: #d35400; justify-content: space-between; }
         .history-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
@@ -125,7 +134,6 @@
         }
         #call-popup.show { opacity: 1; pointer-events: auto; }
         
-        /* 🚨 사이렌 MS 3D 이미지 렌더링 */
         .siren-emoji { width: 8rem; height: 8rem; margin-bottom: 20px; animation: spin 2s infinite linear; object-fit: contain; }
         
         #teacher-call-modal {
@@ -136,7 +144,6 @@
         }
         .modal-content-box { text-align: center; color: white; width: 90%; max-width: 600px; }
         
-        /* 🙋‍♂️ 모달창 손드는 사람 MS 3D 이미지 */
         .modal-emoji { width: 7rem; height: 7rem; margin-bottom: 10px; animation: float 2s infinite ease-in-out; object-fit: contain; }
         
         .modal-input {
@@ -233,7 +240,7 @@
         </div>
 
         <div style="position: fixed; bottom: 30px; right: 30px; z-index: 100;">
-            <button onclick="openCallModal()" style="display:flex; align-items:center; gap:8px; background: #6c5ce7; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-size: 1.3rem; font-weight: 900; box-shadow: 0 10px 25px rgba(108, 92, 231, 0.4); cursor: pointer; transition: transform 0.2s;">
+            <button onclick="openCallModal()" style="display:flex; align-items:center; gap:8px; background: #6c5ce7; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-size: 1.3rem; font-weight: 900; box-shadow: 0 10px 25px rgba(108, 92, 231, 0.4); cursor: pointer; transition: transform 0.2s;" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">
                 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Man%20raising%20hand/3D/man_raising_hand_3d_default.png" alt="🙋‍♂️"> 
                 선생님 호출하기 
             </button>
@@ -256,6 +263,7 @@
     </main>
 
     <script>
+        // ✨ 선생님의 최신 GAS URL을 꼭 넣어주세요!
         const GAS_URL = "https://script.google.com/macros/s/AKfycby-7oPViRkyABIkin2dTVCoPH6IG43NdEorGbUnV4SOXSbk0emWwnnINfUG61Hw0joEPA/exec";
 
         let currentSchedules = [];
@@ -275,7 +283,6 @@
             "6": { start: 1410, end: 1500 }, "7": { start: 1510, end: 1600 }
         };
 
-        // ✨ MS 3D 급식 이모지 매핑
         const msFoodEmojis = [
             'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Cooked%20rice/3D/cooked_rice_3d.png',
             'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Pot%20of%20food/3D/pot_of_food_3d.png',
@@ -285,6 +292,14 @@
             'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Cooking/3D/cooking_3d.png',
             'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Spaghetti/3D/spaghetti_3d.png',
             'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Sandwich/3D/sandwich_3d.png'
+        ];
+
+        // 랜덤 알림판 색상
+        const noticeColors = [
+            { bg: '#fff9c4', text: '#d35400' }, { bg: '#ffebee', text: '#c0392b' },
+            { bg: '#e8f5e9', text: '#27ae60' }, { bg: '#e3f2fd', text: '#2980b9' },
+            { bg: '#f3e5f5', text: '#8e44ad' }, { bg: '#e0f7fa', text: '#0097a7' },
+            { bg: '#fff3e0', text: '#e67e22' }
         ];
 
         async function fetchData() {
@@ -338,17 +353,33 @@
             const now = new Date(); const actualDay = now.getDay(); let timetableDay = (actualDay === 0 || actualDay === 6) ? 1 : actualDay;
             document.getElementById('date-header').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
 
-            document.getElementById('timetable-content').innerHTML = (data.weeklyTimetable[timetableDay] || []).map(item => `<div class="time-slot" data-period="${item.period}"><div class="period-num">${item.period}</div><div class="subject-name">${item.subject}</div></div>`).join('');
+            document.getElementById('timetable-content').innerHTML = (data.weeklyTimetable[timetableDay] || []).map(item => `
+                <div class="time-slot" data-period="${item.period}">
+                    <div class="period-num">${item.period}</div>
+                    <div class="subject-name">${item.subject}</div>
+                    <div class="status-badge-container"></div>
+                </div>
+            `).join('');
             
-            // MS 3D 급식 이모지 렌더링
             document.getElementById('meal-content').innerHTML = data.lunchMenu.map((menu, index) => `
                 <div class="meal-item">
                     <div class="meal-emoji"><img class="fluent-emoji" src="${msFoodEmojis[index % msFoodEmojis.length]}"></div>
                     <div class="meal-name">${menu}</div>
                 </div>`).join('');
             
+            // ✨ 공지사항 (랜덤 색상 + MS 3D 메가폰 적용)
             const todaysNotices = data.weeklyNotices[timetableDay] || [];
-            document.getElementById('notice-content').innerHTML = todaysNotices.length > 0 ? todaysNotices.map(t => `<li><span>${t}</span></li>`).join('') : '<li><span>오늘의 공지사항이 없습니다.</span></li>';
+            if (todaysNotices.length > 0) {
+                document.getElementById('notice-content').innerHTML = todaysNotices.map(t => {
+                    const colorPick = noticeColors[Math.floor(Math.random() * noticeColors.length)];
+                    return `<li style="background: ${colorPick.bg}; color: ${colorPick.text};">
+                        <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Megaphone/3D/megaphone_3d.png" style="width:1.5em; height:1.5em; margin-right:8px;">
+                        <span>${t}</span>
+                    </li>`;
+                }).join('');
+            } else {
+                document.getElementById('notice-content').innerHTML = '<li style="background: #f8fafc; color: #95a5a6;"><span>오늘의 공지사항이 없습니다.</span></li>';
+            }
 
             currentSchedules = data.schedules;
             updateCalendarUI();
@@ -357,7 +388,6 @@
             const dDayDiff = Math.round((targetDate - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / (1000 * 60 * 60 * 24));
             const dDayText = dDayDiff > 0 ? `D-${dDayDiff}` : (dDayDiff === 0 ? "D-Day" : "완료");
             
-            // 메인 타이틀 불꽃 3D 이모지 추가
             document.querySelector('.main-title').innerHTML = `
                 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/School/3D/school_3d.png" alt="🏫"> 
                 2학년 7반 대시보드 
@@ -396,11 +426,7 @@
             finally { btn.innerHTML = originalText; btn.disabled = false; }
         }
 
-        const googleColorMap = {
-            "1": "#a4bdfc", "2": "#7ae7bf", "3": "#dbadff", "4": "#ff887c", "5": "#fbd75b",
-            "6": "#ffb878", "7": "#46d6db", "8": "#e1e1e1", "9": "#5484ed", "10": "#51b749", "11": "#dc182f"
-        };
-
+        // ✨ 핵심: 선생님의 오리지널 커스텀 달력(키워드별 색상) 로직 복원!
         function renderCalendar(schedules) {
             const year = displayDate.getFullYear(); const month = displayDate.getMonth(); const today = new Date();
             const firstDay = new Date(year, month, 1).getDay(); const lastDate = new Date(year, month + 1, 0).getDate();
@@ -420,9 +446,13 @@
                 });
                 
                 const eventHtml = dayEvents.map(e => {
-                    const bgColor = googleColorMap[e.color] || e.color || "#4CAF50";
-                    const textColor = bgColor === "#fbd75b" || bgColor === "#ffb878" ? "#2c3e50" : "white";
-                    return `<div class="event-item" style="background: ${bgColor}; color: ${textColor}; border-left: 4px solid rgba(0,0,0,0.2); border-radius: 6px; padding: 4px 8px; font-weight: 900; margin-bottom: 3px; font-size: 0.85rem;">${e.event}</div>`;
+                    let c = 'default';
+                    const t = e.event;
+                    if (t.includes('생일')) c = 'birthday'; 
+                    else if (t.includes('수행') || t.includes('평가')) c = 'performance'; 
+                    else if (t.includes('시험') || t.includes('고사')) c = 'exam';
+                    else if (dayIdx === 0 || ['날', '절', '추석', '설날', '신정', '기독탄신일', '선거'].some(w => t.includes(w))) c = 'holiday';
+                    return `<div class="event-item ${c}">${t}</div>`;
                 }).join('');
                 
                 html += `<div class="cal-day ${isToday} ${weekendClass}"><span class="day-num">${d}</span>${eventHtml}</div>`;
@@ -430,13 +460,26 @@
             grid.innerHTML = html;
         }
 
+        // ✨ 시간표 알림 기능 (n분 전 & 수업 중)
         function highlightCurrentPeriod() {
             const now = new Date(); const curMin = now.getHours() * 60 + now.getMinutes();
             document.querySelectorAll('.time-slot').forEach(slot => {
-                slot.classList.remove('current'); const p = String(slot.dataset.period); const t = classTimes[p];
+                slot.classList.remove('current', 'upcoming');
+                const badgeContainer = slot.querySelector('.status-badge-container');
+                if(badgeContainer) badgeContainer.innerHTML = ''; 
+
+                const p = String(slot.dataset.period); const t = classTimes[p];
                 if (t) {
-                    const sMin = Math.floor(t.start / 100) * 60 + (t.start % 100); const eMin = Math.floor(t.end / 100) * 60 + (t.end % 100);
-                    if (curMin >= sMin && curMin <= eMin) slot.classList.add('current');
+                    const sMin = Math.floor(t.start / 100) * 60 + (t.start % 100); 
+                    const eMin = Math.floor(t.end / 100) * 60 + (t.end % 100);
+                    
+                    if (curMin >= sMin && curMin < eMin) {
+                        slot.classList.add('current');
+                        if(badgeContainer) badgeContainer.innerHTML = '<span class="status-badge">수업 중</span>';
+                    } else if (curMin < sMin && curMin >= sMin - 10) { 
+                        slot.classList.add('upcoming');
+                        if(badgeContainer) badgeContainer.innerHTML = `<span class="status-badge upcoming-badge">${sMin - curMin}분 전</span>`;
+                    }
                 }
             });
         }
