@@ -28,7 +28,6 @@
         .main-title { font-size: 2.2rem; font-weight: 900; color: #1a252f; justify-self: center; letter-spacing: -1px; display: flex; align-items: center; gap: 10px; }
         .clock { font-size: 2.5rem; color: var(--accent-color); font-weight: 800; letter-spacing: 1px; justify-self: end; }
 
-        /* ✨ 메인 그리드를 내용물의 길이에 맞춰 자연스럽게 늘어나게(start) 변경 */
         main { display: grid; grid-template-columns: 1fr 2.2fr 1fr; gap: 20px; align-items: start; }
 
         .panel {
@@ -40,7 +39,6 @@
 
         .side-column { display: flex; flex-direction: column; gap: 20px; height: 100%; }
         
-        /* ✨ 오른쪽 열(알림판) 레이아웃 유연하게 변경 */
         .right-column { display: flex; flex-direction: column; gap: 20px; }
         .notice-panel { flex: 0 0 auto; height: auto; max-height: none; overflow: visible; } 
         .history-panel { flex: 0 0 auto; height: auto; max-height: none; overflow: visible; background: #fffcf8; border: 2px dashed #f3e5ab; } 
@@ -255,7 +253,7 @@
     </main>
 
     <script>
-        // ✨ 선생님이 방금 새로 발급받으신 GAS URL을 이 부분에 꼭! 넣어주셔야 여러 날짜 행사가 작동합니다.
+        // ✨ 선생님의 최신 GAS URL을 넣어주세요! (반드시 1단계에서 새로 발급받은 URL)
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxWoK4EcjUaqSrItNyf3X6cYdcYheR8ZkphoWu-u0fgDzw9GCa23jkUioB-6DJFFHzc/exec";
 
         let currentSchedules = [];
@@ -344,7 +342,6 @@
             const now = new Date(); const actualDay = now.getDay(); let timetableDay = (actualDay === 0 || actualDay === 6) ? 1 : actualDay;
             document.getElementById('date-header').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
 
-        // ✨ [수정] 과목명(item.subject)이 있는 경우만 시간표 상자를 만듭니다.
             document.getElementById('timetable-content').innerHTML = (data.weeklyTimetable[timetableDay] || [])
             .filter(item => item.subject && item.subject.trim() !== "") 
             .map(item => `
@@ -419,7 +416,7 @@
             finally { btn.innerHTML = originalText; btn.disabled = false; }
         }
 
-        // ✨ 핵심: 여러 날짜 이벤트(종료일 인식) 및 키워드별 커스텀 색상 로직
+        // ✨ 핵심: 여러 날짜 이벤트(종료일 인식) 및 키워드별 커스텀 색상 완벽 구현!
         function renderCalendar(schedules) {
             const year = displayDate.getFullYear(); const month = displayDate.getMonth(); const today = new Date();
             const firstDay = new Date(year, month, 1).getDay(); const lastDate = new Date(year, month + 1, 0).getDate();
@@ -436,17 +433,15 @@
                 const currentCheckDate = new Date(year, month, d);
                 
                 const dayEvents = schedules.filter(s => { 
+                    // 문자열로 전송된 날짜를 다시 Date 객체로 변환하여 정확하게 비교
                     const sStart = new Date(s.date);
-                    sStart.setHours(0,0,0,0);
+                    const sEnd = new Date(s.endDate);
                     
-                    let sEnd = s.endDate ? new Date(s.endDate) : new Date(s.date);
-                    // 구글 캘린더 '종일' 행사는 종료일이 다음날 자정으로 잡히므로 하루를 빼줌
-                    if (sEnd.getHours() === 0 && sEnd.getMinutes() === 0 && sEnd.getTime() > sStart.getTime()) {
-                        sEnd.setDate(sEnd.getDate() - 1);
-                    }
-                    sEnd.setHours(23,59,59,999);
-
-                    return currentCheckDate >= sStart && currentCheckDate <= sEnd;
+                    // 시/분/초를 무시하고 오직 날짜 단위로만 포함 여부를 검사
+                    const startDay = new Date(sStart.getFullYear(), sStart.getMonth(), sStart.getDate());
+                    const endDay = new Date(sEnd.getFullYear(), sEnd.getMonth(), sEnd.getDate());
+                    
+                    return currentCheckDate >= startDay && currentCheckDate <= endDay;
                 });
                 
                 const eventHtml = dayEvents.map(e => {
@@ -471,7 +466,6 @@
                 const badgeContainer = slot.querySelector('.status-badge-container');
                 if(badgeContainer) badgeContainer.innerHTML = ''; 
 
-                // ✨ 과목명이 있는지 확인합니다.
                 const subjectName = slot.querySelector('.subject-name').textContent.trim();
                 const p = String(slot.dataset.period); const t = classTimes[p];
         
