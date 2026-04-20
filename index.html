@@ -254,7 +254,7 @@
 
     <script>
         // ✨ 선생님의 최신 GAS URL을 넣어주세요! (반드시 1단계에서 새로 발급받은 URL)
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbxWoK4EcjUaqSrItNyf3X6cYdcYheR8ZkphoWu-u0fgDzw9GCa23jkUioB-6DJFFHzc/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyyZif7ya0gjxbDJN6dVQ0l-_1HbIdj6XDmQkzMIgUVdAaF1KG519TK_urdmusg8BvuvA/exec";
 
         let currentSchedules = [];
         let displayDate = new Date();
@@ -483,7 +483,37 @@
                 }
         });
 }
+        // ✨ 종례 내용 저장 함수
+        async function saveClosingContent() {
+        const content = document.getElementById('closing-input').value;
+        const btn = document.getElementById('save-closing-btn');
+        const originalText = btn.innerHTML;
 
+        btn.innerHTML = "저장 중... ⏳";
+        btn.disabled = true;
+
+        try {
+            await fetch(`${GAS_URL}?action=save_closing&content=${encodeURIComponent(content)}`);
+            alert("종례 내용이 성공적으로 저장되었습니다! 📝");
+        } catch (e) {
+            alert("저장에 실패했습니다. 다시 시도해 주세요.");
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // 대시보드 업데이트 함수에 종례 데이터 반영
+    function updateDashboard(data) {
+        // ... 기존 로직 ...
+        
+        // ✨ 종례 내용 불러오기
+        if (data.closingContent) {
+            document.getElementById('closing-input').value = data.closingContent;
+        }
+    }
+        
+        
         function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('ko-KR', { hour12: false }); highlightCurrentPeriod(); }
         
         setInterval(updateClock, 1000); 
