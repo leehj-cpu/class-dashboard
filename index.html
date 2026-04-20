@@ -18,7 +18,6 @@
             display: grid; grid-template-rows: 60px 1fr; gap: 20px; box-sizing: border-box; color: var(--text-main);
         }
 
-        /* ✨ MS Fluent 3D 이모지 전용 스타일 */
         .fluent-emoji {
             height: 1.3em; width: 1.3em; vertical-align: -0.25em;
             display: inline-block; object-fit: contain; border: none; background: transparent;
@@ -29,7 +28,8 @@
         .main-title { font-size: 2.2rem; font-weight: 900; color: #1a252f; justify-self: center; letter-spacing: -1px; display: flex; align-items: center; gap: 10px; }
         .clock { font-size: 2.5rem; color: var(--accent-color); font-weight: 800; letter-spacing: 1px; justify-self: end; }
 
-        main { display: grid; grid-template-columns: 1fr 2.2fr 1fr; gap: 20px; }
+        /* ✨ 메인 그리드를 내용물의 길이에 맞춰 자연스럽게 늘어나게(start) 변경 */
+        main { display: grid; grid-template-columns: 1fr 2.2fr 1fr; gap: 20px; align-items: start; }
 
         .panel {
             background: var(--card-bg); border-radius: var(--border-radius);
@@ -38,13 +38,13 @@
         }
         .panel-title { font-size: 1.4rem; margin-bottom: 15px; margin-top: 0; display: flex; align-items: center; gap: 10px; font-weight: 800; color: #1a252f; }
 
-        .side-column { display: grid; gap: 20px; height: 100%; }
-        .left-column { grid-template-rows: auto 1fr; } 
+        .side-column { display: flex; flex-direction: column; gap: 20px; height: 100%; }
         
+        /* ✨ 오른쪽 열(알림판) 레이아웃 유연하게 변경 */
         .right-column { display: flex; flex-direction: column; gap: 20px; }
-        .notice-panel { flex: 1; max-height: 350px; overflow-y: auto; } 
-        .history-panel { flex: 1; max-height: 280px; overflow-y: auto; background: #fffcf8; border: 2px dashed #f3e5ab; } 
-        .photo-panel { flex: 1.5; min-height: 250px; padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; } 
+        .notice-panel { flex: 0 0 auto; height: auto; max-height: none; overflow: visible; } 
+        .history-panel { flex: 0 0 auto; height: auto; max-height: none; overflow: visible; background: #fffcf8; border: 2px dashed #f3e5ab; } 
+        .photo-panel { flex: 1 1 auto; min-height: 200px; padding: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; } 
 
         .time-slot { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 8px; background: #ffffff; border-radius: 15px; border: 1px solid #f1f2f6; transition: all 0.3s ease; }
         .period-num { width: 34px; height: 34px; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px; font-weight: 900; }
@@ -55,9 +55,8 @@
         .time-slot:nth-child(7n+5) .period-num { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
         .time-slot:nth-child(7n+6) .period-num { background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%); color: #2d3436; }
         .time-slot:nth-child(7n) .period-num { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
-        .subject-name { font-weight: 800; font-size: 1.15rem; flex: 1; margin-left: 12px; color: #2d3436; }
+        .subject-name { font-weight: 800; font-size: 1.15rem; flex: 1; margin-left: 12px; color: #2d3436; transition: all 0.3s ease; }
         
-        /* 뱃지 컨테이너 (n분전 / 수업중) */
         .status-badge-container { display: flex; align-items: center; }
         .status-badge { font-size: 0.85rem; padding: 4px 10px; border-radius: 12px; font-weight: 900; margin-left: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); letter-spacing: -0.5px; }
 
@@ -94,7 +93,6 @@
         .cal-day.today { background: #ffffff; border: 2px solid #3498db; box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15); }
         .cal-day.today .day-num { background: #3498db; color: white !important; box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4); }
         
-        /* ✨ 커스텀 달력 색상(생일, 수행 등) 완벽 복구! */
         .event-item { font-size: 0.82rem; padding: 4px 8px; border-radius: 6px; font-weight: 900; margin-bottom: 3px; border-left: 4px solid rgba(0,0,0,0.1); }
         .event-item.birthday { background: #fff0f5; color: #c81d6d; border-left-color: #fd79a8; } 
         .event-item.performance { background: #f3e5f5; color: #6a1b9a; border-left-color: #9b59b6; } 
@@ -139,7 +137,6 @@
         }
         .modal-content-box { text-align: center; color: white; width: 90%; max-width: 600px; }
         
-        /* ✨ 모달창 둥둥 애니메이션용 순수 텍스트 이모지 클래스 */
         .modal-text-emoji { font-size: 7rem; margin-bottom: 10px; animation: float 2s infinite ease-in-out; }
         
         .modal-input {
@@ -258,6 +255,7 @@
     </main>
 
     <script>
+        // ✨ 선생님이 방금 새로 발급받으신 GAS URL을 이 부분에 꼭! 넣어주셔야 여러 날짜 행사가 작동합니다.
         const GAS_URL = "https://script.google.com/macros/s/AKfycby-7oPViRkyABIkin2dTVCoPH6IG43NdEorGbUnV4SOXSbk0emWwnnINfUG61Hw0joEPA/exec";
 
         let currentSchedules = [];
@@ -418,7 +416,7 @@
             finally { btn.innerHTML = originalText; btn.disabled = false; }
         }
 
-        // ✨ 오리지널 커스텀 달력(키워드 색상 변환) 로직 완벽 적용!
+        // ✨ 핵심: 여러 날짜 이벤트(종료일 인식) 및 키워드별 커스텀 색상 로직
         function renderCalendar(schedules) {
             const year = displayDate.getFullYear(); const month = displayDate.getMonth(); const today = new Date();
             const firstDay = new Date(year, month, 1).getDay(); const lastDate = new Date(year, month + 1, 0).getDate();
@@ -432,9 +430,20 @@
                 const dayIdx = (firstDay + d - 1) % 7; 
                 let weekendClass = dayIdx === 0 ? 'sun-day' : (dayIdx === 6 ? 'sat-day' : '');
                 
+                const currentCheckDate = new Date(year, month, d);
+                
                 const dayEvents = schedules.filter(s => { 
-                    const sDate = new Date(s.date); 
-                    return sDate.getDate() === d && sDate.getMonth() === month && sDate.getFullYear() === year; 
+                    const sStart = new Date(s.date);
+                    sStart.setHours(0,0,0,0);
+                    
+                    let sEnd = s.endDate ? new Date(s.endDate) : new Date(s.date);
+                    // 구글 캘린더 '종일' 행사는 종료일이 다음날 자정으로 잡히므로 하루를 빼줌
+                    if (sEnd.getHours() === 0 && sEnd.getMinutes() === 0 && sEnd.getTime() > sStart.getTime()) {
+                        sEnd.setDate(sEnd.getDate() - 1);
+                    }
+                    sEnd.setHours(23,59,59,999);
+
+                    return currentCheckDate >= sStart && currentCheckDate <= sEnd;
                 });
                 
                 const eventHtml = dayEvents.map(e => {
@@ -443,7 +452,7 @@
                     if (t.includes('생일')) c = 'birthday'; 
                     else if (t.includes('수행') || t.includes('평가')) c = 'performance'; 
                     else if (t.includes('시험') || t.includes('고사')) c = 'exam';
-                    else if (dayIdx === 0 || ['날', '절', '추석', '설날', '신정', '기독탄신일', '선거'].some(w => t.includes(w))) c = 'holiday';
+                    else if (dayIdx === 0 || ['날', '절', '추석', '설날', '신정', '기독탄신일'].some(w => t.includes(w))) c = 'holiday';
                     return `<div class="event-item ${c}">${t}</div>`;
                 }).join('');
                 
@@ -452,7 +461,6 @@
             grid.innerHTML = html;
         }
 
-        // ✨ 시간표 알림 로직 (n분전 / 수업 중) 
         function highlightCurrentPeriod() {
             const now = new Date(); const curMin = now.getHours() * 60 + now.getMinutes();
             document.querySelectorAll('.time-slot').forEach(slot => {
