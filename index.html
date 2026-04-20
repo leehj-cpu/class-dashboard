@@ -344,13 +344,16 @@
             const now = new Date(); const actualDay = now.getDay(); let timetableDay = (actualDay === 0 || actualDay === 6) ? 1 : actualDay;
             document.getElementById('date-header').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
 
-            document.getElementById('timetable-content').innerHTML = (data.weeklyTimetable[timetableDay] || []).map(item => `
-                <div class="time-slot" data-period="${item.period}">
-                    <div class="period-num">${item.period}</div>
-                    <div class="subject-name">${item.subject}</div>
-                    <div class="status-badge-container"></div>
-                </div>
-            `).join('');
+        // ✨ [수정] 과목명(item.subject)이 있는 경우만 시간표 상자를 만듭니다.
+            document.getElementById('timetable-content').innerHTML = (data.weeklyTimetable[timetableDay] || [])
+            .filter(item => item.subject && item.subject.trim() !== "") 
+            .map(item => `
+            <div class="time-slot" data-period="${item.period}">
+                <div class="period-num">${item.period}</div>
+                <div class="subject-name">${item.subject}</div>
+                <div class="status-badge-container"></div>
+            </div>
+        `).join('');
             
             document.getElementById('meal-content').innerHTML = data.lunchMenu.map((menu, index) => `
                 <div class="meal-item">
