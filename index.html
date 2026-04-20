@@ -471,11 +471,14 @@
                 const badgeContainer = slot.querySelector('.status-badge-container');
                 if(badgeContainer) badgeContainer.innerHTML = ''; 
 
+                // ✨ 과목명이 있는지 확인합니다.
+                const subjectName = slot.querySelector('.subject-name').textContent.trim();
                 const p = String(slot.dataset.period); const t = classTimes[p];
-                if (t) {
+        
+                if (t && subjectName !== "") { // 💡 과목이 있을 때만 로직 실행
                     const sMin = Math.floor(t.start / 100) * 60 + (t.start % 100); 
                     const eMin = Math.floor(t.end / 100) * 60 + (t.end % 100);
-                    
+            
                     if (curMin >= sMin && curMin < eMin) {
                         slot.classList.add('current');
                         if(badgeContainer) badgeContainer.innerHTML = '<span class="status-badge">수업 중</span>';
@@ -484,8 +487,8 @@
                         if(badgeContainer) badgeContainer.innerHTML = `<span class="status-badge upcoming-badge">${sMin - curMin}분 전</span>`;
                     }
                 }
-            });
-        }
+        });
+}
 
         function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('ko-KR', { hour12: false }); highlightCurrentPeriod(); }
         
