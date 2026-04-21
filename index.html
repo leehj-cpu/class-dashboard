@@ -331,6 +331,15 @@
             { bg: '#fff3e0', text: '#e67e22' }
         ];
 
+       // ✨ 종례 미리보기 전용 디자인 (깔끔한 체크리스트 스타일)
+        const closingColors = [
+            { bg: '#ffffff', border: '#e74c3c', text: '#2c3e50' }, // 빨강 포인트
+            { bg: '#ffffff', border: '#3498db', text: '#2c3e50' }, // 파랑 포인트
+            { bg: '#ffffff', border: '#2ecc71', text: '#2c3e50' }, // 초록 포인트
+            { bg: '#ffffff', border: '#f1c40f', text: '#2c3e50' }, // 노랑 포인트
+            { bg: '#ffffff', border: '#9b59b6', text: '#2c3e50' }  // 보라 포인트
+        ];
+
         // ----------------------------------------------------------------
         // 2. 브라우저 알림 권한 설정
         // ----------------------------------------------------------------
@@ -417,7 +426,26 @@
                 }).join('');
             } else { document.getElementById('notice-content').innerHTML = '<li style="background: #f8fafc; color: #95a5a6;"><span>오늘의 공지사항이 없습니다.</span></li>'; }
 
-            // 종례미리보기 렌더링 (클릭 이벤트, 롱프레스 이벤트 연결)
+
+           // ✨ 종례판 렌더링 (체크리스트 스타일)
+            const closingArray = data.closingList || [];
+            if (closingArray.length > 0) {
+                document.getElementById('closing-content').innerHTML = closingArray.map((text, idx) => {
+                    const colorPick = closingColors[idx % closingColors.length]; // 종례 전용 색상 사용
+                    const contentText = text.text || text;
+                    const encodedText = encodeURIComponent(contentText); 
+                    return `
+                    <li style="background: ${colorPick.bg}; border-left: 6px solid ${colorPick.border}; color: ${colorPick.text}; box-shadow: 0 4px 10px rgba(0,0,0,0.03);" 
+                        onmousedown="startPress('closing', ${idx})" onmouseup="cancelPress()" onmouseleave="cancelPress()"
+                        ontouchstart="startPress('closing', ${idx})" ontouchend="cancelPress()" ontouchcancel="cancelPress()"
+                        onclick="handleItemClick('closing', ${idx}, '${encodedText}')">
+                        <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Check%20mark%20button/3D/check_mark_button_3d.png" style="width:1.3em; height:1.3em; margin-right:8px; opacity: 0.8;">
+                        <span class="item-text" style="font-weight: 700;">${contentText}</span>
+                    </li>`;
+                }).join('');
+            } else { document.getElementById('closing-content').innerHTML = '<li style="background: #f8fafc; color: #95a5a6;"><span>등록된 종례사항이 없습니다.</span></li>'; }
+           
+            /* // 종례미리보기 렌더링 (클릭 이벤트, 롱프레스 이벤트 연결)
             const closingArray = data.closingList || [];
             if (closingArray.length > 0) {
                 document.getElementById('closing-content').innerHTML = closingArray.map((text, idx) => {
@@ -434,7 +462,7 @@
                     </li>`;
                 }).join('');
             } else { document.getElementById('closing-content').innerHTML = '<li style="background: #f8fafc; color: #95a5a6;"><span>등록된 종례사항이 없습니다.</span></li>'; }
-
+            */
             // 달력 갱신
             currentSchedules = data.schedules;
             updateCalendarUI();
