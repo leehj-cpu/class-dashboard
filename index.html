@@ -106,14 +106,14 @@
         .cal-today-btn { border:none; background:#3498db; color:white; border-radius:8px; cursor:pointer; padding:5px 12px; font-size:0.85rem; font-weight:bold; transition: transform 0.1s; }
         .cal-today-btn:active { transform: scale(0.9); }
 
-        /* ✨ 공통 데이터 리스트 (알림판, 종례) */
+        /* ✨ 공통 데이터 리스트 (공지, 종례) */
         .data-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
         .data-list li { 
             padding: 16px 20px; border-radius: 18px; font-size: 1.35rem; line-height: 1.4; 
             font-weight: 900; display: flex; gap: 12px; align-items: center; position: relative; 
             transition: all 0.2s ease; cursor: pointer; border: 2px solid transparent;
         }
-        /* 롱프레스 시 반응 */
+        /* 눌렀을 때 시각적 피드백 */
         .data-list li:active { transform: scale(0.98); border: 2px solid rgba(0,0,0,0.2); }
 
         .history-panel .panel-title { color: #d35400; justify-content: space-between; }
@@ -128,7 +128,7 @@
 
         #class-photo { width: 100%; height: 100%; object-fit: cover; border-radius: var(--border-radius); }
 
-        /* === 9. 모달창 (호출, 데이터 추가) === */
+        /* === 9. 모달창 디자인 (호출, 추가, 수정) === */
         #call-popup {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(231, 76, 60, 0.95); z-index: 9999; display: flex; flex-direction: column;
@@ -212,11 +212,13 @@
             <div class="panel closing-panel">
                 <h2 class="panel-title" style="justify-content: space-between;">
                     <span><img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Memo/3D/memo_3d.png"> 종례 미리보기</span>
-                    <button class="noti-btn" onclick="openDataAddModal('closing')" style="background: #e67e22;">
+                    <button class="noti-btn" onclick="openDataModal('closing', 'add')" style="background: #e67e22;">
                         추가 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Plus/3D/plus_3d.png" style="height:1em; width:1em; vertical-align:-0.15em;">
                     </button>
                 </h2>
-                <span style="font-size: 0.85rem; color: #e74c3c; margin-bottom: 10px; font-weight: 800;">💡 삭제하려면 항목을 1초간 꾹~ 누르세요.</span>
+                <span style="font-size: 0.85rem; color: #e74c3c; margin-bottom: 10px; font-weight: 800;">
+                    💡 한 번 누르면 [수정] / 길게 누르면 [삭제]
+                </span>
                 <ul class="data-list" id="closing-content"></ul>
             </div>
         </div>
@@ -225,11 +227,13 @@
             <div class="panel notice-panel">
                 <h2 class="panel-title" style="justify-content: space-between;">
                     <span><img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Megaphone/3D/megaphone_3d.png"> 알림판</span>
-                    <button class="noti-btn" onclick="openDataAddModal('notice')" style="background: #3498db;">
+                    <button class="noti-btn" onclick="openDataModal('notice', 'add')" style="background: #3498db;">
                         추가 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Plus/3D/plus_3d.png" style="height:1em; width:1em; vertical-align:-0.15em;">
                     </button>
                 </h2>
-                <span style="font-size: 0.85rem; color: #e74c3c; margin-bottom: 10px; font-weight: 800;">💡 삭제하려면 항목을 1초간 꾹~ 누르세요.</span>
+                <span style="font-size: 0.85rem; color: #e74c3c; margin-bottom: 10px; font-weight: 800;">
+                    💡 한 번 누르면 [수정] / 길게 누르면 [삭제]
+                </span>
                 <ul class="data-list" id="notice-content"></ul>
             </div>
 
@@ -239,8 +243,8 @@
                         <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Mobile%20phone/3D/mobile_phone_3d.png"> 최근 호출 내역
                     </span>
                     <div style="display: flex; gap: 5px;">
-                        <button class="noti-btn" onclick="requestNotificationPermission()">알림 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Bell/3D/bell_3d.png" style="height:1em; width:1em; vertical-align:-0.15em;"></button>
-                        <button class="clear-btn" onclick="clearCallHistory()">삭제 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Wastebasket/3D/wastebasket_3d.png" style="height:1em; width:1em; vertical-align:-0.15em;"></button>
+                        <button class="noti-btn" onclick="requestNotificationPermission()">알림 켜기 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Bell/3D/bell_3d.png" style="height:1em; width:1em; vertical-align:-0.15em;"></button>
+                        <button class="clear-btn" onclick="clearCallHistory()">내역 삭제 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Wastebasket/3D/wastebasket_3d.png" style="height:1em; width:1em; vertical-align:-0.15em;"></button>
                     </div>
                 </h2>
                 <ul class="history-list" id="history-content"></ul>
@@ -272,15 +276,16 @@
             </div>
         </div>
 
-        <div id="data-add-modal" class="modal-overlay">
+        <div id="data-manage-modal" class="modal-overlay">
             <div class="modal-content-box">
                 <img id="data-modal-icon" class="fluent-emoji" src="" style="width: 7rem; height: 7rem; margin-bottom: 10px; animation: float 2s infinite ease-in-out;">
                 <h2 id="data-modal-title" style="font-size: 3.5rem; margin-top: 0; margin-bottom: 30px; font-weight: 900; text-shadow: 0 5px 15px rgba(0,0,0,0.3);">제목</h2>
                 <textarea id="data-input-text" class="modal-input" placeholder="내용을 입력하세요..." style="height: 180px; resize: none; font-family: inherit;"></textarea>
                 <div style="display: flex; gap: 20px; margin-top: 10px;">
-                    <button onclick="closeDataAddModal()" style="flex: 1; padding: 20px; background: rgba(255,255,255,0.15); color: white; border: 3px solid rgba(255,255,255,0.5); border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer;">취소</button>
-                    <button id="data-save-btn" onclick="submitDataAdd()" style="flex: 2; padding: 20px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer; box-shadow: 0 10px 25px rgba(230, 126, 34, 0.4); display:flex; justify-content:center; align-items:center; gap:10px;">
-                        <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Check%20mark%20button/3D/check_mark_button_3d.png" style="height:1.2em; width:1.2em; vertical-align:-0.2em;"> 등록하기
+                    <button onclick="closeDataModal()" style="flex: 1; padding: 20px; background: rgba(255,255,255,0.15); color: white; border: 3px solid rgba(255,255,255,0.5); border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer;">취소</button>
+                    <button id="data-save-btn" onclick="submitDataAction()" style="flex: 2; padding: 20px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer; box-shadow: 0 10px 25px rgba(230, 126, 34, 0.4); display:flex; justify-content:center; align-items:center; gap:10px;">
+                        <img id="data-btn-icon" class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Check%20mark%20button/3D/check_mark_button_3d.png" style="height:1.2em; width:1.2em; vertical-align:-0.2em;"> 
+                        <span id="data-btn-text">저장하기</span>
                     </button>
                 </div>
             </div>
@@ -288,14 +293,20 @@
     </main>
 
     <script>
-        // 💡 1단계에서 새로 발급받은 URL을 꼭 여기에 넣으세요!
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyOHL1SMbOmL9RRCD_BKWfEzqut65prhHeeT9htRgiSbT2cr7rdpkpYjvkbVOYa9kBDAw/exec";
+        // 💡 주의: 1단계에서 새로 발급받은 배포 URL을 이곳에 덮어쓰셔야 합니다!
+        const GAS_URL = "https://script.google.com/macros/s/새로운_URL_여기에_붙여넣기/exec";
 
         let currentSchedules = [];
         let displayDate = new Date();
         
-        let currentActionType = ''; // 추가용 전역 변수
-        let pressTimer = null; // 롱프레스(길게 누르기) 감지 타이머
+        // 데이터 관리를 위한 전역 변수 설정
+        let currentActionType = '';  // 'notice' 또는 'closing'
+        let currentActionMode = '';  // 'add' 또는 'edit'
+        let currentActionIndex = -1; 
+        
+        // ✨ 짧게 누르기(수정) vs 길게 누르기(삭제) 구분을 위한 타이머 및 플래그
+        let pressTimer = null; 
+        let isLongPress = false; 
 
         const classTimes = {
             "조회": { start: 800, end: 810 }, "준비": { start: 810, end: 820 },
@@ -367,7 +378,7 @@
             try { await fetch(GAS_URL + "?action=clear_history"); } catch(e) { }
         }
 
-        // ✨ 화면 렌더링
+        // 화면 렌더링 함수
         function updateDashboard(data) {
             const now = new Date(); const actualDay = now.getDay(); let timetableDay = (actualDay === 0 || actualDay === 6) ? 1 : actualDay;
             document.getElementById('date-header').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
@@ -376,30 +387,39 @@
                 <div class="time-slot" data-period="${item.period}"><div class="period-num">${item.period}</div><div class="subject-name">${item.subject}</div><div class="status-badge-container"></div></div>`).join('');
             document.getElementById('meal-content').innerHTML = data.lunchMenu.map((menu, index) => `<div class="meal-item"><div class="meal-emoji"><img class="fluent-emoji" src="${msFoodEmojis[index % msFoodEmojis.length]}"></div><div class="meal-name">${menu}</div></div>`).join('');
             
-            // ✨ 알림판 렌더링 (원복된 롱프레스 삭제 연결)
+            // ✨ 알림판 렌더링 (마우스, 터치, 클릭 이벤트 세분화)
             const noticeArray = data.noticeList || [];
             if (noticeArray.length > 0) {
                 document.getElementById('notice-content').innerHTML = noticeArray.map((text, idx) => {
                     const colorPick = noticeColors[idx % noticeColors.length];
+                    // data-text 속성으로 내용을 안전하게 저장
                     return `
-                    <li style="background: ${colorPick.bg}; color: ${colorPick.text};" 
-                        onmousedown="startPress('notice', ${idx})" onmouseup="cancelPress()" onmouseleave="cancelPress()"
-                        ontouchstart="startPress('notice', ${idx})" ontouchend="cancelPress()" ontouchcancel="cancelPress()">
+                    <li style="background: ${colorPick.bg}; color: ${colorPick.text};" data-text="${text.replace(/"/g, '&quot;')}"
+                        onmousedown="handlePointerDown('notice', ${idx})" 
+                        onmouseup="handlePointerUp('notice', ${idx}, this)" 
+                        onmouseleave="handlePointerLeave()"
+                        ontouchstart="handlePointerDown('notice', ${idx})" 
+                        ontouchend="handlePointerUp('notice', ${idx}, this)" 
+                        ontouchcancel="handlePointerLeave()">
                         <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Megaphone/3D/megaphone_3d.png" style="width:1.5em; height:1.5em; margin-right:8px;">
                         <span class="item-text">${text}</span>
                     </li>`;
                 }).join('');
             } else { document.getElementById('notice-content').innerHTML = '<li style="background: #f8fafc; color: #95a5a6;"><span>오늘의 공지사항이 없습니다.</span></li>'; }
 
-            // ✨ 종례판 렌더링 (원복된 롱프레스 삭제 연결)
+            // ✨ 종례판 렌더링
             const closingArray = data.closingList || [];
             if (closingArray.length > 0) {
                 document.getElementById('closing-content').innerHTML = closingArray.map((text, idx) => {
                     const colorPick = noticeColors[(idx + 3) % noticeColors.length]; 
                     return `
-                    <li style="background: ${colorPick.bg}; color: ${colorPick.text};" 
-                        onmousedown="startPress('closing', ${idx})" onmouseup="cancelPress()" onmouseleave="cancelPress()"
-                        ontouchstart="startPress('closing', ${idx})" ontouchend="cancelPress()" ontouchcancel="cancelPress()">
+                    <li style="background: ${colorPick.bg}; color: ${colorPick.text};" data-text="${text.replace(/"/g, '&quot;')}"
+                        onmousedown="handlePointerDown('closing', ${idx})" 
+                        onmouseup="handlePointerUp('closing', ${idx}, this)" 
+                        onmouseleave="handlePointerLeave()"
+                        ontouchstart="handlePointerDown('closing', ${idx})" 
+                        ontouchend="handlePointerUp('closing', ${idx}, this)" 
+                        ontouchcancel="handlePointerLeave()">
                         <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Pushpin/3D/pushpin_3d.png" style="width:1.5em; height:1.5em; margin-right:8px;">
                         <span class="item-text">${text}</span>
                     </li>`;
@@ -458,61 +478,97 @@
             } catch (e) { alert("전송 실패."); } finally { btn.innerHTML = originalText; btn.disabled = false; }
         }
 
-        // --- ✨ 공지/종례 데이터 추가 모달 ---
-        function openDataAddModal(type) {
-            currentActionType = type;
-            const modal = document.getElementById('data-add-modal');
+
+        // --- ✨ 공지/종례 통합 관리 로직 (추가 & 수정 팝업) ---
+        function openDataModal(type, mode, index = -1, existingText = '') {
+            currentActionType = type; currentActionMode = mode; currentActionIndex = index;
+            
+            const modal = document.getElementById('data-manage-modal');
             const title = document.getElementById('data-modal-title');
             const icon = document.getElementById('data-modal-icon');
+            const input = document.getElementById('data-input-text');
+            const btnText = document.getElementById('data-btn-text');
+            const btnIcon = document.getElementById('data-btn-icon');
             const saveBtn = document.getElementById('data-save-btn');
 
             if(type === 'notice') {
-                title.innerText = "알림판 추가";
+                title.innerText = mode === 'add' ? "알림판 추가" : "알림판 수정";
                 icon.src = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Megaphone/3D/megaphone_3d.png";
                 saveBtn.style.background = "#3498db";
             } else {
-                title.innerText = "종례 추가";
+                title.innerText = mode === 'add' ? "종례 추가" : "종례 수정";
                 icon.src = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Memo/3D/memo_3d.png";
                 saveBtn.style.background = "#e67e22";
             }
+
+            if (mode === 'add') {
+                btnText.innerText = "등록하기";
+                btnIcon.src = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Plus/3D/plus_3d.png";
+            } else {
+                btnText.innerText = "수정완료";
+                btnIcon.src = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Pencil/3D/pencil_3d.png";
+            }
+
+            input.value = existingText;
             modal.style.display = 'flex';
         }
 
-        function closeDataAddModal() { document.getElementById('data-add-modal').style.display = 'none'; document.getElementById('data-input-text').value = ''; }
+        function closeDataModal() { document.getElementById('data-manage-modal').style.display = 'none'; document.getElementById('data-input-text').value = ''; }
 
-        async function submitDataAdd() {
+        async function submitDataAction() {
             const content = document.getElementById('data-input-text').value;
             if (!content.trim()) { alert("내용을 입력해주세요!"); return; }
             
+            const btnText = document.getElementById('data-btn-text');
             const btn = document.getElementById('data-save-btn'); 
-            const originalText = btn.innerHTML;
-            btn.innerHTML = "처리 중... ⏳"; btn.disabled = true;
+            const originalText = btnText.innerText;
+            btnText.innerText = "처리 중... ⏳"; btn.disabled = true;
 
-            const url = `${GAS_URL}?action=add_item&type=${currentActionType}&content=${encodeURIComponent(content)}`;
+            const actionCommand = currentActionMode === 'add' ? 'add_item' : 'edit_item';
+            const url = `${GAS_URL}?action=${actionCommand}&type=${currentActionType}&index=${currentActionIndex}&content=${encodeURIComponent(content)}`;
+
             try {
                 await fetch(url);
-                closeDataAddModal(); fetchData(); 
-            } catch(e) { alert("통신 실패."); } finally { btn.innerHTML = originalText; btn.disabled = false; }
+                closeDataModal(); fetchData(); 
+            } catch(e) { alert("통신 실패. 인터넷을 확인하세요."); } 
+            finally { btnText.innerText = originalText; btn.disabled = false; }
         }
 
-        // --- ✨ 롱프레스 로직 완벽 원복 (가장 단순하고 확실한 타이머+confirm 방식) ---
-        function startPress(type, index) {
+        // --- ✨ 짧게 탭(수정) vs 길게 누르기(삭제) 완벽 분리 로직 ---
+        function handlePointerDown(type, index) {
+            isLongPress = false; // 기본값 초기화
+            
+            // 0.8초가 지나면 롱프레스(삭제)로 간주
             pressTimer = setTimeout(() => {
+                isLongPress = true; 
                 if(confirm("해당 항목을 삭제하시겠습니까? 🗑️")) {
                     deleteItem(type, index);
                 }
-            }, 800); // 0.8초 꾹 누르면 바로 삭제 물어보기
+            }, 800); 
         }
 
-        function cancelPress() {
+        function handlePointerUp(type, index, element) {
+            clearTimeout(pressTimer); // 0.8초 되기 전에 떼면 삭제 타이머 정지
+            
+            // 삭제 팝업이 안 떴을 때(짧게 눌렀을 때) -> 수정 모달 띄우기
+            if (!isLongPress) {
+                const existingText = element.getAttribute('data-text');
+                openDataModal(type, 'edit', index, existingText);
+            }
+        }
+
+        function handlePointerLeave() {
+            // 마우스나 손가락이 요소 밖으로 벗어나면 타이머 취소
             clearTimeout(pressTimer);
+            isLongPress = false;
         }
 
+        // 삭제 서버 통신 함수
         async function deleteItem(type, index) {
             try {
                 await fetch(`${GAS_URL}?action=delete_item&type=${type}&index=${index}`);
                 fetchData(); // 성공 시 화면 즉각 갱신
-            } catch(e) { alert("삭제 실패. 인터넷을 확인하세요."); }
+            } catch(e) { alert("삭제 통신 실패. 인터넷을 확인하세요."); }
         }
 
         // --- ⏰ 시간표 현재시간 하이라이트 ---
