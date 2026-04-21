@@ -346,7 +346,8 @@
         // 전체 데이터 불러오기 (시간표, 급식, 일정, 알림/종례)
         async function fetchData() {
             try {
-                const response = await fetch(GAS_URL);
+               // 💡 끝에 "?t=" + 현재시간 을 붙여서 무조건 최신 데이터를 가져오게 강제합니다!
+                const response = await fetch(GAS_URL + "?t=" + new Date().getTime());
                 const data = await response.json();
                 updateDashboard(data);
             } catch (e) { console.error("데이터 오류:", e); }
