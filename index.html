@@ -1,4 +1,4 @@
- //(ver.20026-04-21-13:53)
+ //(ver.20026-04-21-13:59) 
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -214,11 +214,12 @@
             <div class="panel closing-panel">
                 <h2 class="panel-title" style="justify-content: space-between;">
                     <span><img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Memo/3D/memo_3d.png"> 종례 미리보기</span>
-                    <button class="noti-btn" onclick="openDataAddModal('closing')" style="background: #e67e22;">
+                    <button class="noti-btn" onclick="openDataAddPopup('notice')" style="background: #3498db;">
+                    <button class="noti-btn" onclick="openDataAddPopup('closing')" style="background: #e67e22;">
                         추가 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Plus/3D/plus_3d.png" style="height:1em; width:1em; vertical-align:-0.15em;">
                     </button>
                 </h2>
-                <span style="font-size: 0.85rem; color: #e74c3c; margin-bottom: 10px; font-weight: 800;">💡 삭제하려면 길게 누르세요.</span>
+                <span style="font-size: 0.85rem; color: #95a5a6; margin-bottom: 10px; font-weight: 800;">💡 삭제하려면 길게 누르세요.</span>
                 <ul class="data-list" id="closing-content"></ul>
             </div>
         </div>
@@ -241,8 +242,8 @@
                         <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Mobile%20phone/3D/mobile_phone_3d.png"> 최근 호출 내역
                     </span>
                     <div style="display: flex; gap: 5px;">
-                        <button class="noti-btn" onclick="requestNotificationPermission()">알림 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Bell/3D/bell_3d.png" style="height:1em; width:1em; vertical-align:-0.15em;"></button>
-                        <button class="clear-btn" onclick="clearCallHistory()">삭제 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Wastebasket/3D/wastebasket_3d.png" style="height:1em; width:1em; vertical-align:-0.15em;"></button>
+                        <button class="noti-btn" onclick="requestNotificationPermission()">알림 켜기 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Bell/3D/bell_3d.png" style="height:1em; width:1em; vertical-align:-0.15em;"></button>
+                        <button class="clear-btn" onclick="clearCallHistory()">내역 삭제 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Wastebasket/3D/wastebasket_3d.png" style="height:1em; width:1em; vertical-align:-0.15em;"></button>
                     </div>
                 </h2>
                 <ul class="history-list" id="history-content"></ul>
