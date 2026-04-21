@@ -1,4 +1,4 @@
-/* 2026-04-21 14:27 ver 1.0 + 알림판, 종례미리보기 업데이트 (원클리 수정, 롱클릭 삭제 업데이트)
+/* 2026-04-21 14:27 ver 1.0 + 알림판, 종례미리보기 업데이트 - 원클릭 수정, 롱클릭 삭제 업데이트, 리스트에서 수정시 반영 업데이트 */
 
 <!DOCTYPE html>  
 <html lang="ko">
@@ -296,7 +296,7 @@
         // 1. 기본 설정 및 전역 변수
         // ----------------------------------------------------------------
         // 💡 백엔드(GAS) 통신 주소 
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwK9G-YBCMIxvqxTntJXVRMOTIlwEr-4JOdFYQi17WlRKDxb__TF7jEQhYYSp3YjMAUmg/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbymo_wxZFp6nzWyvkp_9dF8x32VHjdsdhaiIloLv8_jqZAmaWDOvZ7IitiBA5K0GKVMnQ/exec";
 
         let currentSchedules = []; // 달력 일정 저장용 배열
         let displayDate = new Date(); // 달력 표시용 날짜
