@@ -35,8 +35,18 @@
         header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 10px; }
         .date-header { font-size: 1.5rem; color: #7f8c8d; letter-spacing: -0.5px; font-weight: bold; justify-self: start; }
         .main-title { font-size: 2.2rem; font-weight: 900; color: #1a252f; justify-self: center; letter-spacing: -1px; display: flex; align-items: center; gap: 10px; }
-        .clock { font-size: 2.5rem; color: var(--accent-color); font-weight: 800; letter-spacing: 1px; justify-self: end; }
 
+       /* 💡 시계를 크고 눈에 띄게 (그린 그라데이션 캡슐 디자인) */
+        .clock { 
+            display: flex; align-items: baseline; gap: 8px; justify-self: end;
+            background: linear-gradient(135deg, #4CAF50 0%, #2E8B57 100%);
+            color: white; padding: 12px 25px; border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.4);
+        }
+        .clock .ampm { font-size: 1.5rem; font-weight: 800; opacity: 0.9; }
+        .clock .time { font-size: 3.2rem; font-weight: 900; letter-spacing: 2px; line-height: 1; }
+        .clock .sec { font-size: 1.5rem; font-weight: 700; opacity: 0.8; }
+       
         /* 1-5. 메인 레이아웃 3단 그리드 (좌 1 : 중앙 2.2 : 우 1 비율) */
         main { display: grid; grid-template-columns: 1fr 2.2fr 1fr; gap: 20px; align-items: stretch; }
 
@@ -678,10 +688,20 @@
                 }
             });
         }
-
-        // 1초 단위 시계 구동
-        function updateClock() { document.getElementById('clock').textContent = new Date().toLocaleTimeString('ko-KR', { hour12: false }); highlightCurrentPeriod(); }
-        
+         // 💡 12시간제로 변환하고 디자인된 클래스(ampm, time, sec)를 적용하는 시계 구동부
+        function updateClock() { 
+            const now = new Date(); 
+            let hours = now.getHours(); 
+            const minutes = String(now.getMinutes()).padStart(2, '0'); 
+            const seconds = String(now.getSeconds()).padStart(2, '0'); 
+            
+            const ampm = hours >= 12 ? '오후' : '오전';
+            hours = hours % 12; 
+            hours = hours ? hours : 12; // 0시는 12시로 표시
+            
+            document.getElementById('clock').innerHTML = `<span class="ampm">${ampm}</span><span class="time">${hours}:${minutes}</span><span class="sec">${seconds}</span>`;
+            highlightCurrentPeriod(); 
+        }
         // --- 최초 실행 및 타이머 스케줄링 ---
         setInterval(updateClock, 1000);             // 시계: 1초마다
         setInterval(fetchData, 3600000);            // 전체 데이터: 1시간마다
