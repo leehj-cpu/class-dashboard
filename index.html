@@ -165,18 +165,18 @@
         updateClock();
 
         // 1. 데이터 로드 및 전체 렌더링
+       // 1. 데이터 로드 및 전체 렌더링
         async function loadData() {
             try {
                 const res = await fetch(GAS_URL);
                 if (!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json();
                 
-                // 데이터 할당
+                // 데이터 할당 (GAS에서 보낸 키값과 맞춤)
                 currentData.closing = data.closingList || [];
-                // 알림판 데이터가 기존 문자열 배열에서 객체 배열로 변경되었다고 가정
-                currentData.notice = (data.noticeList || []).map(item => typeof item === 'string' ? {text: item} : item);
+                currentData.notice = data.noticeList || [];
                 
-                // 종례 렌더링
+                // [1] 종례 렌더링
                 const closingHtml = currentData.closing.map((item, idx) => `
                     <li onclick="showDetail('closing', ${idx})">
                         <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Pushpin/3D/pushpin_3d.png">
@@ -185,7 +185,7 @@
                 `).join('');
                 document.getElementById('closing-content').innerHTML = closingHtml || "<li>등록된 종례가 없습니다.</li>";
                 
-                // 공지사항 렌더링
+                // [2] 공지사항 렌더링
                 const noticeHtml = currentData.notice.map((item, idx) => `
                     <li onclick="showDetail('notice', ${idx})">
                         <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Megaphone/3D/megaphone_3d.png">
@@ -194,11 +194,32 @@
                 `).join('');
                 document.getElementById('notice-content').innerHTML = noticeHtml || "<li>등록된 공지사항이 없습니다.</li>";
                 
-                // 시간표, 급식, 캘린더, 호출 내역 등은 데이터 구조에 맞게 렌더링 추가 필요
-                document.getElementById('timetable-content').innerText = "데이터 로드 완료";
-                document.getElementById('meal-content').innerText = "데이터 로드 완료";
-                document.getElementById('calendar-grid').innerText = "데이터 로드 완료";
-                document.getElementById('history-content').innerHTML = "<li>호출 내역 없음</li>";
+                // [3] 시간표 렌더링 (오늘 요일 기준)
+                const today = new Date().getDay(); // 1:월, 2:화...
+                const dayKey = (today === 0 || today === 6) ? 1 : today; // 주말엔 월요일꺼 보여줌
+                const todayTimetable = data.weeklyTimetable[dayKey] || [];
+                const ttHtml = todayTimetable.map(item => `
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-weight:bold;">
+                        <span>${item.period}교시</span>
+                        <span style="color:var(--info-color)">${item.subject}</span>
+                    </div>
+                `).join('');
+                document.getElementById('timetable-content').innerHTML = ttHtml || "시간표 정보 없음";
+
+                // [4] 급식 렌더링
+                const mealHtml = (data.lunchMenu || []).map(menu => `<div>${menu}</div>`).join('');
+                document.getElementById('meal-content').innerHTML = `<div style="text-align:center; font-weight:bold; line-height:1.6;">${mealHtml}</div>`;
+
+                // [5] 최근 호출 내역 렌더링
+                const historyHtml = (data.callHistory || []).map(h => `
+                    <li style="font-size:0.9rem; margin-bottom:4px; list-style:none;">
+                        <small style="color:var(--text-muted)">[${h.time}]</small> ${h.text}
+                    </li>
+                `).join('');
+                document.getElementById('history-content').innerHTML = historyHtml || "<li>호출 내역 없음</li>";
+
+                // [6] 캘린더는 별도 함수(renderCalendar)를 호출하거나 간단히 표시
+                renderCalendar(data.schedules);
                 
             } catch (error) {
                 console.error('Fetch error:', error);
@@ -206,6 +227,20 @@
             }
         }
 
+        // 간단한 캘린더 렌더링 함수 추가
+        function renderCalendar(schedules) {
+            const container = document.getElementById('calendar-grid');
+            const now = new Date();
+            // 이번 달 1일부터 말일까지 간단 표시 (복잡한 로직 생략하고 리스트형태로 우선 표시)
+            const todayStr = now.toISOString().split('T')[0];
+            const todayEvents = schedules.filter(s => s.date.startsWith(todayStr));
+            
+            if(todayEvents.length > 0) {
+                container.innerHTML = todayEvents.map(e => `<div class="event-item" style="background:${e.color}">${e.event}</div>`).join('');
+            } else {
+                container.innerHTML = "<div style='font-size:0.8rem; color:#95a5a6;'>오늘 일정이 없습니다.</div>";
+            }
+        }
         // 2. 상세보기 모달 열기
         function showDetail(type, index) {
             const item = currentData[type][index];
