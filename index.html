@@ -1,4 +1,4 @@
-<!-- 2026-04-21 14:27 ver 1.0 + 알림판, 종례미리보기 업데이트 - 원클릭 수정, 롱클릭 삭제 업데이트, 리스트에서 수정시 반영 업데이트? -->
+<!-- 2026-04-21 14:27 ver 1.0 + 알림판, 종례미리보기 업데이트 - 원클릭 수정, 롱클릭 삭제 업데이트, 리스트에서 수정시 반영 업데이트? 웹훅 수정 기능 및 웹훅 복구 완료 2026-04-21 15:53 -->
 <!DOCTYPE html>  
 <html lang="ko">
    
@@ -307,7 +307,7 @@
         // 1. 기본 설정 및 전역 변수
         // ----------------------------------------------------------------
         // 💡 백엔드(GAS) 통신 주소 
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbymo_wxZFp6nzWyvkp_9dF8x32VHjdsdhaiIloLv8_jqZAmaWDOvZ7IitiBA5K0GKVMnQ/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxJL9orZq0UCHuWesrMCCfe6GJcvJWGhBxZ7d0KZHN3UH9pfdUjeF_6Xxyhq2RTw6-EWQ/exec";
 
         let currentSchedules = []; // 달력 일정 저장용 배열
         let displayDate = new Date(); // 달력 표시용 날짜
