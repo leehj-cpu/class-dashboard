@@ -16,7 +16,7 @@
             margin: 0; padding: 25px; font-family: 'Pretendard', sans-serif;
             background-color: var(--bg-color); min-height: 100vh;
             display: grid; grid-template-rows: 60px 1fr; gap: 20px; box-sizing: border-box; color: var(--text-main);
-            /* 모바일 환경에서 길게 누를 때 텍스트 선택 및 기본 팝업 방지 */
+            /* 모바일 텍스트 선택 방지 (롱프레스 삭제 원활하게) */
             -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
         }
 
@@ -113,7 +113,7 @@
             font-weight: 900; display: flex; gap: 12px; align-items: center; position: relative; 
             transition: all 0.2s ease; cursor: pointer; border: 2px solid transparent;
         }
-        /* 액티브(눌림) 상태일 때 시각적 피드백 */
+        /* 롱프레스 시 반응 */
         .data-list li:active { transform: scale(0.98); border: 2px solid rgba(0,0,0,0.2); }
 
         .history-panel .panel-title { color: #d35400; justify-content: space-between; }
@@ -128,7 +128,7 @@
 
         #class-photo { width: 100%; height: 100%; object-fit: cover; border-radius: var(--border-radius); }
 
-        /* === 9. 모달창 디자인 === */
+        /* === 9. 모달창 (호출, 데이터 추가) === */
         #call-popup {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(231, 76, 60, 0.95); z-index: 9999; display: flex; flex-direction: column;
@@ -154,19 +154,6 @@
             box-sizing: border-box; box-shadow: 0 15px 35px rgba(0,0,0,0.2); outline: none;
         }
         .modal-input::placeholder { color: #a5b1c2; }
-
-        /* ✨ 액션 메뉴 (수정/삭제 팝업) */
-        .action-menu {
-            display: none; position: absolute; background: white; border-radius: 12px; 
-            box-shadow: 0 5px 25px rgba(0,0,0,0.25); padding: 8px; z-index: 1000;
-            flex-direction: column; gap: 5px; min-width: 160px;
-        }
-        .action-menu button {
-            border: none; background: transparent; padding: 12px 15px; font-size: 1.15rem; font-weight: 800; 
-            color: #2c3e50; cursor: pointer; border-radius: 8px; text-align: left; display: flex; align-items: center; gap: 10px;
-        }
-        .action-menu button:hover { background: #f1f2f6; }
-        .action-menu button.delete-action { color: #e74c3c; }
         
         @keyframes siren-glow { from { box-shadow: inset 0 0 50px rgba(192, 57, 43, 0.5); } to { box-shadow: inset 0 0 200px rgba(192, 57, 43, 1); } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -179,11 +166,6 @@
         <img class="siren-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Police%20car%20light/3D/police_car_light_3d.png" alt="🚨">
         <div><span id="call-name" style="color:#ffeaa7;">학생</span> 학생!</div>
         <div style="font-size: 3rem; margin-top: 20px;">지금 바로 교무실로 와주세요</div>
-    </div>
-
-    <div id="item-action-menu" class="action-menu">
-        <button onclick="handleAction('edit')"><img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Pencil/3D/pencil_3d.png"> 수정하기</button>
-        <button class="delete-action" onclick="handleAction('delete')"><img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Wastebasket/3D/wastebasket_3d.png"> 삭제하기</button>
     </div>
 
     <header>
@@ -230,11 +212,11 @@
             <div class="panel closing-panel">
                 <h2 class="panel-title" style="justify-content: space-between;">
                     <span><img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Memo/3D/memo_3d.png"> 종례 미리보기</span>
-                    <button class="noti-btn" onclick="openDataModal('closing', 'add')" style="background: #e67e22;">
+                    <button class="noti-btn" onclick="openDataAddModal('closing')" style="background: #e67e22;">
                         추가 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Plus/3D/plus_3d.png" style="height:1em; width:1em; vertical-align:-0.15em;">
                     </button>
                 </h2>
-                <span style="font-size: 0.85rem; color: #e74c3c; margin-bottom: 10px; font-weight: 800;">💡 수정/삭제하려면 항목을 1초간 꾹~ 누르세요.</span>
+                <span style="font-size: 0.85rem; color: #e74c3c; margin-bottom: 10px; font-weight: 800;">💡 삭제하려면 항목을 1초간 꾹~ 누르세요.</span>
                 <ul class="data-list" id="closing-content"></ul>
             </div>
         </div>
@@ -243,11 +225,11 @@
             <div class="panel notice-panel">
                 <h2 class="panel-title" style="justify-content: space-between;">
                     <span><img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Megaphone/3D/megaphone_3d.png"> 알림판</span>
-                    <button class="noti-btn" onclick="openDataModal('notice', 'add')" style="background: #3498db;">
+                    <button class="noti-btn" onclick="openDataAddModal('notice')" style="background: #3498db;">
                         추가 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Plus/3D/plus_3d.png" style="height:1em; width:1em; vertical-align:-0.15em;">
                     </button>
                 </h2>
-                <span style="font-size: 0.85rem; color: #e74c3c; margin-bottom: 10px; font-weight: 800;">💡 수정/삭제하려면 항목을 1초간 꾹~ 누르세요.</span>
+                <span style="font-size: 0.85rem; color: #e74c3c; margin-bottom: 10px; font-weight: 800;">💡 삭제하려면 항목을 1초간 꾹~ 누르세요.</span>
                 <ul class="data-list" id="notice-content"></ul>
             </div>
 
@@ -290,15 +272,15 @@
             </div>
         </div>
 
-        <div id="data-manage-modal" class="modal-overlay">
+        <div id="data-add-modal" class="modal-overlay">
             <div class="modal-content-box">
                 <img id="data-modal-icon" class="fluent-emoji" src="" style="width: 7rem; height: 7rem; margin-bottom: 10px; animation: float 2s infinite ease-in-out;">
                 <h2 id="data-modal-title" style="font-size: 3.5rem; margin-top: 0; margin-bottom: 30px; font-weight: 900; text-shadow: 0 5px 15px rgba(0,0,0,0.3);">제목</h2>
                 <textarea id="data-input-text" class="modal-input" placeholder="내용을 입력하세요..." style="height: 180px; resize: none; font-family: inherit;"></textarea>
                 <div style="display: flex; gap: 20px; margin-top: 10px;">
-                    <button onclick="closeDataModal()" style="flex: 1; padding: 20px; background: rgba(255,255,255,0.15); color: white; border: 3px solid rgba(255,255,255,0.5); border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer;">취소</button>
-                    <button id="data-save-btn" onclick="submitDataAction()" style="flex: 2; padding: 20px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer; box-shadow: 0 10px 25px rgba(230, 126, 34, 0.4); display:flex; justify-content:center; align-items:center; gap:10px;">
-                        <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Check%20mark%20button/3D/check_mark_button_3d.png" style="height:1.2em; width:1.2em; vertical-align:-0.2em;"> <span id="data-btn-text">저장하기</span>
+                    <button onclick="closeDataAddModal()" style="flex: 1; padding: 20px; background: rgba(255,255,255,0.15); color: white; border: 3px solid rgba(255,255,255,0.5); border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer;">취소</button>
+                    <button id="data-save-btn" onclick="submitDataAdd()" style="flex: 2; padding: 20px; background: #e67e22; color: white; border: none; border-radius: 20px; font-size: 1.6rem; font-weight: 900; cursor: pointer; box-shadow: 0 10px 25px rgba(230, 126, 34, 0.4); display:flex; justify-content:center; align-items:center; gap:10px;">
+                        <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Check%20mark%20button/3D/check_mark_button_3d.png" style="height:1.2em; width:1.2em; vertical-align:-0.2em;"> 등록하기
                     </button>
                 </div>
             </div>
@@ -307,13 +289,13 @@
 
     <script>
         // 💡 1단계에서 새로 발급받은 URL을 꼭 여기에 넣으세요!
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwQ4Wsi3SCe3Im1CV_YLGIG1eYKglQvNBMdfHGWRIfmOwvDhS6dNkhIzvOBUe_A4maQpw/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyOHL1SMbOmL9RRCD_BKWfEzqut65prhHeeT9htRgiSbT2cr7rdpkpYjvkbVOYa9kBDAw/exec";
 
         let currentSchedules = [];
         let displayDate = new Date();
         
-        let currentActionType = ''; let currentActionMode = ''; let currentActionIndex = -1;
-        let pressTimer = null; // 롱프레스 타이머
+        let currentActionType = ''; // 추가용 전역 변수
+        let pressTimer = null; // 롱프레스(길게 누르기) 감지 타이머
 
         const classTimes = {
             "조회": { start: 800, end: 810 }, "준비": { start: 810, end: 820 },
@@ -385,6 +367,7 @@
             try { await fetch(GAS_URL + "?action=clear_history"); } catch(e) { }
         }
 
+        // ✨ 화면 렌더링
         function updateDashboard(data) {
             const now = new Date(); const actualDay = now.getDay(); let timetableDay = (actualDay === 0 || actualDay === 6) ? 1 : actualDay;
             document.getElementById('date-header').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
@@ -393,30 +376,30 @@
                 <div class="time-slot" data-period="${item.period}"><div class="period-num">${item.period}</div><div class="subject-name">${item.subject}</div><div class="status-badge-container"></div></div>`).join('');
             document.getElementById('meal-content').innerHTML = data.lunchMenu.map((menu, index) => `<div class="meal-item"><div class="meal-emoji"><img class="fluent-emoji" src="${msFoodEmojis[index % msFoodEmojis.length]}"></div><div class="meal-name">${menu}</div></div>`).join('');
             
-            // ✨ 알림판 렌더링 (마우스 & 터치 이벤트 모두 연결)
+            // ✨ 알림판 렌더링 (원복된 롱프레스 삭제 연결)
             const noticeArray = data.noticeList || [];
             if (noticeArray.length > 0) {
                 document.getElementById('notice-content').innerHTML = noticeArray.map((text, idx) => {
                     const colorPick = noticeColors[idx % noticeColors.length];
                     return `
                     <li style="background: ${colorPick.bg}; color: ${colorPick.text};" 
-                        onmousedown="startPress('notice', ${idx}, event)" onmouseup="cancelPress()" onmouseleave="cancelPress()"
-                        ontouchstart="startPress('notice', ${idx}, event)" ontouchend="cancelPress()" ontouchcancel="cancelPress()">
+                        onmousedown="startPress('notice', ${idx})" onmouseup="cancelPress()" onmouseleave="cancelPress()"
+                        ontouchstart="startPress('notice', ${idx})" ontouchend="cancelPress()" ontouchcancel="cancelPress()">
                         <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Megaphone/3D/megaphone_3d.png" style="width:1.5em; height:1.5em; margin-right:8px;">
                         <span class="item-text">${text}</span>
                     </li>`;
                 }).join('');
             } else { document.getElementById('notice-content').innerHTML = '<li style="background: #f8fafc; color: #95a5a6;"><span>오늘의 공지사항이 없습니다.</span></li>'; }
 
-            // ✨ 종례판 렌더링
+            // ✨ 종례판 렌더링 (원복된 롱프레스 삭제 연결)
             const closingArray = data.closingList || [];
             if (closingArray.length > 0) {
                 document.getElementById('closing-content').innerHTML = closingArray.map((text, idx) => {
-                    const colorPick = noticeColors[(idx + 3) % noticeColors.length];
+                    const colorPick = noticeColors[(idx + 3) % noticeColors.length]; 
                     return `
                     <li style="background: ${colorPick.bg}; color: ${colorPick.text};" 
-                        onmousedown="startPress('closing', ${idx}, event)" onmouseup="cancelPress()" onmouseleave="cancelPress()"
-                        ontouchstart="startPress('closing', ${idx}, event)" ontouchend="cancelPress()" ontouchcancel="cancelPress()">
+                        onmousedown="startPress('closing', ${idx})" onmouseup="cancelPress()" onmouseleave="cancelPress()"
+                        ontouchstart="startPress('closing', ${idx})" ontouchend="cancelPress()" ontouchcancel="cancelPress()">
                         <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Pushpin/3D/pushpin_3d.png" style="width:1.5em; height:1.5em; margin-right:8px;">
                         <span class="item-text">${text}</span>
                     </li>`;
@@ -475,94 +458,64 @@
             } catch (e) { alert("전송 실패."); } finally { btn.innerHTML = originalText; btn.disabled = false; }
         }
 
-        // --- ✨ 공지/종례 통합 관리 로직 ---
-        function openDataModal(type, mode, index = -1, existingText = '') {
-            currentActionType = type; currentActionMode = mode; currentActionIndex = index;
-            const modal = document.getElementById('data-manage-modal');
+        // --- ✨ 공지/종례 데이터 추가 모달 ---
+        function openDataAddModal(type) {
+            currentActionType = type;
+            const modal = document.getElementById('data-add-modal');
             const title = document.getElementById('data-modal-title');
             const icon = document.getElementById('data-modal-icon');
-            const input = document.getElementById('data-input-text');
-            const btnText = document.getElementById('data-btn-text');
             const saveBtn = document.getElementById('data-save-btn');
 
             if(type === 'notice') {
-                title.innerText = mode === 'add' ? "알림판 추가" : "알림판 수정";
+                title.innerText = "알림판 추가";
                 icon.src = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Megaphone/3D/megaphone_3d.png";
                 saveBtn.style.background = "#3498db";
             } else {
-                title.innerText = mode === 'add' ? "종례 추가" : "종례 수정";
+                title.innerText = "종례 추가";
                 icon.src = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Memo/3D/memo_3d.png";
                 saveBtn.style.background = "#e67e22";
             }
-            btnText.innerText = mode === 'add' ? "등록하기" : "수정완료";
-            input.value = existingText;
-            document.getElementById('item-action-menu').style.display = 'none';
             modal.style.display = 'flex';
         }
 
-        function closeDataModal() { document.getElementById('data-manage-modal').style.display = 'none'; document.getElementById('data-input-text').value = ''; }
+        function closeDataAddModal() { document.getElementById('data-add-modal').style.display = 'none'; document.getElementById('data-input-text').value = ''; }
 
-        async function submitDataAction() {
+        async function submitDataAdd() {
             const content = document.getElementById('data-input-text').value;
             if (!content.trim()) { alert("내용을 입력해주세요!"); return; }
             
-            const btn = document.getElementById('data-save-btn'); const btnText = document.getElementById('data-btn-text');
-            const originalText = btnText.innerText; btnText.innerText = "처리 중... ⏳"; btn.disabled = true;
+            const btn = document.getElementById('data-save-btn'); 
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "처리 중... ⏳"; btn.disabled = true;
 
-            const actionCommand = currentActionMode === 'add' ? 'add_item' : 'edit_item';
-            const url = `${GAS_URL}?action=${actionCommand}&type=${currentActionType}&index=${currentActionIndex}&content=${encodeURIComponent(content)}`;
-
+            const url = `${GAS_URL}?action=add_item&type=${currentActionType}&content=${encodeURIComponent(content)}`;
             try {
                 await fetch(url);
-                closeDataModal(); fetchData(); 
-            } catch(e) { alert("서버 통신 실패."); } finally { btnText.innerText = originalText; btn.disabled = false; }
+                closeDataAddModal(); fetchData(); 
+            } catch(e) { alert("통신 실패."); } finally { btn.innerHTML = originalText; btn.disabled = false; }
         }
 
-        // --- ✨ 롱프레스 로직 개선 (정확한 0.8초 타이머) ---
-        function startPress(type, index, e) {
-            // 버튼 클릭 시 텍스트 블록 지정 방지
-            e.preventDefault(); 
-            
+        // --- ✨ 롱프레스 로직 완벽 원복 (가장 단순하고 확실한 타이머+confirm 방식) ---
+        function startPress(type, index) {
             pressTimer = setTimeout(() => {
-                const menu = document.getElementById('item-action-menu');
-                const listItem = e.currentTarget;
-                const existingText = listItem.querySelector('.item-text').innerText;
-                
-                currentActionType = type; currentActionIndex = index;
-                menu.dataset.text = existingText; 
-                
-                // 마우스 또는 터치 좌표로 메뉴 띄우기
-                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-                menu.style.left = `${clientX}px`; menu.style.top = `${clientY}px`;
-                menu.style.display = 'flex';
-            }, 800); 
+                if(confirm("해당 항목을 삭제하시겠습니까? 🗑️")) {
+                    deleteItem(type, index);
+                }
+            }, 800); // 0.8초 꾹 누르면 바로 삭제 물어보기
         }
 
         function cancelPress() {
             clearTimeout(pressTimer);
         }
 
-        document.addEventListener('click', (e) => {
-            const menu = document.getElementById('item-action-menu');
-            if(menu.style.display === 'flex' && !menu.contains(e.target)) { menu.style.display = 'none'; }
-        });
-
-        async function handleAction(actionType) {
-            document.getElementById('item-action-menu').style.display = 'none';
-            if (actionType === 'edit') {
-                const text = document.getElementById('item-action-menu').dataset.text;
-                openDataModal(currentActionType, 'edit', currentActionIndex, text);
-            } else if (actionType === 'delete') {
-                if(confirm("이 항목을 정말 삭제하시겠습니까? 🗑️")) {
-                    try {
-                        await fetch(`${GAS_URL}?action=delete_item&type=${currentActionType}&index=${currentActionIndex}`);
-                        fetchData();
-                    } catch(e) { alert("삭제 실패."); }
-                }
-            }
+        async function deleteItem(type, index) {
+            try {
+                await fetch(`${GAS_URL}?action=delete_item&type=${type}&index=${index}`);
+                fetchData(); // 성공 시 화면 즉각 갱신
+            } catch(e) { alert("삭제 실패. 인터넷을 확인하세요."); }
         }
 
+        // --- ⏰ 시간표 현재시간 하이라이트 ---
         function highlightCurrentPeriod() {
             const now = new Date(); const curMin = now.getHours() * 60 + now.getMinutes();
             document.querySelectorAll('.time-slot').forEach(slot => {
