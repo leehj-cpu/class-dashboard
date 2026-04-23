@@ -1,4 +1,3 @@
-<!-- 2026-04-21 14:27 ver 1.0 + 알림판, 종례미리보기 업데이트 - 원클릭 수정, 롱클릭 삭제 업데이트, 리스트에서 수정시 반영 업데이트? 웹훅 수정 기능 및 웹훅 복구 완료 2026-04-21 15:53 -->
 <!DOCTYPE html>  
 <html lang="ko">
    
@@ -7,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>강동고등학교 2학년 7반 대시보드</title>
     
-    
     <style>
-        /* 1-1. 전역 색상 변수 설정 */
         :root {
             --bg-color: #f0f4f8; --card-bg: #ffffff;
             --text-main: #2c3e50; --text-muted: #95a5a6;
@@ -17,7 +14,6 @@
             --border-radius: 20px;
         }
 
-        /* 1-2. 기본 폰트 및 바디 설정 (모바일 롱프레스 텍스트 선택 방지 포함) */
         body {
             margin: 0; padding: 25px; font-family: 'Pretendard', sans-serif;
             background-color: var(--bg-color); min-height: 100vh;
@@ -25,18 +21,15 @@
             -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
         }
 
-        /* 1-3. 3D 이모지 공통 스타일 */
         .fluent-emoji {
             height: 1.3em; width: 1.3em; vertical-align: -0.25em;
             display: inline-block; object-fit: contain; border: none; background: transparent;
         }
 
-        /* 1-4. 상단 헤더 레이아웃 (날짜, 반 이름, 시계) */
          header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 10px; margin-bottom: 25px; } 
        .date-header { font-size: 1.5rem; color: #7f8c8d; letter-spacing: -0.5px; font-weight: bold; justify-self: start; }
         .main-title { font-size: 2.2rem; font-weight: 900; color: #1a252f; justify-self: center; letter-spacing: -1px; display: flex; align-items: center; gap: 10px; }
 
-       /* 💡 시계를 크고 눈에 띄게 (그린 그라데이션 캡슐 디자인) */
         .clock { 
             display: flex; align-items: baseline; gap: 8px; justify-self: end;
             background: linear-gradient(135deg, #4CAF50 0%, #2E8B57 100%);
@@ -47,10 +40,8 @@
         .clock .time { font-size: 3.2rem; font-weight: 900; letter-spacing: 2px; line-height: 1; }
         .clock .sec { font-size: 1.5rem; font-weight: 700; opacity: 0.8; }
        
-        /* 1-5. 메인 레이아웃 3단 그리드 (좌 1 : 중앙 2.2 : 우 1 비율) */
         main { display: grid; grid-template-columns: 1fr 2.2fr 1fr; gap: 20px; align-items: stretch; }
 
-        /* 1-6. 공통 패널(카드) 디자인 */
         .panel {
             background: var(--card-bg); border-radius: var(--border-radius);
             padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04);
@@ -59,7 +50,6 @@
         .panel-title { font-size: 1.4rem; margin-bottom: 15px; margin-top: 0; display: flex; align-items: center; gap: 10px; font-weight: 800; color: #1a252f; }
         .side-column { display: flex; flex-direction: column; gap: 20px; height: 100%; }
         
-        /* 1-7. 각 구역별 패널 높이 분배 */
         .left-column .panel:last-child { flex: 1; } 
         .center-column .calendar-panel { flex: 1; display: flex; flex-direction: column; } 
         .closing-panel { flex: 0 0 auto; }
@@ -67,7 +57,6 @@
         .notice-panel { flex: 0 0 auto; height: auto; } 
         .history-panel { flex: 0 0 auto; height: auto; background: #fffcf8; border: 2px dashed #f3e5ab; } 
 
-        /* 1-8. 시간표 UI 디자인 (현재시간 및 다가오는 시간 하이라이트 포함) */
         .time-slot { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 8px; background: #ffffff; border-radius: 15px; border: 1px solid #f1f2f6; transition: all 0.3s ease; }
         .period-num { width: 34px; height: 34px; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px; font-weight: 900; }
         .time-slot:nth-child(7n+1) .period-num { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
@@ -90,7 +79,6 @@
         .time-slot.upcoming .status-badge { background: rgba(0,0,0,0.15); color: white; animation: badge-pulse 1s infinite alternate; }
         @keyframes badge-pulse { from { transform: scale(1); opacity: 0.9; } to { transform: scale(1.05); opacity: 1; } }
 
-        /* 1-9. 급식 UI 디자인 */
         #meal-content { display: flex; flex-direction: column; gap: 8px; }
         .meal-item { display: flex; align-items: center; gap: 10px; padding: 10px 15px; border-radius: 15px; font-weight: 800; font-size: 1.1rem; }
         .meal-item:nth-child(6n+1) { background: #fff3cd; color: #d35400; }
@@ -101,7 +89,6 @@
         .meal-emoji { display: flex; align-items: center; justify-content: center; margin-right: 5px; }
         .meal-emoji .fluent-emoji { width: 2.2rem; height: 2.2rem; vertical-align: middle; }
 
-        /* 1-10. 달력(학급 일정) UI 디자인 */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: max-content; grid-auto-rows: 1fr; gap: 8px; flex: 1; }
         .cal-header { text-align: center; font-weight: 800; font-size: 0.95rem; padding-bottom: 5px; color: var(--text-muted); }
         .cal-header.sun { color: #e74c3c; } .cal-header.sat { color: #3498db; }
@@ -124,7 +111,6 @@
         .cal-today-btn { border:none; background:#3498db; color:white; border-radius:8px; cursor:pointer; padding:5px 12px; font-size:0.85rem; font-weight:bold; transition: transform 0.1s; }
         .cal-today-btn:active { transform: scale(0.9); }
 
-        /* 1-11. 알림판/종례 리스트 공통 및 버튼 디자인 */
         .data-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 14px; }
         .data-list li { 
             padding: 16px 20px; border-radius: 18px; font-size: 1.35rem; line-height: 1.4; 
@@ -144,17 +130,31 @@
         .clear-btn:active { transform: scale(0.9); }
         #class-photo { width: 100%; height: 100%; object-fit: cover; border-radius: var(--border-radius); }
 
-        /* 1-12. 모달창 (선생님 호출 팝업 및 데이터 추가/수정) 디자인 */
+        /* ✨ 빨간색: 학생 호출 팝업 */
         #call-popup {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(231, 76, 60, 0.95); z-index: 9999; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; color: white; font-size: 5rem; font-weight: 900;
+            justify-content: center; align-items: center; color: white; font-weight: 900;
             text-shadow: 0 10px 20px rgba(0,0,0,0.3); animation: siren-glow 1s infinite alternate;
             opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
         }
         #call-popup.show { opacity: 1; pointer-events: auto; }
         .siren-emoji { width: 8rem; height: 8rem; margin-bottom: 20px; animation: spin 2s infinite linear; object-fit: contain; }
+        @keyframes siren-glow { from { box-shadow: inset 0 0 50px rgba(192, 57, 43, 0.5); } to { box-shadow: inset 0 0 200px rgba(192, 57, 43, 1); } }
         
+        /* ✨ 파란색: 긴급 공지 팝업 */
+        #notice-popup {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(41, 128, 185, 0.95); z-index: 9999; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; color: white; font-weight: 900;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.3); animation: notice-glow 1.5s infinite alternate;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+        #notice-popup.show { opacity: 1; pointer-events: auto; }
+        .notice-emoji { font-size: 8rem; margin-bottom: 20px; animation: float 2s infinite ease-in-out; }
+        @keyframes notice-glow { from { box-shadow: inset 0 0 50px rgba(52, 152, 219, 0.5); } to { box-shadow: inset 0 0 200px rgba(52, 152, 219, 1); } }
+
+        /* 모달 오버레이 공통 */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
             background: linear-gradient(135deg, rgba(108, 92, 231, 0.95) 0%, rgba(162, 155, 254, 0.95) 100%); 
@@ -170,17 +170,32 @@
         }
         .modal-input::placeholder { color: #a5b1c2; }
         
-        @keyframes siren-glow { from { box-shadow: inset 0 0 50px rgba(192, 57, 43, 0.5); } to { box-shadow: inset 0 0 200px rgba(192, 57, 43, 1); } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
     </style>
 </head>
 <body>
-
-    <div id="call-popup">
+   <div id="call-popup">
         <img class="siren-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Police%20car%20light/3D/police_car_light_3d.png" alt="🚨">
-        <div><span id="call-name" style="color:#ffeaa7;">학생</span> 학생!</div>
+        <div style="font-size: 5rem;"><span id="call-name" style="color:#ffeaa7;">학생</span> 학생!</div>
         <div style="font-size: 3rem; margin-top: 20px;">지금 바로 교무실로 와주세요</div>
+        
+        <button id="call-reply-btn" onclick="replyToCall()" style="margin-top: 50px; padding: 20px 60px; font-size: 2rem; font-weight: 900; color: #c0392b; background: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.3); transition: transform 0.2s;" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">
+            네, 확인했습니다 🏃‍♂️
+        </button>
+    </div>
+
+    <div id="notice-popup">
+        <div class="notice-emoji">✉️</div>
+        <div style="font-size: 3rem; color:#ffeaa7;">긴급 공지</div>
+        <div id="notice-text" style="font-size: 5rem; margin-top: 30px; text-align: center; padding: 0 50px; line-height: 1.3; word-break: keep-all;">공지 내용이 표시됩니다.</div>
+        
+        <div style="margin-top: 50px; display: flex; gap: 15px; width: 80%; max-width: 700px;">
+            <input type="text" id="notice-reply-input" placeholder="여기를 눌러 칠판에서 바로 답장을 보내세요..." autocomplete="off" style="flex: 1; padding: 25px; font-size: 1.8rem; border-radius: 30px; border: none; outline: none; text-align: center; font-weight: bold; box-shadow: 0 10px 25px rgba(0,0,0,0.2); font-family: 'Pretendard', sans-serif;">
+            <button id="notice-reply-btn" onclick="replyToNotice()" style="padding: 20px 40px; font-size: 1.8rem; font-weight: 900; color: white; background: #e67e22; border: none; border-radius: 30px; cursor: pointer; box-shadow: 0 10px 25px rgba(230,126,34,0.4); transition: transform 0.2s;" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">
+                전송 🚀
+            </button>
+        </div>
     </div>
 
     <header>
@@ -303,18 +318,13 @@
     </main>
 
     <script>
-        // ----------------------------------------------------------------
-        // 1. 기본 설정 및 전역 변수
-        // ----------------------------------------------------------------
-        // 💡 백엔드(GAS) 통신 주소 
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbxJL9orZq0UCHuWesrMCCfe6GJcvJWGhBxZ7d0KZHN3UH9pfdUjeF_6Xxyhq2RTw6-EWQ/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxRybhYRvhlzq3Fb5C4uSNsoutAFsvSdwT-EfU2dpN0IbMEzHhTyqTo9MYYeV0Sp47URg/exec";
 
-        let currentSchedules = []; // 달력 일정 저장용 배열
-        let displayDate = new Date(); // 달력 표시용 날짜
-        let pressTimer = null; // 롱프레스(길게 누르기) 감지 타이머
-        let lastNotifiedStudent = null; // 중복 알림 방지용 변수
+        let currentSchedules = []; 
+        let displayDate = new Date(); 
+        let pressTimer = null; 
+        let lastNotifiedStudent = null; 
 
-        // 교시별 시간 정의
         const classTimes = {
             "조회": { start: 800, end: 810 }, "준비": { start: 810, end: 820 },
             "1": { start: 820, end: 910 }, "2": { start: 920, end: 1010 },
@@ -323,7 +333,6 @@
             "6": { start: 1410, end: 1500 }, "7": { start: 1510, end: 1600 }
         };
 
-        // UI 디자인용 이모지 및 색상 배열
         const msFoodEmojis = [
             'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Cooked%20rice/3D/cooked_rice_3d.png',
             'https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Pot%20of%20food/3D/pot_of_food_3d.png',
@@ -341,55 +350,69 @@
             { bg: '#fff3e0', text: '#e67e22' }
         ];
 
-       // ✨ 종례 미리보기 전용 디자인 (깔끔한 체크리스트 스타일)
         const closingColors = [
-            { bg: '#ffffff', border: '#e74c3c', text: '#2c3e50' }, // 빨강 포인트
-            { bg: '#ffffff', border: '#3498db', text: '#2c3e50' }, // 파랑 포인트
-            { bg: '#ffffff', border: '#2ecc71', text: '#2c3e50' }, // 초록 포인트
-            { bg: '#ffffff', border: '#f1c40f', text: '#2c3e50' }, // 노랑 포인트
-            { bg: '#ffffff', border: '#9b59b6', text: '#2c3e50' }  // 보라 포인트
+            { bg: '#ffffff', border: '#e74c3c', text: '#2c3e50' }, 
+            { bg: '#ffffff', border: '#3498db', text: '#2c3e50' }, 
+            { bg: '#ffffff', border: '#2ecc71', text: '#2c3e50' }, 
+            { bg: '#ffffff', border: '#f1c40f', text: '#2c3e50' }, 
+            { bg: '#ffffff', border: '#9b59b6', text: '#2c3e50' }  
         ];
 
-        // ----------------------------------------------------------------
-        // 2. 브라우저 알림 권한 설정
-        // ----------------------------------------------------------------
         function requestNotificationPermission() {
             if (!("Notification" in window)) { alert("이 브라우저는 알림을 지원하지 않습니다."); } 
             else if (Notification.permission === "granted") { alert("이미 알림이 켜져 있습니다!"); } 
             else if (Notification.permission !== "denied") { Notification.requestPermission().then(p => { if (p === "granted") alert("알림이 켜졌습니다! 🔔"); }); }
         }
 
-        // ----------------------------------------------------------------
-        // 3. 데이터 통신 및 렌더링 로직 (GAS 연동)
-        // ----------------------------------------------------------------
-        // 전체 데이터 불러오기 (시간표, 급식, 일정, 알림/종례)
         async function fetchData() {
             try {
-               // 💡 끝에 "?t=" + 현재시간 을 붙여서 무조건 최신 데이터를 가져오게 강제합니다!
                 const response = await fetch(GAS_URL + "?t=" + new Date().getTime());
                 const data = await response.json();
                 updateDashboard(data);
             } catch (e) { console.error("데이터 오류:", e); }
         }
 
-        // 특정 호출 상태만 빠르게 확인 (3초마다 실행)
+      // 전역 변수로 현재 팝업에 뜬 학생 이름 저장
+        let activeCallName = ""; 
+
+        // 💡 [주의] 기존 fetchCallStatus 함수 내부를 약간 수정해야 합니다.
+        // if (data.callStudent) { 안쪽에 activeCallName = data.callStudent; 를 추가해주세요.
+        // 아래 함수로 기존 fetchCallStatus 함수를 교체해주세요.
+        
         async function fetchCallStatus() {
             try {
                 const response = await fetch(GAS_URL + "?action=check_call");
                 const data = await response.json();
-                const popup = document.getElementById('call-popup');
-                const nameSpan = document.getElementById('call-name');
                 
-                // 호출된 학생이 있으면 사이렌 팝업 표시
                 if (data.callStudent) { 
-                    nameSpan.textContent = data.callStudent; popup.classList.add('show'); 
-                    if (lastNotifiedStudent !== data.callStudent) {
-                        if ("Notification" in window && Notification.permission === "granted") { new Notification("🚨 2-7 호출 알림", { body: `${data.callStudent} 학생! 교무실로 와주세요.` }); }
-                        lastNotifiedStudent = data.callStudent;
-                    }
-                } else { popup.classList.remove('show'); lastNotifiedStudent = null; }
+                    activeCallName = data.callStudent; // ✨ 이 부분이 추가되었습니다!
 
-                // 최근 호출 내역 갱신
+                    if (data.callStudent.startsWith("[공지]")) {
+                        const noticeText = data.callStudent.replace("[공지]", "").trim();
+                        document.getElementById('notice-text').textContent = noticeText;
+                        document.getElementById('notice-popup').classList.add('show');
+                        document.getElementById('call-popup').classList.remove('show');
+                        
+                        if (lastNotifiedStudent !== data.callStudent) {
+                            if ("Notification" in window && Notification.permission === "granted") { new Notification("✉️ 2-7 긴급 공지", { body: noticeText }); }
+                            lastNotifiedStudent = data.callStudent;
+                        }
+                    } else {
+                        document.getElementById('call-name').textContent = data.callStudent; 
+                        document.getElementById('call-popup').classList.add('show');
+                        document.getElementById('notice-popup').classList.remove('show');
+                        
+                        if (lastNotifiedStudent !== data.callStudent) {
+                            if ("Notification" in window && Notification.permission === "granted") { new Notification("🚨 2-7 호출 알림", { body: `${data.callStudent} 학생! 교무실로 와주세요.` }); }
+                            lastNotifiedStudent = data.callStudent;
+                        }
+                    }
+                } else { 
+                    document.getElementById('call-popup').classList.remove('show'); 
+                    document.getElementById('notice-popup').classList.remove('show'); 
+                    lastNotifiedStudent = null; 
+                }
+
                 if (data.callHistory && data.callHistory.length > 0) {
                     document.getElementById('history-content').innerHTML = data.callHistory.map(h => `<li><span class="time">${h.time}</span><span>${h.text}</span></li>`).join('');
                 } else {
@@ -398,27 +421,70 @@
             } catch (e) { }
         }
 
-        // 수신된 호출 내역 삭제
+        // ==========================================
+        // ✨ 새로 추가할 칠판 응답(답장) 관련 자바스크립트 함수
+        // ==========================================
+
+        // 1. 학생 개인 호출 '확인했습니다' 버튼 클릭 시
+        async function replyToCall() {
+            const btn = document.getElementById('call-reply-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "전송 중... ⏳"; btn.disabled = true;
+
+            try {
+                // 백엔드로 응답 신호 전송
+                await fetch(`${GAS_URL}?action=student_reply&type=call&name=${encodeURIComponent(activeCallName)}`);
+                btn.innerHTML = "✅ 확인 전송 완료!";
+                // 1초 뒤에 버튼 원래대로 복구 (팝업은 백엔드 처리에 의해 다음 갱신 때 자동으로 닫힘)
+                setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 1000);
+            } catch(e) {
+                alert("전송 실패. 인터넷을 확인하세요.");
+                btn.innerHTML = originalText; btn.disabled = false;
+            }
+        }
+
+        // 2. 긴급 공지 '텍스트 응답 전송' 버튼 클릭 시
+        async function replyToNotice() {
+            const input = document.getElementById('notice-reply-input');
+            const replyMsg = input.value.trim();
+            if(!replyMsg) { alert("답장 내용을 입력해주세요!"); return; }
+
+            const btn = document.getElementById('notice-reply-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "⏳"; btn.disabled = true;
+
+            try {
+                // 백엔드로 응답 텍스트 전송
+                await fetch(`${GAS_URL}?action=student_reply&type=notice&reply=${encodeURIComponent(replyMsg)}`);
+                btn.innerHTML = "✅ 완료";
+                input.value = ""; // 입력창 비우기
+                setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 1000);
+            } catch(e) {
+                alert("전송 실패. 인터넷을 확인하세요.");
+                btn.innerHTML = originalText; btn.disabled = false;
+            }
+        }
+
+       
+
+
         async function clearCallHistory() {
             if(!confirm("최근 호출 내역을 모두 지우시겠습니까?")) return;
             document.getElementById('history-content').innerHTML = `<li><span style="color:#95a5a6; font-size:1rem;">최근 호출 기록이 없습니다.</span></li>`;
             document.getElementById('call-popup').classList.remove('show');
+            document.getElementById('notice-popup').classList.remove('show');
             try { await fetch(GAS_URL + "?action=clear_history"); } catch(e) { }
         }
 
-        // 가져온 데이터를 HTML 화면에 뿌려주는 핵심 함수
         function updateDashboard(data) {
             const now = new Date(); const actualDay = now.getDay(); let timetableDay = (actualDay === 0 || actualDay === 6) ? 1 : actualDay;
             document.getElementById('date-header').textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일`;
 
-            // 시간표 렌더링
             document.getElementById('timetable-content').innerHTML = (data.weeklyTimetable[timetableDay] || []).filter(item => item.subject && item.subject.trim() !== "").map(item => `
                 <div class="time-slot" data-period="${item.period}"><div class="period-num">${item.period}</div><div class="subject-name">${item.subject}</div><div class="status-badge-container"></div></div>`).join('');
             
-            // 급식 렌더링
             document.getElementById('meal-content').innerHTML = data.lunchMenu.map((menu, index) => `<div class="meal-item"><div class="meal-emoji"><img class="fluent-emoji" src="${msFoodEmojis[index % msFoodEmojis.length]}"></div><div class="meal-name">${menu}</div></div>`).join('');
             
-            // 알림판 렌더링 (클릭 이벤트, 롱프레스 이벤트 연결)
             const noticeArray = data.noticeList || [];
             if (noticeArray.length > 0) {
                 document.getElementById('notice-content').innerHTML = noticeArray.map((text, idx) => {
@@ -436,12 +502,10 @@
                 }).join('');
             } else { document.getElementById('notice-content').innerHTML = '<li style="background: #f8fafc; color: #95a5a6;"><span>오늘의 공지사항이 없습니다.</span></li>'; }
 
-
-           // ✨ 종례판 렌더링 (체크리스트 스타일)
             const closingArray = data.closingList || [];
             if (closingArray.length > 0) {
                 document.getElementById('closing-content').innerHTML = closingArray.map((text, idx) => {
-                    const colorPick = closingColors[idx % closingColors.length]; // 종례 전용 색상 사용
+                    const colorPick = closingColors[idx % closingColors.length]; 
                     const contentText = text.text || text;
                     const encodedText = encodeURIComponent(contentText); 
                     return `
@@ -455,37 +519,14 @@
                 }).join('');
             } else { document.getElementById('closing-content').innerHTML = '<li style="background: #f8fafc; color: #95a5a6;"><span>등록된 종례사항이 없습니다.</span></li>'; }
            
-            /* // 종례미리보기 렌더링 (클릭 이벤트, 롱프레스 이벤트 연결)
-            const closingArray = data.closingList || [];
-            if (closingArray.length > 0) {
-                document.getElementById('closing-content').innerHTML = closingArray.map((text, idx) => {
-                    const colorPick = noticeColors[(idx + 3) % noticeColors.length]; 
-                    const contentText = text.text || text;
-                    const encodedText = encodeURIComponent(contentText); 
-                    return `
-                    <li style="background: ${colorPick.bg}; color: ${colorPick.text};" 
-                        onmousedown="startPress('closing', ${idx})" onmouseup="cancelPress()" onmouseleave="cancelPress()"
-                        ontouchstart="startPress('closing', ${idx})" ontouchend="cancelPress()" ontouchcancel="cancelPress()"
-                        onclick="handleItemClick('closing', ${idx}, '${encodedText}')">
-                        <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Pushpin/3D/pushpin_3d.png" style="width:1.5em; height:1.5em; margin-right:8px;">
-                        <span class="item-text">${contentText}</span>
-                    </li>`;
-                }).join('');
-            } else { document.getElementById('closing-content').innerHTML = '<li style="background: #f8fafc; color: #95a5a6;"><span>등록된 종례사항이 없습니다.</span></li>'; }
-            */
-            // 달력 갱신
             currentSchedules = data.schedules;
             updateCalendarUI();
 
-            // 상단 타이틀 D-Day 계산 (중간고사 기준)
             const targetDate = new Date(2026, 3, 24); const dDayDiff = Math.round((targetDate - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / (1000 * 60 * 60 * 24));
             const dDayText = dDayDiff > 0 ? `D-${dDayDiff}` : (dDayDiff === 0 ? "D-Day" : "완료");
             document.querySelector('.main-title').innerHTML = `<img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/School/3D/school_3d.png"> 2학년 7반 대시보드 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Sparkles/3D/sparkles_3d.png"> <span style="color:#e74c3c; margin-left:15px; font-size:1.8rem; background: #fee2e2; padding: 5px 15px; border-radius: 20px; display:flex; align-items:center; gap:8px;"><img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Fire/3D/fire_3d.png"> 중간고사 ${dDayText} <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Fire/3D/fire_3d.png"></span>`;
         }
 
-        // ----------------------------------------------------------------
-        // 4. 달력 조작 로직
-        // ----------------------------------------------------------------
         function changeMonth(offset) { displayDate.setMonth(displayDate.getMonth() + offset); updateCalendarUI(); }
         function resetMonth() { displayDate = new Date(); updateCalendarUI(); }
         function updateCalendarUI() { document.getElementById('calendar-title-text').innerHTML = `<img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Calendar/3D/calendar_3d.png"> ${displayDate.getFullYear()}년 ${displayDate.getMonth()+1}월 학급 일정`; renderCalendar(currentSchedules); }
@@ -502,7 +543,6 @@
                 const dayIdx = (firstDay + d - 1) % 7; let weekendClass = dayIdx === 0 ? 'sun-day' : (dayIdx === 6 ? 'sat-day' : '');
                 const currentCheckDate = new Date(year, month, d);
                 
-                // 해당 날짜의 이벤트 필터링
                 const dayEvents = schedules.filter(s => { 
                     const sStart = new Date(s.date); const sEnd = new Date(s.endDate);
                     const startDay = new Date(sStart.getFullYear(), sStart.getMonth(), sStart.getDate());
@@ -510,7 +550,6 @@
                     return currentCheckDate >= startDay && currentCheckDate <= endDay;
                 });
                 
-                // 이벤트 라벨 생성
                 const eventHtml = dayEvents.map(e => {
                     let c = 'default'; const t = e.event;
                     if (t.includes('생일')) c = 'birthday'; else if (t.includes('수행') || t.includes('평가')) c = 'performance'; 
@@ -522,9 +561,6 @@
             grid.innerHTML = html;
         }
 
-        // ----------------------------------------------------------------
-        // 5. 선생님 호출하기 기능 로직 (학생 -> 선생님)
-        // ----------------------------------------------------------------
         function openCallModal() { document.getElementById('teacher-call-modal').style.display = 'flex'; }
         function closeCallModal() { document.getElementById('teacher-call-modal').style.display = 'none'; document.getElementById('student-name').value = ''; document.getElementById('call-reason').value = ''; }
         
@@ -534,21 +570,16 @@
             const btn = document.getElementById('send-btn'); const originalText = btn.innerHTML;
             btn.innerHTML = `<img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Hourglass%20not%20done/3D/hourglass_not_done_3d.png" style="height:1.2em; width:1.2em;"> 전송 중...`; btn.disabled = true;
             try {
-                // GAS로 선생님 호출 데이터 전송
                 const response = await fetch(`${GAS_URL}?action=student_call&name=${encodeURIComponent(name)}&reason=${encodeURIComponent(reason)}`);
                 if (response.ok) { alert("성공적으로 보냈습니다! 🚀"); closeCallModal(); }
             } catch (e) { alert("전송 실패."); } finally { btn.innerHTML = originalText; btn.disabled = false; }
         }
 
-        // ----------------------------------------------------------------
-        // 6. 공지/종례 추가 및 수정 (모달창 기반)
-        // ----------------------------------------------------------------
-        let currentActionType = '';  // 'notice' 또는 'closing' 구분
-        let isEditMode = false;      // 현재 모달창이 수정용인지 추가용인지 구분
-        let currentEditIndex = -1;   // 수정 중인 항목의 인덱스 번호
-        let isLongPress = false;     // 짧은 터치(클릭)와 긴 터치(삭제) 구분용 플래그
+        let currentActionType = '';  
+        let isEditMode = false;      
+        let currentEditIndex = -1;   
+        let isLongPress = false;     
 
-        // '추가' 버튼 클릭 시 모달 열기
         function openDataAddModal(type) {
             currentActionType = type;
             isEditMode = false;
@@ -559,9 +590,8 @@
             const saveBtn = document.getElementById('data-save-btn');
             const input = document.getElementById('data-input-text');
 
-            input.value = ''; // 작성되어 있던 내용 비우기
+            input.value = ''; 
 
-            // 모달창 디자인 변경 (알림판/종례 구분에 따라)
             if(type === 'notice') {
                 title.innerText = "알림판 추가";
                 icon.src = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Megaphone/3D/megaphone_3d.png";
@@ -575,7 +605,6 @@
             modal.style.display = 'flex';
         }
 
-        // 항목 짧게 클릭 시 '수정' 모달 열기
         function openDataEditModal(type, index, decodedText) {
             currentActionType = type;
             isEditMode = true;
@@ -587,7 +616,7 @@
             const saveBtn = document.getElementById('data-save-btn');
             const input = document.getElementById('data-input-text');
 
-            input.value = decodedText; // 기존에 적혀있던 내용을 입력창에 채우기
+            input.value = decodedText; 
 
             if(type === 'notice') {
                 title.innerText = "알림판 수정";
@@ -607,7 +636,6 @@
             document.getElementById('data-input-text').value = ''; 
         }
 
-        // 작성된 내용을 GAS로 전송
         async function submitData() {
             const content = document.getElementById('data-input-text').value;
             if (!content.trim()) { alert("내용을 입력해주세요!"); return; }
@@ -616,7 +644,6 @@
             const originalText = btn.innerHTML;
             btn.innerHTML = "처리 중... ⏳"; btn.disabled = true;
 
-            // 모달 상태(추가/수정)에 따라 GAS 요청 URL 분기
             let url = '';
             if (isEditMode) {
                 url = `${GAS_URL}?action=edit_item&type=${currentActionType}&index=${currentEditIndex}&content=${encodeURIComponent(content)}`;
@@ -627,47 +654,37 @@
             try {
                 await fetch(url);
                 closeDataAddModal(); 
-                fetchData(); // 성공 후 화면 갱신
+                fetchData(); 
             } catch(e) { alert("통신 실패."); } finally { btn.innerHTML = originalText; btn.disabled = false; }
         }
 
-        // ----------------------------------------------------------------
-        // 7. 클릭(수정) 및 롱프레스(삭제) 상호작용 제어
-        // ----------------------------------------------------------------
-        // 항목을 눌렀을 때 발동 (짧은 클릭인지 판단)
         function handleItemClick(type, index, encodedText) {
-            if (isLongPress) return; // 롱프레스(삭제 모드)로 판단되었다면 수정 모달을 열지 않음
+            if (isLongPress) return; 
             const decodedText = decodeURIComponent(encodedText);
             openDataEditModal(type, index, decodedText);
         }
         
-        // 항목을 누르기 시작했을 때 타이머 시작
         function startPress(type, index) {
             isLongPress = false;
             pressTimer = setTimeout(() => {
-                isLongPress = true; // 0.8초가 넘어가면 롱프레스로 간주
+                isLongPress = true; 
                 if(confirm("해당 항목을 삭제하시겠습니까? 🗑️")) {
                     deleteItem(type, index);
                 }
             }, 800); 
         }
 
-        // 마우스를 떼거나 영역을 벗어나면 타이머 취소
         function cancelPress() {
             clearTimeout(pressTimer);
         }
 
-        // 항목 삭제 요청 전송
         async function deleteItem(type, index) {
             try {
                 await fetch(`${GAS_URL}?action=delete_item&type=${type}&index=${index}`);
-                fetchData(); // 삭제 후 화면 즉각 갱신
+                fetchData(); 
             } catch(e) { alert("삭제 실패. 인터넷을 확인하세요."); }
         }
 
-        // ----------------------------------------------------------------
-        // 8. 시간표 현재시간 하이라이트 및 시계 구동
-        // ----------------------------------------------------------------
         function highlightCurrentPeriod() {
             const now = new Date(); const curMin = now.getHours() * 60 + now.getMinutes();
             document.querySelectorAll('.time-slot').forEach(slot => {
@@ -688,7 +705,6 @@
                 }
             });
         }
-         // 💡 12시간제로 변환하고 디자인된 클래스(ampm, time, sec)를 적용하는 시계 구동부
         function updateClock() { 
             const now = new Date(); 
             let hours = now.getHours(); 
@@ -697,15 +713,15 @@
             
             const ampm = hours >= 12 ? '오후' : '오전';
             hours = hours % 12; 
-            hours = hours ? hours : 12; // 0시는 12시로 표시
+            hours = hours ? hours : 12; 
             
             document.getElementById('clock').innerHTML = `<span class="ampm">${ampm}</span><span class="time">${hours}:${minutes}</span><span class="sec">${seconds}</span>`;
             highlightCurrentPeriod(); 
         }
-        // --- 최초 실행 및 타이머 스케줄링 ---
-        setInterval(updateClock, 1000);             // 시계: 1초마다
-        setInterval(fetchData, 3600000);            // 전체 데이터: 1시간마다
-        setInterval(fetchCallStatus, 3000);         // 학생호출 확인: 3초마다
+
+        setInterval(updateClock, 1000);             
+        setInterval(fetchData, 3600000);            
+        setInterval(fetchCallStatus, 3000);         
         
         updateClock(); fetchData(); fetchCallStatus(); 
     </script>
