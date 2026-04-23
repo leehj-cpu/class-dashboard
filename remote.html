@@ -25,6 +25,7 @@
         }
         button:active { transform: scale(0.98); }
         .call-btn { background: #6c5ce7; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3); }
+        .notice-btn { background: #3498db; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3); }
         .end-btn { background: #e74c3c; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); }
         .noti-btn { background: #3498db; margin-top: 10px; font-size: 1rem; padding: 10px; }
         .status { margin-top: 15px; color: #7f8c8d; font-size: 0.95rem; font-weight: bold; }
@@ -58,9 +59,19 @@
         <h2>📱 학생 호출 패널</h2>
         <input type="text" id="studentName" placeholder="학생 이름" onkeypress="if(event.keyCode==13) callStudent()">
         <button class="call-btn" onclick="callStudent()">🚨 학생 칠판으로 호출</button>
-        <button class="end-btn" onclick="endCall()">🛑 칠판 팝업 닫기</button>
         <button class="clear-btn" onclick="clearStudentCall()" style="margin-top: 10px; background: #95a5a6; font-size: 1rem; padding: 10px;">🗑️ 학생 호출 시트 비우기</button>
         <div id="status" class="status">대기 중...</div>
+    </div>
+
+    <div class="container">
+        <h2>✉️ 칠판 긴급 공지</h2>
+        <input type="text" id="noticeMsg" placeholder="공지 내용 (예: 체육관으로!)" onkeypress="if(event.keyCode==13) sendNotice()">
+        <button class="notice-btn" onclick="sendNotice()">✉️ 칠판에 공지 띄우기</button>
+        <div id="notice-status" class="status">대기 중...</div>
+    </div>
+
+    <div class="container" style="padding: 20px;">
+        <button class="end-btn" onclick="endCall()">🛑 칠판 팝업 모두 닫기</button>
     </div>
 
     <div class="container" style="padding: 20px;">
@@ -71,9 +82,9 @@
 
     <script>
         // ✨ 선생님의 최신 GAS_URL을 넣어주세요!
-        const GAS_URL = "https://script.google.com/macros/s/AKfycby-7oPViRkyABIkin2dTVCoPH6IG43NdEorGbUnV4SOXSbk0emWwnnINfUG61Hw0joEPA/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxJL9orZq0UCHuWesrMCCfe6GJcvJWGhBxZ7d0KZHN3UH9pfdUjeF_6Xxyhq2RTw6-EWQ/exec";
 
-        let isAlertShowing = false; // 중복 알림 방지용 변수
+        let isAlertShowing = false; 
 
         function requestNotification() {
             if (!("Notification" in window)) { alert("이 브라우저는 알림을 지원하지 않습니다."); }
@@ -94,11 +105,30 @@
             } catch(e) { document.getElementById('status').innerText = "❌ 전송 실패"; }
         }
 
+        // ✨ 긴급 공지 전송 함수
+        async function sendNotice() {
+            const msg = document.getElementById('noticeMsg').value.trim();
+            if (!msg) return;
+            document.getElementById('notice-status').innerText = "전송 중... 📡";
+            try {
+                // 이름 앞에 '[공지]'를 붙여서 전송하여 백엔드에서 구분
+                const response = await fetch(`${GAS_URL}?action=call&name=${encodeURIComponent("[공지]" + msg)}`);
+                if (response.ok) {
+                    document.getElementById('notice-status').innerText = `✅ 공지 띄우기 완료!`;
+                    document.getElementById('noticeMsg').value = ''; 
+                }
+            } catch(e) { document.getElementById('notice-status').innerText = "❌ 전송 실패"; }
+        }
+
         async function endCall() {
             document.getElementById('status').innerText = "종료 중... 📡";
+            document.getElementById('notice-status').innerText = "종료 중... 📡";
             try {
                 const response = await fetch(`${GAS_URL}?action=call&name=${encodeURIComponent("🛑 호출 종료")}`);
-                if (response.ok) document.getElementById('status').innerText = "✅ 칠판 팝업 닫힘!";
+                if (response.ok) {
+                    document.getElementById('status').innerText = "✅ 칠판 팝업 닫힘!";
+                    document.getElementById('notice-status').innerText = "✅ 칠판 팝업 닫힘!";
+                }
             } catch(e) {}
         }
 
@@ -111,27 +141,21 @@
             } catch(e) { document.getElementById('status').innerText = "❌ 삭제 실패"; }
         }
 
-        // ✨ 학생 수신 확인 + 소리 재생 로직
+        // 학생 수신 확인
         async function checkTeacherAlert() {
             try {
                 const response = await fetch(`${GAS_URL}?action=check_teacher_alert`);
                 const newCall = await response.json();
 
-                // 새로운 호출이 있고, 현재 팝업이 떠있지 않은 상태일 때만 실행!
                 if (newCall && !isAlertShowing) {
-                    isAlertShowing = true; // 팝업 띄웠다고 표시
-
-                    // 1. 소리 재생 🔊
+                    isAlertShowing = true; 
                     const alertSound = document.getElementById('alert-sound');
-                    // 브라우저 정책상 사용자 상호작용이 없으면 소리 재생이 막힐 수 있어 예외 처리
-                    alertSound.play().catch(err => console.log("소리 재생이 차단됨(화면 클릭 후 정상 작동):", err));
+                    alertSound.play().catch(err => console.log("소리 재생이 차단됨:", err));
 
-                    // 2. 윈도우 알림
                     if ("Notification" in window && Notification.permission === "granted") {
                         new Notification("📢 2-7 학생 호출", { body: `${newCall.name}: ${newCall.reason}`, icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" });
                     }
                     
-                    // 3. 파란색 팝업
                     document.getElementById('t-call-name').textContent = newCall.name;
                     document.getElementById('t-call-reason').textContent = newCall.reason;
                     document.getElementById('teacher-receive-popup').classList.add('show');
@@ -141,7 +165,7 @@
 
         function closeTeacherAlert() {
             document.getElementById('teacher-receive-popup').classList.remove('show');
-            isAlertShowing = false; // 팝업을 닫으면 다시 알림 받을 준비 완료
+            isAlertShowing = false; 
         }
 
         setInterval(checkTeacherAlert, 2000);
