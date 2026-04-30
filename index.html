@@ -524,7 +524,8 @@
 
             const targetDate = new Date(2026, 3, 24); const dDayDiff = Math.round((targetDate - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / (1000 * 60 * 60 * 24));
             const dDayText = dDayDiff > 0 ? `D-${dDayDiff}` : (dDayDiff === 0 ? "D-Day" : "완료");
-            document.querySelector('.main-title').innerHTML = `<img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/School/3D/school_3d.png"> 2학년 7반 대시보드 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Sparkles/3D/sparkles_3d.png"> <span style="color:#e74c3c; margin-left:15px; font-size:1.8rem; background: #fee2e2; padding: 5px 15px; border-radius: 20px; display:flex; align-items:center; gap:8px;"><img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Fire/3D/fire_3d.png"> 중간고사 ${dDayText} <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Fire/3D/fire_3d.png"></span>`;
+            document.querySelector('.main-title').innerHTML = `<img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/School/3D/school_3d.png"> 2학년 7반 대시보드 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Sparkles/3D/sparkles_3d.png"> 
+            <!--<span style="color:#e74c3c; margin-left:15px; font-size:1.8rem; background: #fee2e2; padding: 5px 15px; border-radius: 20px; display:flex; align-items:center; gap:8px;"><img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Fire/3D/fire_3d.png"> 중간고사 ${dDayText} <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Fire/3D/fire_3d.png"></span>`-->;
         }
 
         function changeMonth(offset) { displayDate.setMonth(displayDate.getMonth() + offset); updateCalendarUI(); }
