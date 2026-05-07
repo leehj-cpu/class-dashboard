@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>선생님과 함께하는 따뜻한 상담 🧸</title>
+    <!-- 귀여운 한글 폰트 적용 (구글 폰트 - 고운 돋움) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #FFF9E6; /* 따뜻한 버터 연노랑 */
+            --box-bg: #FFFFFF;
+            --primary-color: #FFAE88; /* 따뜻한 피치 코랄 */
+            --primary-hover: #FF9668;
+            --text-color: #5D4A44; /* 부드러운 갈색 */
+            --border-color: #FFE5D4;
+        }
+
+        body {
+            font-family: 'Gowun Dodum', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: var(--box-bg);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 25px rgba(255, 174, 136, 0.15);
+            text-align: center;
+            border: 3px solid var(--border-color);
+        }
+
+        .header h1 {
+            margin-top: 0;
+            font-size: 28px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 15px;
+            color: #8C7B77;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .form-group label span {
+            color: var(--primary-color);
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            font-family: 'Gowun Dodum', sans-serif;
+            font-size: 15px;
+            color: var(--text-color);
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+            background-color: #FFFDF9;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 174, 136, 0.2);
+            background-color: #FFFFFF;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            font-family: 'Gowun Dodum', sans-serif;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(255, 174, 136, 0.3);
+        }
+
+        .submit-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 174, 136, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* 이모지 장식 */
+        .deco {
+            font-size: 35px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <div class="deco">🌱📝🧸</div>
+            <h1>상담 신청하기</h1>
+            <p>고민이 있거나 선생님과 이야기 나누고 싶을 때,<br>언제든 편하게 신청해 주세요!</p>
+        </div>
+
+        <form id="counselingForm">
+            <div class="form-group">
+                <label for="studentName">이름 <span>*</span></label>
+                <input type="text" id="studentName" placeholder="예: 홍길동" required>
+            </div>
+
+            <div class="form-group">
+                <label for="counselDate">원하는 날짜 <span>*</span></label>
+                <input type="date" id="counselDate" required>
+            </div>
+
+            <div class="form-group">
+                <label for="counselTopic">어떤 이야기를 나누고 싶나요? <span>*</span></label>
+                <select id="counselTopic" required>
+                    <option value="" disabled selected>선택해 주세요 ▾</option>
+                    <option value="성적/학습 고민">📝 성적 및 학습 고민</option>
+                    <option value="생기부 관리">📊 생기부 관리 및 진로</option>
+                    <option value="교우 관계">🤝 친구 및 교우 관계</option>
+                    <option value="학교 생활">🏫 학교 생활 적응</option>
+                    <option value="기타">💭 기타 고민 (아래에 적어주세요)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="counselDetail">조금 더 자세히 적어줄 수 있나요? (선택)</label>
+                <textarea id="counselDetail" placeholder="선생님이 미리 알면 좋은 내용이 있다면 편하게 적어주세요!"></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">선생님께 신청서 보내기 💌</button>
+        </form>
+    </div>
+
+    <script>
+        // 오늘 이전의 날짜는 선택할 수 없도록 설정
+        const dateInput = document.getElementById('counselDate');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+
+        // 폼 제출 시 이벤트 처리
+        document.getElementById('counselingForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // 페이지 새로고침 방지
+
+            const name = document.getElementById('studentName').value;
+            
+            // 실제 서버 전송 코드는 여기에 추가 (예: Firebase, Google Apps Script 등)
+            
+            // 학생에게 보여줄 귀여운 알림창
+            alert(`짠! ✨\n${name} 학생의 상담 신청이 성공적으로 전달되었어요!\n선생님이 확인하고 곧 연락할게요. 😊`);
+            
+            // 폼 초기화
+            this.reset();
+        });
+    </script>
+</body>
+</html>
