@@ -3,34 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>선생님 컨트롤 패널 (2학년 7반)</title>
+    <title>2-7 스마트 리모컨</title>
     <style>
-        body { 
-            font-family: 'Pretendard', sans-serif; padding: 20px; background: #f0f4f8; 
-            display: flex; flex-direction: column; align-items: center; min-height: 90vh; margin: 0;
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --primary: #6c5ce7;
+            --info: #3498db;
+            --danger: #e74c3c;
+            --secondary: #95a5a6;
         }
-        .container { 
-            background: white; padding: 30px; border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 350px; text-align: center; margin-bottom: 20px;
-        }
-        h2 { color: #2c3e50; margin-top: 0; }
-        input { 
-            width: 80%; padding: 15px; font-size: 1.2rem; border: 2px solid #ddd; border-radius: 10px; 
-            margin-bottom: 20px; text-align: center; outline: none; transition: border-color 0.3s;
-        }
-        input:focus { border-color: #6c5ce7; }
-        button { 
-            width: 100%; padding: 15px; font-size: 1.2rem; font-weight: 900; border: none; 
-            border-radius: 10px; cursor: pointer; margin-bottom: 12px; color: white; transition: transform 0.1s;
-        }
-        button:active { transform: scale(0.98); }
-        .call-btn { background: #6c5ce7; box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3); }
-        .notice-btn { background: #3498db; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3); }
-        .end-btn { background: #e74c3c; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); }
-        .noti-btn { background: #3498db; margin-top: 10px; font-size: 1rem; padding: 10px; }
-        .status { margin-top: 15px; color: #7f8c8d; font-size: 0.95rem; font-weight: bold; }
 
-        /* 파란색 수신 팝업 */
+        body { 
+            font-family: 'Pretendard', -apple-system, sans-serif; 
+            background: var(--bg-color); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            margin: 0; 
+            padding: 20px 15px;
+            min-height: 100vh;
+            color: var(--text-main);
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* 메인 래퍼: 모바일 화면 폭에 최적화 */
+        .app-wrapper {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 상단 헤더 */
+        header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        header h1 { margin: 0; font-size: 2rem; font-weight: 900; letter-spacing: -1px; }
+        header p { margin: 5px 0 0 0; color: var(--text-muted); font-weight: 600; }
+
+        /* 카드 컴포넌트 */
+        .card { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 24px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05); 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card h2 { 
+            margin: 0; 
+            font-size: 1.3rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+
+        /* 입력 폼 및 버튼 */
+        input { 
+            width: 100%; 
+            padding: 16px; 
+            font-size: 1.2rem; 
+            border: 2px solid #e1e8ed; 
+            border-radius: 14px; 
+            box-sizing: border-box;
+            text-align: center; 
+            outline: none; 
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1); }
+
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            font-size: 1.15rem; 
+            font-weight: 800; 
+            border: none; 
+            border-radius: 14px; 
+            cursor: pointer; 
+            color: white; 
+            transition: transform 0.1s, filter 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        button:active { transform: scale(0.97); filter: brightness(0.9); }
+
+        /* 버튼 테마 색상 */
+        .btn-call { background: var(--primary); box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3); }
+        .btn-notice { background: var(--info); box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3); }
+        .btn-danger { background: var(--danger); box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3); }
+        .btn-secondary { background: #ecf0f1; color: var(--text-main); box-shadow: none; font-size: 1rem; padding: 14px; }
+
+        /* 상태 메시지 */
+        .status { 
+            text-align: center; 
+            color: var(--text-muted); 
+            font-size: 0.95rem; 
+            font-weight: 700; 
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 5px;
+        }
+
+        /* 👨‍🏫 파란색 수신 팝업 (학생 -> 선생님) */
         #teacher-receive-popup {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(41, 128, 185, 0.98); z-index: 9999; display: flex; flex-direction: column;
@@ -39,9 +126,12 @@
         }
         #teacher-receive-popup.show { opacity: 1; pointer-events: auto; }
         .t-alert-btn { 
-            margin-top: 40px; padding: 15px 40px; font-size: 1.5rem; font-weight: 900; color: #2980b9; 
-            background: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); width: auto;
+            margin-top: 40px; padding: 18px 50px; font-size: 1.5rem; font-weight: 900; color: #2980b9; 
+            background: white; border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: auto;
         }
+
+        /* 구분선 */
+        .divider { height: 1px; background: #eee; margin: 5px 0; }
     </style>
 </head>
 <body>
@@ -55,93 +145,102 @@
         <button class="t-alert-btn" onclick="closeTeacherAlert()">확인 완료</button>
     </div>
 
-    <div class="container">
-        <h2>📱 학생 호출 패널</h2>
-        <input type="text" id="studentName" placeholder="학생 이름" onkeypress="if(event.keyCode==13) callStudent()">
-        <button class="call-btn" onclick="callStudent()">🚨 학생 칠판으로 호출</button>
-        <button class="clear-btn" onclick="clearStudentCall()" style="margin-top: 10px; background: #95a5a6; font-size: 1rem; padding: 10px;">🗑️ 학생 호출 시트 비우기</button>
-        <div id="status" class="status">대기 중...</div>
-    </div>
+    <div class="app-wrapper">
+        <header>
+            <h1>📱 스마트 리모컨</h1>
+            <p>2학년 7반 칠판 제어 패널</p>
+        </header>
 
-    <div class="container">
-        <h2>✉️ 칠판 긴급 공지</h2>
-        <input type="text" id="noticeMsg" placeholder="공지 내용 (예: 체육관으로!)" onkeypress="if(event.keyCode==13) sendNotice()">
-        <button class="notice-btn" onclick="sendNotice()">✉️ 칠판에 공지 띄우기</button>
-        <div id="notice-status" class="status">대기 중...</div>
-    </div>
+        <div class="card">
+            <h2>🚨 학생 개별 호출</h2>
+            <input type="text" id="studentName" placeholder="호출할 학생 이름" onkeypress="if(event.keyCode==13) callStudent()">
+            <button class="btn-call" onclick="callStudent()">교무실로 호출하기</button>
+            <div id="status" class="status">대기 중...</div>
+        </div>
 
-    <div class="container" style="padding: 20px;">
-        <button class="end-btn" onclick="endCall()">🛑 칠판 팝업 모두 닫기</button>
-    </div>
+        <div class="card">
+            <h2>✉️ 칠판 긴급 공지</h2>
+            <input type="text" id="noticeMsg" placeholder="공지 내용 (예: 체육관으로!)" onkeypress="if(event.keyCode==13) sendNotice()">
+            <button class="btn-notice" onclick="sendNotice()">칠판 전체화면 띄우기</button>
+            <div id="notice-status" class="status">대기 중...</div>
+        </div>
 
-    <div class="container" style="padding: 20px;">
-        <h3 style="margin-top:0; margin-bottom: 10px; color: #2c3e50;">🔔 수신 알림 설정</h3>
-        <p style="font-size: 0.85rem; color: #7f8c8d; margin-bottom: 15px; word-break: keep-all;">이 창을 최소화(-) 해두시면 알림과 소리가 울립니다.</p>
-        <button class="noti-btn" onclick="requestNotification()">데스크톱 알림 켜기</button>
+        <div class="card">
+            <h2>⚙️ 제어 및 관리</h2>
+            <button class="btn-danger" onclick="endCall()">🛑 칠판 팝업 모두 강제 종료</button>
+            <div class="divider"></div>
+            <button class="btn-secondary" onclick="clearStudentCall()">🗑️ 학생 호출 시트 데이터 비우기</button>
+            <button class="btn-secondary" onclick="requestNotification()">🔔 이 PC에서 알림/소리 켜기</button>
+        </div>
     </div>
 
     <script>
-        // ✨ 선생님의 최신 GAS_URL을 넣어주세요!
+        // 💡 백엔드 URL
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxJCsXcX9o4TcrLxNBTgQDzG6nk0i2MRE51tIPr0FXe6dYDisoRvjlhULk39UEs5LEgHg/exec";
 
         let isAlertShowing = false; 
 
+        // 데스크톱 알림 권한 요청
         function requestNotification() {
             if (!("Notification" in window)) { alert("이 브라우저는 알림을 지원하지 않습니다."); }
-            else if (Notification.permission === "granted") { alert("이미 알림이 켜져 있습니다!"); }
-            else { Notification.requestPermission().then(p => { if (p === "granted") alert("알림이 켜졌습니다!"); }); }
+            else if (Notification.permission === "granted") { alert("✅ 이미 알림이 켜져 있습니다!"); }
+            else { Notification.requestPermission().then(p => { if (p === "granted") alert("🔔 알림이 켜졌습니다!"); }); }
         }
 
+        // 학생 호출 로직
         async function callStudent() {
             const name = document.getElementById('studentName').value.trim();
             if (!name) return;
-            document.getElementById('status').innerText = "전송 중... 📡";
+            const statusEl = document.getElementById('status');
+            statusEl.innerText = "전송 중... 📡";
             try {
                 const response = await fetch(`${GAS_URL}?action=call&name=${encodeURIComponent(name)}`);
                 if (response.ok) {
-                    document.getElementById('status').innerText = `✅ [${name}] 호출 완료!`;
+                    statusEl.innerHTML = `<span style="color:#27ae60;">✅ [${name}] 호출 완료!</span>`;
                     document.getElementById('studentName').value = ''; 
                 }
-            } catch(e) { document.getElementById('status').innerText = "❌ 전송 실패"; }
+            } catch(e) { statusEl.innerHTML = "<span style='color:#e74c3c;'>❌ 전송 실패</span>"; }
         }
 
-        // ✨ 긴급 공지 전송 함수
+        // 긴급 공지 로직
         async function sendNotice() {
             const msg = document.getElementById('noticeMsg').value.trim();
             if (!msg) return;
-            document.getElementById('notice-status').innerText = "전송 중... 📡";
+            const statusEl = document.getElementById('notice-status');
+            statusEl.innerText = "전송 중... 📡";
             try {
-                // 이름 앞에 '[공지]'를 붙여서 전송하여 백엔드에서 구분
                 const response = await fetch(`${GAS_URL}?action=call&name=${encodeURIComponent("[공지]" + msg)}`);
                 if (response.ok) {
-                    document.getElementById('notice-status').innerText = `✅ 공지 띄우기 완료!`;
+                    statusEl.innerHTML = `<span style="color:#2980b9;">✅ 공지 띄우기 완료!</span>`;
                     document.getElementById('noticeMsg').value = ''; 
                 }
-            } catch(e) { document.getElementById('notice-status').innerText = "❌ 전송 실패"; }
+            } catch(e) { statusEl.innerHTML = "<span style='color:#e74c3c;'>❌ 전송 실패</span>"; }
         }
 
+        // 팝업 강제 종료 로직
         async function endCall() {
-            document.getElementById('status').innerText = "종료 중... 📡";
-            document.getElementById('notice-status').innerText = "종료 중... 📡";
+            const btn = document.querySelector('.btn-danger');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "종료 신호 전송 중... ⏳";
             try {
                 const response = await fetch(`${GAS_URL}?action=call&name=${encodeURIComponent("🛑 호출 종료")}`);
                 if (response.ok) {
-                    document.getElementById('status').innerText = "✅ 칠판 팝업 닫힘!";
-                    document.getElementById('notice-status').innerText = "✅ 칠판 팝업 닫힘!";
+                    alert("✅ 교실 칠판의 팝업이 종료됩니다.");
                 }
-            } catch(e) {}
+            } catch(e) { alert("통신 실패."); } 
+            finally { btn.innerHTML = originalText; }
         }
 
+        // 시트 데이터 비우기 로직
         async function clearStudentCall() {
-            if(!confirm("스프레드시트에 기록된 '학생 호출 사유' 내역을 모두 지우시겠습니까?")) return;
-            document.getElementById('status').innerText = "시트 삭제 중... ⏳";
+            if(!confirm("스프레드시트에 기록된 '학생 -> 선생님 호출' 내역을 모두 지우시겠습니까?")) return;
             try {
                 const response = await fetch(GAS_URL + "?action=clear_student_call");
-                if (response.ok) document.getElementById('status').innerText = "✅ 학생 호출 내역 삭제 완료!";
-            } catch(e) { document.getElementById('status').innerText = "❌ 삭제 실패"; }
+                if (response.ok) alert("✅ 호출 내역이 깨끗하게 삭제되었습니다.");
+            } catch(e) { alert("❌ 삭제 실패"); }
         }
 
-        // 학생 수신 확인
+        // 학생 수신 확인 (Polling)
         async function checkTeacherAlert() {
             try {
                 const response = await fetch(`${GAS_URL}?action=check_teacher_alert`);
@@ -150,7 +249,7 @@
                 if (newCall && !isAlertShowing) {
                     isAlertShowing = true; 
                     const alertSound = document.getElementById('alert-sound');
-                    alertSound.play().catch(err => console.log("소리 재생이 차단됨:", err));
+                    alertSound.play().catch(err => console.log("소리 재생 차단됨:", err));
 
                     if ("Notification" in window && Notification.permission === "granted") {
                         new Notification("📢 2-7 학생 호출", { body: `${newCall.name}: ${newCall.reason}`, icon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" });
@@ -168,6 +267,7 @@
             isAlertShowing = false; 
         }
 
+        // 2초마다 칠판에서 온 호출이 있는지 확인
         setInterval(checkTeacherAlert, 2000);
     </script>
 </body>
