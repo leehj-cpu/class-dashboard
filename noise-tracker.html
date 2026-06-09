@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>교실 소음 측정기</title>
+    <style>
+        body { text-align: center; font-family: sans-serif; padding: 50px; transition: background-color 0.5s; }
+        #db-display { font-size: 80px; font-weight: bold; margin: 20px 0; }
+        .warning { background-color: #ffcccc; }
+        button { font-size: 20px; padding: 10px 20px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🤫 정숙한 자습 시간</h1>
+    <div id="db-display">0 dB</div>
+    <button id="start-btn">측정 시작</button>
+    <button id="stop-btn" disabled>측정 종료</button>
+
+    <audio id="siren-sound" src="siren.mp3" loop></audio>
+
+    <script src="app.js"></script>
+</body>
+</html>
