@@ -91,7 +91,7 @@ function sendTeacherAlert() {
 }
 
 function sendTeacherAlert() {
-    const gasUrl = "https://script.google.com/macros/s/AKfycbwdExiVmGNk2diA0gq-ZQ4HSNuickE0tty6gmLoGlfNDGJW_IY4Wi8gWQZDC2rtnYMPVg/execL";
+    const gasUrl = "https://script.google.com/macros/s/AKfycbwdExiVmGNk2diA0gq-ZQ4HSNuickE0tty6gmLoGlfNDGJW_IY4Wi8gWQZDC2rtnYMPVg/exec";
     fetch(gasUrl, {
         method: "POST",
     }).catch(error => console.error('알림 전송 실패:', error));
