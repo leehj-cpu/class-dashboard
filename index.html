@@ -721,6 +721,14 @@
             highlightCurrentPeriod(); 
         }
 
+       <button onclick="openNoiseTracker()">자습 모드(소음 측정)</button>
+
+      function openNoiseTracker() {
+       // 새로 만든 소음 측정 웹앱의 주소를 새 창(팝업)으로 엽니다.
+       // 화면 크기를 지정하여 전자칠판 앱 위를 덮지 않고 한쪽에 작게 띄울 수 있습니다.
+      window.open("noise-tracker.html", "NoiseTracker", "width=500,height=400,left=100,top=100");
+      }
+
         setInterval(updateClock, 1000);             
         setInterval(fetchData, 3600000);            
         setInterval(fetchCallStatus, 3000);         
