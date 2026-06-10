@@ -238,21 +238,37 @@
             sirenSound.currentTime = 0;
         }
 
-        // 5. ✉️ 선생님 대시보드 칠판에 긴급 공지 전송 연동 연동
+        // 5. ✉️ 선생님 대시보드 칠판 공지 및 구글 챗 웹훅 전송 연동
         function sendTeacherAlert() {
-            console.log("선생님께 알림 전송 로직 호출 호출...");
+            console.log("선생님께 알림 전송 로직 호출...");
+
+            // 💡 1. 구글 챗 웹훅 발송 (스마트폰/PC로 다이렉트 알림)
+            // 주의: 이전에 사용하셨던 웹훅 주소(token 포함)를 정확히 따옴표 안에 넣어주세요!
+            const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAQA5wh_Zy0/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=vC9X63QQ4FuDBIEFfn3ryIJSTEGem-z1bM-OSh4W3cQ";
+            
+            const chatPayload = {
+                "text": "🚨 *[자습 모드 소음 경고]*\n2학년 7반 교실의 소음이 기준치를 초과했습니다! 🤫\n정숙 지도가 필요합니다."
+            };
+
+            fetch(webhookUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(chatPayload)
+            })
+            .then(res => console.log("✅ 구글 챗 알림 전송 완료"))
+            .catch(err => console.error("❌ 구글 챗 알림 전송 실패:", err));
+
+            // 💡 2. 교실 전자칠판 파란색 팝업 띄우기 (기존 로직 유지)
             if (!DASHBOARD_SERVER_URL || DASHBOARD_SERVER_URL.includes("발급받은")) return;
 
-            // 긴급 공지 형태("[공지]...")로 보내면 대시보드 칠판에 바로 파란 팝업이 뜹니다!
             const messageText = `[공지] 🤫 2학년 7반 교실 자습 소음 발생! 정숙한 지도가 필요합니다.`;
             
-            // fetch를 사용해 대시보드 서버로 action=call 요청 요청
             fetch(`${DASHBOARD_SERVER_URL}?action=call&name=${encodeURIComponent(messageText)}`)
                 .then(res => {
-                    if (res.ok) console.log("✅ 선생님께 긴급 소음 공지 전송 완료");
-                    else console.error("❌ 알림 전송 실패 실패");
+                    if (res.ok) console.log("✅ 대시보드 긴급 팝업 전송 완료");
+                    else console.error("❌ 대시보드 팝업 전송 실패");
                 })
-                .catch(error => console.error('통신 오류 오류:', error));
+                .catch(error => console.error('통신 오류:', error));
         }
     </script>
 </body>
