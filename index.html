@@ -172,6 +172,13 @@
         
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+
+       /* ✨ 소음 측정 위젯 전용 배경색 */
+        .bg-level-1 { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); } 
+        .bg-level-2 { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); } 
+        .bg-level-3 { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); } 
+        .bg-level-4 { background: rgba(231, 76, 60, 0.95); animation: siren-glow 1s infinite alternate; }
+       
     </style>
 </head>
 <body>
@@ -185,6 +192,27 @@
         </button>
     </div>
 
+   <div id="noise-widget" class="bg-level-1" style="display: none; position: fixed; top: 40px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 900px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); z-index: 2000; padding: 25px 40px; color: white; transition: background 0.8s ease; border: 3px solid rgba(255,255,255,0.2);">
+        <button onclick="closeNoiseWidget()" style="position: absolute; top: 15px; right: 25px; background: transparent; border: none; font-size: 2.5rem; cursor: pointer; color: rgba(255,255,255,0.8); outline: none;">✖</button>
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
+            <div style="display: flex; align-items: center; gap: 25px;">
+                <img id="noise-status-icon" class="fluent-emoji float" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Shushing%20face/3D/shushing_face_3d.png" style="width: 7rem; height: 7rem;">
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    <h1 style="margin: 0 0 5px 0; font-size: 2.2rem; color: #ffeaa7; text-shadow: 0 2px 5px rgba(0,0,0,0.2);">조용히 공부합시다</h1>
+                    <div style="font-size: 1.2rem; opacity: 0.9; font-weight: 800;">10초 이상 소음 발생 시 자동 경고 (60dB 기준)</div>
+                </div>
+            </div>
+
+            <div id="noise-db-display" style="font-size: 5rem; font-weight: 900; letter-spacing: 2px; text-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 200px; text-align: center;">0 dB</div>
+
+            <div style="display:flex; flex-direction: column; gap: 10px;">
+                <button id="noise-start-btn" onclick="startNoiseMonitoring()" style="padding: 12px 30px; border-radius: 20px; font-size: 1.3rem; font-weight: 900; border: none; cursor: pointer; color: #2980b9; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">시작 🎙️</button>
+                <button id="noise-stop-btn" onclick="stopNoiseMonitoring()" style="padding: 12px 30px; border-radius: 20px; font-size: 1.3rem; font-weight: 900; border: none; cursor: pointer; color: #e74c3c; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" disabled>종료 🛑</button>
+            </div>
+        </div>
+    </div>
+   
     <div id="notice-popup">
         <div class="notice-emoji">✉️</div>
         <div style="font-size: 3rem; color:#ffeaa7;">긴급 공지</div>
@@ -321,7 +349,7 @@
             </div>
         </div>
     </main>
-
+    <audio id="siren-sound" src="siren.mp3" loop></audio>
     <script>
         const GAS_URL = "https://script.google.com/macros/s/AKfycbyXHO9ptKKy-cyZJ641G00-jUW3rWio9MGu1dlXTItTltNTJFH2E26z51i35mWGbQQIMw/exec";
 
@@ -330,6 +358,8 @@
         let pressTimer = null; 
         let lastNotifiedStudent = null; 
         let isBreakTimeAppOpened = false; // ✨ 쉬는시간 소음측정기 자동실행 상태 저장
+
+       
 
         const classTimes = {
             "조회": { start: 800, end: 810 }, "준비": { start: 810, end: 820 },
@@ -763,14 +793,152 @@
         }
 
          // ✨ 새로 만든 소음 측정 웹앱을 여는 함수 추가
-        function openNoiseTracker() {
+        /*function openNoiseTracker() {
             window.open("noise-tracker.html", "NoiseTracker", "width=800,height=600,left=100,top=100");
-        }
+        }  */
 
 
         setInterval(updateClock, 1000);             
         setInterval(fetchData, 3600000);            
-        setInterval(fetchCallStatus, 3000);         
+        setInterval(fetchCallStatus, 3000);       
+
+         // ==========================================
+        // ✨ 대시보드 통합형 소음 측정기 자바스크립트
+        // ==========================================
+        const NOISE_THRESHOLD = 60;        
+        const NOISE_ALERT_GAP = 180000;    
+        const NOISE_DURATION_LIMIT = 10000; // 10초
+
+        const EMOJI_SHUSH = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Shushing%20face/3D/shushing_face_3d.png";
+        const EMOJI_SIREN = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Police%20car%20light/3D/police_car_light_3d.png";
+
+        let noiseAudioCtx, noiseAnalyser, noiseMic, noiseScriptNode;
+        let isNoiseRecording = false;
+        let lastNoiseAlertTime = 0; 
+        let isNoiseWarningMode = false; 
+        let overThresholdStartTime = 0; 
+
+        // 💡 새 창 대신 대시보드 위젯 열기
+        function openNoiseTracker() {
+            document.getElementById('noise-widget').style.display = 'block';
+        }
+
+        // 위젯 닫기 (측정도 완전히 종료됨)
+        function closeNoiseWidget() {
+            document.getElementById('noise-widget').style.display = 'none';
+            stopNoiseMonitoring(); 
+        }
+
+        async function startNoiseMonitoring() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                noiseAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                noiseAnalyser = noiseAudioCtx.createAnalyser();
+                noiseMic = noiseAudioCtx.createMediaStreamSource(stream);
+                noiseScriptNode = noiseAudioCtx.createScriptProcessor(2048, 1, 1);
+
+                noiseAnalyser.smoothingTimeConstant = 0.8;
+                noiseAnalyser.fftSize = 1024;
+
+                noiseMic.connect(noiseAnalyser);
+                noiseAnalyser.connect(noiseScriptNode);
+                noiseScriptNode.connect(noiseAudioCtx.destination);
+
+                isNoiseRecording = true;
+                document.getElementById('noise-start-btn').disabled = true;
+                document.getElementById('noise-stop-btn').disabled = false;
+
+                noiseScriptNode.onaudioprocess = () => {
+                    if(!isNoiseRecording) return;
+                    const array = new Uint8Array(noiseAnalyser.frequencyBinCount);
+                    noiseAnalyser.getByteFrequencyData(array);
+                    
+                    let values = 0;
+                    for (let i = 0; i < array.length; i++) { values += array[i]; }
+                    const decibel = Math.round(values / array.length); 
+
+                    document.getElementById('noise-db-display').innerText = decibel + " dB";
+                    updateNoiseBgColor(decibel);
+
+                    if (decibel >= NOISE_THRESHOLD) {
+                        if (overThresholdStartTime === 0) {
+                            overThresholdStartTime = Date.now(); 
+                        } else if (Date.now() - overThresholdStartTime >= NOISE_DURATION_LIMIT) {
+                            triggerNoiseAlarm(); 
+                        }
+                    } else {
+                        overThresholdStartTime = 0; 
+                        stopNoiseAlarm();    
+                    }
+                };
+            } catch (err) {
+                alert('마이크 접근 권한이 필요합니다.');
+            }
+        }
+
+        function stopNoiseMonitoring() {
+            if (noiseAudioCtx) noiseAudioCtx.close();
+            isNoiseRecording = false;
+            document.getElementById('noise-start-btn').disabled = false;
+            document.getElementById('noise-stop-btn').disabled = true;
+            overThresholdStartTime = 0; 
+            stopNoiseAlarm(); 
+            document.getElementById('noise-db-display').innerText = "0 dB";
+            updateNoiseBgColor(0); 
+        }
+
+        function updateNoiseBgColor(db) {
+            const widget = document.getElementById('noise-widget');
+            widget.classList.remove('bg-level-1', 'bg-level-2', 'bg-level-3', 'bg-level-4');
+            
+            if (db >= NOISE_THRESHOLD) widget.classList.add('bg-level-4'); 
+            else if (db >= 50) widget.classList.add('bg-level-3'); 
+            else if (db >= 40) widget.classList.add('bg-level-2'); 
+            else widget.classList.add('bg-level-1'); 
+        }
+
+        function triggerNoiseAlarm() {
+            if (isNoiseWarningMode) return; 
+            isNoiseWarningMode = true;
+
+            const iconEl = document.getElementById('noise-status-icon');
+            iconEl.src = EMOJI_SIREN;
+            iconEl.classList.remove('float');
+            iconEl.classList.add('spin'); 
+
+            // 대시보드에 미리 심어둔 사이렌 소리 태그가 있다면 재생
+            const sirenSound = document.getElementById('siren-sound');
+            if (sirenSound && sirenSound.paused) sirenSound.play().catch(e => {});
+            
+            const now = Date.now();
+            if (now - lastNoiseAlertTime > NOISE_ALERT_GAP) {
+                sendNoiseAlertWebhook();
+                lastNoiseAlertTime = now;
+            }
+        }
+
+        function stopNoiseAlarm() {
+            if (!isNoiseWarningMode) return; 
+            isNoiseWarningMode = false;
+
+            const iconEl = document.getElementById('noise-status-icon');
+            iconEl.src = EMOJI_SHUSH;
+            iconEl.classList.remove('spin');
+            iconEl.classList.add('float'); 
+
+            const sirenSound = document.getElementById('siren-sound');
+            if (sirenSound) { sirenSound.pause(); sirenSound.currentTime = 0; }
+        }
+
+        function sendNoiseAlertWebhook() {
+            const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAQA5wh_Zy0/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=vC9X63QQ4FuDBIEFfn3ryIJSTEGem-z1bM-OSh4W3cQ";
+            const chatPayload = { "text": "🚨 *[자습 모드 소음 경고]*\n2학년 7반 교실의 소음이 기준치(60dB)를 10초 이상 초과했습니다! 🤫\n정숙 지도가 필요합니다." };
+            fetch(webhookUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(chatPayload) }).catch(e => {});
+        }
+        // ==========================================
+
+      
         
         updateClock(); fetchData(); fetchCallStatus(); 
     </script>
