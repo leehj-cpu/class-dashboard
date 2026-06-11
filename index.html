@@ -192,26 +192,32 @@
         </button>
     </div>
 
-   <div id="noise-widget" class="bg-level-1" style="display: none; position: fixed; top: 40px; left: 50%; transform: translateX(-50%); width: 85%; max-width: 900px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); z-index: 2000; padding: 25px 40px; color: white; transition: background 0.8s ease; border: 3px solid rgba(255,255,255,0.2);">
-        <button onclick="closeNoiseWidget()" style="position: absolute; top: 15px; right: 25px; background: transparent; border: none; font-size: 2.5rem; cursor: pointer; color: rgba(255,255,255,0.8); outline: none;">✖</button>
+<div id="noise-widget" class="bg-level-1" style="display: none; position: fixed; top: 50px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 1000px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); z-index: 2000; padding: 40px 50px; color: white; transition: background 0.8s ease; border: 3px solid rgba(255,255,255,0.2); text-align: center;">
         
         <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px;">
             <div style="display: flex; align-items: center; gap: 25px;">
-                <img id="noise-status-icon" class="fluent-emoji float" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Shushing%20face/3D/shushing_face_3d.png" style="width: 7rem; height: 7rem;">
+                <img id="noise-status-icon" class="fluent-emoji float" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Shushing%20face/3D/shushing_face_3d.png" style="width: 8rem; height: 8rem;">
                 <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    <h1 style="margin: 0 0 5px 0; font-size: 2.2rem; color: #ffeaa7; text-shadow: 0 2px 5px rgba(0,0,0,0.2);">조용히 공부합시다</h1>
-                    <div style="font-size: 1.2rem; opacity: 0.9; font-weight: 800;">10초 이상 소음 발생 시 자동 경고 (60dB 기준)</div>
+                    <h1 style="margin: 0 0 10px 0; font-size: 2.8rem; color: #ffeaa7; text-shadow: 0 2px 5px rgba(0,0,0,0.2);">조용히 공부합시다</h1>
+                    <div style="font-size: 1.4rem; opacity: 0.9; font-weight: 800;">10초 이상 소음 발생 시 자동 경고 (60dB 기준)</div>
                 </div>
             </div>
 
-            <div id="noise-db-display" style="font-size: 5rem; font-weight: 900; letter-spacing: 2px; text-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 200px; text-align: center;">0 dB</div>
+            <div id="noise-db-display" style="font-size: 6rem; font-weight: 900; letter-spacing: 2px; text-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 250px; text-align: center;">0 dB</div>
 
-            <div style="display:flex; flex-direction: column; gap: 10px;">
-                <button id="noise-start-btn" onclick="startNoiseMonitoring()" style="padding: 12px 30px; border-radius: 20px; font-size: 1.3rem; font-weight: 900; border: none; cursor: pointer; color: #2980b9; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">시작 🎙️</button>
-                <button id="noise-stop-btn" onclick="closeNoiseWidget()" style="padding: 12px 30px; border-radius: 20px; font-size: 1.3rem; font-weight: 900; border: none; cursor: pointer; color: #e74c3c; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" disabled>종료 🛑</button>
+            <div style="display:flex; flex-direction: column; gap: 15px;">
+                <button id="noise-start-btn" onclick="startNoiseMonitoring()" style="padding: 15px 30px; border-radius: 20px; font-size: 1.4rem; font-weight: 900; border: none; cursor: pointer; color: #2980b9; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">측정 시작 🎙️</button>
+                <button id="noise-stop-btn" onclick="stopNoiseMonitoring()" style="padding: 15px 30px; border-radius: 20px; font-size: 1.4rem; font-weight: 900; border: none; cursor: pointer; color: #e74c3c; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" disabled>측정 종료 🛑</button>
             </div>
         </div>
+
+        <div style="margin-top: 40px;">
+            <button onclick="closeNoiseWidget()" style="padding: 12px 40px; border-radius: 50px; font-size: 1.4rem; font-weight: 900; border: 2px solid rgba(255,255,255,0.4); cursor: pointer; color: white; background: rgba(0,0,0,0.2); box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: all 0.2s;" onmousedown="this.style.background='rgba(0,0,0,0.4)'" onmouseup="this.style.background='rgba(0,0,0,0.2)'">
+               소음 측정 창 닫기 ✖
+            </button>
+        </div>
     </div>
+
    
     <div id="notice-popup">
         <div class="notice-emoji">✉️</div>
