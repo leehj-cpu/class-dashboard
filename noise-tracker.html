@@ -98,10 +98,11 @@
 
     <audio id="siren-sound" src="siren.mp3" loop></audio>
 
-    <script>
+<script>
         // --- [설정 세팅] ---
-        const THRESHOLD = 60;    // 💡 경고 데시벨 60으로 하향 조정 완료!
-        const ALERT_GAP = 10000; // 자동 알림 발송 간격 (10초)
+        const THRESHOLD = 60;        // 경고 데시벨 기준치
+        const ALERT_GAP = 180000;    // 자동 알림 쿨타임 (3분 = 180000ms)
+        const DURATION_LIMIT = 3000; // ✨ 3초(3000ms) 이상 지속되어야 경고 발동!
         const DASHBOARD_SERVER_URL = "https://script.google.com/macros/s/AKfycbxJCsXcX9o4TcrLxNBTgQDzG6nk0i2MRE51tIPr0FXe6dYDisoRvjlhULk39UEs5LEgHg/exec";
 
         const EMOJI_SHUSH = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Shushing%20face/3D/shushing_face_3d.png";
@@ -113,7 +114,8 @@
         let javascriptNode;
         let isRecording = false;
         let lastAlertTime = 0; 
-        let isWarningMode = false; // 현재 알람(경고) 상태인지 확인
+        let isWarningMode = false; 
+        let overThresholdStartTime = 0; // ✨ 기준치 초과가 시작된 시간 기록용 변수
 
         const wrapper = document.getElementById('main-wrapper');
         const iconEl = document.getElementById('status-icon');
@@ -155,14 +157,20 @@
                     const decibel = Math.round(values / array.length); 
 
                     dbDisplay.innerText = decibel + " dB";
-
-                    // ✨ 실시간으로 배경색 단계 업데이트 
                     updateBackgroundColor(decibel);
 
-                    // ✨ 60dB 이상일 때 경고 모드 연출 및 웹훅 발송
+                    // ✨ 지속 시간 체크 로직 추가
                     if (decibel >= THRESHOLD) {
-                        triggerAlarm(); 
+                        if (overThresholdStartTime === 0) {
+                            // 처음으로 60dB을 넘은 순간의 시간을 기록
+                            overThresholdStartTime = Date.now(); 
+                        } else if (Date.now() - overThresholdStartTime >= DURATION_LIMIT) {
+                            // 60dB 넘은 상태가 3초(DURATION_LIMIT) 이상 유지되면 드디어 경고!
+                            triggerAlarm(); 
+                        }
                     } else {
+                        // 60dB 밑으로 떨어지면 시간 기록 초기화 및 알람 중지
+                        overThresholdStartTime = 0; 
                         stopAlarm();    
                     }
                 };
@@ -177,25 +185,23 @@
             isRecording = false;
             startBtn.disabled = false;
             stopBtn.disabled = true;
+            overThresholdStartTime = 0; // 종료 시 초기화
             stopAlarm(); 
             dbDisplay.innerText = "0 dB";
-            updateBackgroundColor(0); // 끄면 파란색으로 원상 복구
+            updateBackgroundColor(0); 
         }
 
-        // 💡 핵심 추가 기능: 소리 단계에 따른 배경색 동적 변경
         function updateBackgroundColor(db) {
-            // 기존 클래스를 모두 지우고
             wrapper.classList.remove('bg-level-1', 'bg-level-2', 'bg-level-3', 'bg-level-4');
             
-            // 조건에 맞는 클래스만 쏙 집어넣음
             if (db >= THRESHOLD) {
-                wrapper.classList.add('bg-level-4'); // 60 이상 (빨강 + 사이렌 애니메이션)
+                wrapper.classList.add('bg-level-4'); 
             } else if (db >= 50) {
-                wrapper.classList.add('bg-level-3'); // 50~59 (주황)
+                wrapper.classList.add('bg-level-3'); 
             } else if (db >= 40) {
-                wrapper.classList.add('bg-level-2'); // 40~49 (초록)
+                wrapper.classList.add('bg-level-2'); 
             } else {
-                wrapper.classList.add('bg-level-1'); // 39 이하 (파랑)
+                wrapper.classList.add('bg-level-1'); 
             }
         }
 
@@ -233,11 +239,10 @@
         function sendTeacherAlert() {
             console.log("선생님께 알림 전송 로직 호출...");
 
-            // 선생님 기존 웹훅 주소(토큰 포함)
             const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAQA5wh_Zy0/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=vC9X63QQ4FuDBIEFfn3ryIJSTEGem-z1bM-OSh4W3cQ";
             
             const chatPayload = {
-                "text": "🚨 *[자습 모드 소음 경고]*\n2학년 7반 교실의 소음이 기준치(60dB)를 초과했습니다! 🤫\n정숙 지도가 필요합니다."
+                "text": "🚨 *[자습 모드 소음 경고]*\n2학년 7반 교실의 소음이 기준치(60dB)를 3초 이상 초과했습니다! 🤫\n정숙 지도가 필요합니다."
             };
 
             fetch(webhookUrl, {
@@ -247,12 +252,12 @@
             })
             .then(res => console.log("✅ 구글 챗 알림 전송 완료"))
             .catch(err => console.error("❌ 구글 챗 알림 전송 실패:", err));
-            
-            // 💡 2. 교실 전자칠판 파란색 팝업 띄우기 기능 삭제 (아래 부분 전부 삭제 또는 주석 처리)
+
+            // 대시보드 팝업을 원치 않으시면 아래 블록을 통째로 주석 처리(/* ~ */) 하시면 됩니다.
             /*
             if (!DASHBOARD_SERVER_URL || DASHBOARD_SERVER_URL.includes("발급받은")) return;
 
-            const messageText = `[공지] 🤫 2학년 7반 교실 소음이 60dB를 넘었습니다! 집중합시다.`;
+            const messageText = `[공지] 🤫 2학년 7반 교실 소음이 기준치를 넘었습니다! 집중합시다.`;
             
             fetch(`${DASHBOARD_SERVER_URL}?action=call&name=${encodeURIComponent(messageText)}`)
                 .then(res => {
