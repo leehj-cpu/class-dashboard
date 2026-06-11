@@ -132,4 +132,135 @@
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 analyser = audioContext.createAnalyser();
                 microphone = audioContext.createMediaStreamSource(stream);
-                javascriptNode = audioContext.createScriptProcessor(2048,
+                javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
+
+                analyser.smoothingTimeConstant = 0.8;
+                analyser.fftSize = 1024;
+
+                microphone.connect(analyser);
+                analyser.connect(javascriptNode);
+                javascriptNode.connect(audioContext.destination);
+
+                isRecording = true;
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+
+                javascriptNode.onaudioprocess = () => {
+                    if(!isRecording) return;
+                    const array = new Uint8Array(analyser.frequencyBinCount);
+                    analyser.getByteFrequencyData(array);
+                    
+                    let values = 0;
+                    for (let i = 0; i < array.length; i++) { values += array[i]; }
+                    const decibel = Math.round(values / array.length); 
+
+                    dbDisplay.innerText = decibel + " dB";
+
+                    // ✨ 실시간으로 배경색 단계 업데이트 
+                    updateBackgroundColor(decibel);
+
+                    // ✨ 60dB 이상일 때 경고 모드 연출 및 웹훅 발송
+                    if (decibel >= THRESHOLD) {
+                        triggerAlarm(); 
+                    } else {
+                        stopAlarm();    
+                    }
+                };
+            } catch (err) {
+                alert('마이크 접근 권한이 필요합니다. 브라우저 설정을 확인해주세요.');
+                console.error(err);
+            }
+        }
+
+        function stopMonitoring() {
+            if (audioContext) audioContext.close();
+            isRecording = false;
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            stopAlarm(); 
+            dbDisplay.innerText = "0 dB";
+            updateBackgroundColor(0); // 끄면 파란색으로 원상 복구
+        }
+
+        // 💡 핵심 추가 기능: 소리 단계에 따른 배경색 동적 변경
+        function updateBackgroundColor(db) {
+            // 기존 클래스를 모두 지우고
+            wrapper.classList.remove('bg-level-1', 'bg-level-2', 'bg-level-3', 'bg-level-4');
+            
+            // 조건에 맞는 클래스만 쏙 집어넣음
+            if (db >= THRESHOLD) {
+                wrapper.classList.add('bg-level-4'); // 60 이상 (빨강 + 사이렌 애니메이션)
+            } else if (db >= 50) {
+                wrapper.classList.add('bg-level-3'); // 50~59 (주황)
+            } else if (db >= 40) {
+                wrapper.classList.add('bg-level-2'); // 40~49 (초록)
+            } else {
+                wrapper.classList.add('bg-level-1'); // 39 이하 (파랑)
+            }
+        }
+
+        function triggerAlarm() {
+            if (isWarningMode) return; 
+            isWarningMode = true;
+
+            iconEl.src = EMOJI_SIREN;
+            iconEl.classList.remove('float');
+            iconEl.classList.add('spin'); 
+
+            if (sirenSound.paused) {
+                sirenSound.play().catch(err => console.log("소리 재생 차단됨:", err));
+            }
+            
+            const now = Date.now();
+            if (now - lastAlertTime > ALERT_GAP) {
+                sendTeacherAlert();
+                lastAlertTime = now;
+            }
+        }
+
+        function stopAlarm() {
+            if (!isWarningMode) return; 
+            isWarningMode = false;
+
+            iconEl.src = EMOJI_SHUSH;
+            iconEl.classList.remove('spin');
+            iconEl.classList.add('float'); 
+
+            sirenSound.pause();
+            sirenSound.currentTime = 0;
+        }
+
+        function sendTeacherAlert() {
+            console.log("선생님께 알림 전송 로직 호출...");
+
+            // 선생님 기존 웹훅 주소(토큰 포함)
+            const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAQA5wh_Zy0/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=vC9X63QQ4FuDBIEFfn3ryIJSTEGem-z1bM-OSh4W3cQ";
+            
+            const chatPayload = {
+                "text": "🚨 *[자습 모드 소음 경고]*\n2학년 7반 교실의 소음이 기준치(60dB)를 초과했습니다! 🤫\n정숙 지도가 필요합니다."
+            };
+
+            fetch(webhookUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(chatPayload)
+            })
+            .then(res => console.log("✅ 구글 챗 알림 전송 완료"))
+            .catch(err => console.error("❌ 구글 챗 알림 전송 실패:", err));
+            
+            // 💡 2. 교실 전자칠판 파란색 팝업 띄우기 기능 삭제 (아래 부분 전부 삭제 또는 주석 처리)
+            /*
+            if (!DASHBOARD_SERVER_URL || DASHBOARD_SERVER_URL.includes("발급받은")) return;
+
+            const messageText = `[공지] 🤫 2학년 7반 교실 소음이 60dB를 넘었습니다! 집중합시다.`;
+            
+            fetch(`${DASHBOARD_SERVER_URL}?action=call&name=${encodeURIComponent(messageText)}`)
+                .then(res => {
+                    if (res.ok) console.log("✅ 대시보드 긴급 팝업 전송 완료");
+                })
+                .catch(error => console.error('통신 오류:', error));
+            */
+        }
+    </script>
+</body>
+</html>
