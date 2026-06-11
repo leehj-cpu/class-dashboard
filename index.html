@@ -813,7 +813,7 @@
         // ==========================================
         const NOISE_THRESHOLD = 60;        
         const NOISE_ALERT_GAP = 180000;    
-        const NOISE_DURATION_LIMIT = 10000; // 10초
+        const NOISE_DURATION_LIMIT = 5000; // 5초
 
         const EMOJI_SHUSH = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Shushing%20face/3D/shushing_face_3d.png";
         const EMOJI_SIREN = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Police%20car%20light/3D/police_car_light_3d.png";
@@ -939,7 +939,7 @@
 
         function sendNoiseAlertWebhook() {
             const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAQA5wh_Zy0/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=vC9X63QQ4FuDBIEFfn3ryIJSTEGem-z1bM-OSh4W3cQ";
-            const chatPayload = { "text": "🚨 *[자습 모드 소음 경고]*\n2학년 7반 교실의 소음이 기준치(60dB)를 10초 이상 초과했습니다! 🤫\n정숙 지도가 필요합니다." };
+            const chatPayload = { "text": "🚨 *[자습 모드 소음 경고]*\n2학년 7반 교실의 소음이 기준치(60dB)를 5초 이상 초과했습니다! 🤫\n정숙 지도가 필요합니다." };
             fetch(webhookUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(chatPayload) }).catch(e => {});
         }
         // ==========================================
