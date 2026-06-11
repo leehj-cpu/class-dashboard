@@ -6,11 +6,8 @@
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
         :root {
-            /* 선생님 호출 화면 테마 색상 정의 */
-            --bg-normal: linear-gradient(135deg, #3498db 0%, #2980b9 100%); /* 평소 블루 */
-            --bg-warning: rgba(231, 76, 60, 0.95); /* 경고 레드 (팝업과 동일) */
-            --text-white: #ffffff;
-            --text-yellow: #ffeaa7; /* 팝업의 노란 강조색 */
+            var(--text-white: #ffffff);
+            var(--text-yellow: #ffeaa7);
         }
 
         body {
@@ -20,48 +17,45 @@
             -webkit-user-select: none; user-select: none;
         }
 
-        /* 메인 컨테이너: 기본은 블루 테마 */
+        /* ✨ 데시벨 단계별 동적 배경색 설정 */
+        .bg-level-1 { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); } /* < 40dB: 조용함 (파랑) */
+        .bg-level-2 { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); } /* 40~49dB: 약간 소음 (초록) */
+        .bg-level-3 { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); } /* 50~59dB: 시끄러움 주의 (주황) */
+        .bg-level-4 { 
+            background: rgba(231, 76, 60, 0.95); /* >= 60dB: 경고 (빨강) */
+            animation: siren-glow 1s infinite alternate; 
+        }
+
+        /* 메인 컨테이너 */
         .app-wrapper {
             width: 100vw; height: 100vh;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
-            background: var(--bg-normal);
-            color: var(--text-white);
-            transition: background 0.5s ease; /* 배경색 변경 부드럽게 */
-            text-shadow: 0 10px 20px rgba(0,0,0,0.3); /* 글자 그림자 적용 */
+            color: #ffffff;
+            transition: background 0.8s ease; /* 배경색이 부드럽게 바뀌도록 설정 */
+            text-shadow: 0 10px 20px rgba(0,0,0,0.3); 
         }
 
-        /* 🚨 소음 초과 시 경고 테마 (CSS로 정의) */
-        .app-wrapper.warning-mode {
-            background: var(--bg-warning);
-            animation: siren-glow 1s infinite alternate; /* 호출 팝업의 깜빡임 애니메이션 */
-        }
-
-        /* 호출 팝업의 3D 이모지 스타일 스타일 */
         .status-emoji {
             width: 8rem; height: 8rem;
             margin-bottom: 20px;
             object-fit: contain;
         }
         
-        /* 대시보드의 애니메이션 클래스들 */
         .float { animation: float 2s infinite ease-in-out; }
         .spin { animation: spin 2s infinite linear; }
 
-        /* 타이틀 스타일: 팝업과 동일하게 노란색 강조 */
         .main-title {
             font-size: 3.5rem; font-weight: 900;
             margin: 0 0 30px 0; letter-spacing: -1px;
-            color: var(--text-yellow);
+            color: #ffeaa7;
         }
 
-        /* 데시벨 숫자 디스플레이: 아주 크게! */
         .db-text {
             font-size: 8rem; font-weight: 900;
             margin: 20px 0; letter-spacing: 2px;
         }
 
-        /* 대시보드의 하단 플로팅 버튼(Pill 모양) 스타일 적용 */
         .dashboard-btn {
             display: flex; align-items: center; gap: 8px;
             color: #2c3e50; background: white;
@@ -74,12 +68,8 @@
             outline: none;
         }
         .dashboard-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .dashboard-btn:not(:disabled):active { transform: scale(0.95); } /* 클릭 효과 */
+        .dashboard-btn:not(:disabled):active { transform: scale(0.95); } 
 
-        /* 버튼 테마색: 블루 모드용 */
-        .btn-blue-text { color: #2980b9; }
-
-        /* 애니메이션 정의 정의 */
         @keyframes siren-glow { 
             from { box-shadow: inset 0 0 50px rgba(192, 57, 43, 0.5); } 
             to { box-shadow: inset 0 0 200px rgba(192, 57, 43, 1); } 
@@ -90,21 +80,17 @@
 </head>
 <body>
 
-    <div class="app-wrapper" id="main-wrapper">
+    <div class="app-wrapper bg-level-1" id="main-wrapper">
         
-        <img id="status-icon" class="status-emoji float" 
-             src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Shushing%20face/3D/shushing_face_3d.png" 
-             alt="🤫">
-
-        <h1 class="main-title">조용히 공부합시다.</h1>
-        
+        <img id="status-icon" class="status-emoji float" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Shushing%20face/3D/shushing_face_3d.png" alt="🤫">
+        <h1 class="main-title">조용히 공부합시다</h1>
         <div id="db-display" class="db-text">0 dB</div>
         
         <div style="margin-top: 50px; display:flex;">
-            <button id="start-btn" class="dashboard-btn btn-blue-text" style="padding: 20px 40px;">
+            <button id="start-btn" class="dashboard-btn" style="padding: 20px 40px;">
                 측정 시작 <span style="font-size: 1.8rem;">🎙️</span>
             </button>
-            <button id="stop-btn" class="dashboard-btn btn-blue-text" style="padding: 20px 40px;" disabled>
+            <button id="stop-btn" class="dashboard-btn" style="padding: 20px 40px;" disabled>
                 측정 종료 <span style="font-size: 1.8rem;">🛑</span>
             </button>
         </div>
@@ -113,23 +99,21 @@
     <audio id="siren-sound" src="siren.mp3" loop></audio>
 
     <script>
-        // --- [설정 세팅 세팅] ---
-        const THRESHOLD = 70;    // 경고 데시벨 기준치
+        // --- [설정 세팅] ---
+        const THRESHOLD = 60;    // 💡 경고 데시벨 60으로 하향 조정 완료!
         const ALERT_GAP = 10000; // 자동 알림 발송 간격 (10초)
-        // 대시보드 서버(GAS) URL
         const DASHBOARD_SERVER_URL = "https://script.google.com/macros/s/AKfycbxJCsXcX9o4TcrLxNBTgQDzG6nk0i2MRE51tIPr0FXe6dYDisoRvjlhULk39UEs5LEgHg/exec";
 
-        // --- [이모지 주소 세팅] ---
         const EMOJI_SHUSH = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Shushing%20face/3D/shushing_face_3d.png";
         const EMOJI_SIREN = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Police%20car%20light/3D/police_car_light_3d.png";
 
-        // --- [상태 변수 및 DOM] ---
         let audioContext;
         let analyser;
         let microphone;
         let javascriptNode;
         let isRecording = false;
-        let lastAlertTime = 0; // 중복 알림 타이머
+        let lastAlertTime = 0; 
+        let isWarningMode = false; // 현재 알람(경고) 상태인지 확인
 
         const wrapper = document.getElementById('main-wrapper');
         const iconEl = document.getElementById('status-icon');
@@ -138,13 +122,9 @@
         const startBtn = document.getElementById('start-btn');
         const stopBtn = document.getElementById('stop-btn');
 
-        // --- [이벤트 리스너] ---
         startBtn.addEventListener('click', startMonitoring);
         stopBtn.addEventListener('click', stopMonitoring);
 
-        // --- [메인 함수들] ---
-
-        // 1. 측정 시작 기능
         async function startMonitoring() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -152,124 +132,4 @@
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 analyser = audioContext.createAnalyser();
                 microphone = audioContext.createMediaStreamSource(stream);
-                javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
-
-                analyser.smoothingTimeConstant = 0.8;
-                analyser.fftSize = 1024;
-
-                microphone.connect(analyser);
-                analyser.connect(javascriptNode);
-                javascriptNode.connect(audioContext.destination);
-
-                isRecording = true;
-                startBtn.disabled = true;
-                stopBtn.disabled = false;
-
-                // 마이크 볼륨 실시간 분석 로직
-                javascriptNode.onaudioprocess = () => {
-                    if(!isRecording) return;
-                    const array = new Uint8Array(analyser.frequencyBinCount);
-                    analyser.getByteFrequencyData(array);
-                    
-                    let values = 0;
-                    for (let i = 0; i < array.length; i++) { values += array[i]; }
-                    const decibel = Math.round(values / array.length); 
-
-                    dbDisplay.innerText = decibel + " dB";
-
-                    if (decibel > THRESHOLD) {
-                        triggerAlarm(); // 🚨 기준치 초과!
-                    } else {
-                        stopAlarm();    // ✅ 정상
-                    }
-                };
-            } catch (err) {
-                alert('마이크 접근 권한이 필요합니다. 브라우저 설정을 확인해주세요.');
-                console.error(err);
-            }
-        }
-
-        // 2. 측정 종료 기능
-        function stopMonitoring() {
-            if (audioContext) audioContext.close();
-            isRecording = false;
-            startBtn.disabled = false;
-            stopBtn.disabled = true;
-            stopAlarm(); // 알림 상태 초기화 초기화
-            dbDisplay.innerText = "0 dB";
-        }
-
-        // 3. 🚨 소음 발생 시 경고 연출 (호출 팝업 디자인 적용 적용)
-        function triggerAlarm() {
-            if (wrapper.classList.contains('warning-mode')) return; // 이미 경고 중이면 무시
-
-            // 디자인 변경: 배경을 깜빡이는 레드로, 이모지를 회전하는 사이렌으로
-            wrapper.classList.add('warning-mode');
-            iconEl.src = EMOJI_SIREN;
-            iconEl.classList.remove('float');
-            iconEl.classList.add('spin'); // 호출 팝업처럼 뱅글뱅글 회전 회전 애니메이션 애니메이션
-
-            // 소리 재생 재생
-            if (sirenSound.paused) {
-                // 💡 [주의] 브라우저 정책상 버튼 클릭 없이 소리 재생이 차단될 수 있습니다.
-                sirenSound.play().catch(err => console.log("소리 재생 차단됨 차단됨:", err));
-            }
-            
-            // 타이머 확인 후 자동 알림 발송 로직 로직 (10초에 한 번만 번만)
-            const now = Date.now();
-            if (now - lastAlertTime > ALERT_GAP) {
-                sendTeacherAlert();
-                lastAlertTime = now;
-            }
-        }
-
-        // 4. ✅ 소음이 잠잠해졌을 때 평소 상태로 복구 복구
-        function stopAlarm() {
-            if (!wrapper.classList.contains('warning-mode')) return; // 이미 평소 상태면 무시
-
-            // 디자인 복구 복구: 배경을 블루 블루 테마로 테마로, 이모지를 쉬잇으로 쉬잇으로 복구 복구
-            wrapper.classList.remove('warning-mode');
-            iconEl.src = EMOJI_SHUSH;
-            iconEl.classList.remove('spin');
-            iconEl.classList.add('float'); // 부드럽게 둥둥 뜨는 뜨는 애니메이션 애니메이션
-
-            // 소리 멈춤 멈춤
-            sirenSound.pause();
-            sirenSound.currentTime = 0;
-        }
-
-        // 5. ✉️ 선생님 대시보드 칠판 공지 및 구글 챗 웹훅 전송 연동
-        function sendTeacherAlert() {
-            console.log("선생님께 알림 전송 로직 호출...");
-
-            // 💡 1. 구글 챗 웹훅 발송 (스마트폰/PC로 다이렉트 알림)
-            // 주의: 이전에 사용하셨던 웹훅 주소(token 포함)를 정확히 따옴표 안에 넣어주세요!
-            const webhookUrl = "https://chat.googleapis.com/v1/spaces/AAQA5wh_Zy0/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=vC9X63QQ4FuDBIEFfn3ryIJSTEGem-z1bM-OSh4W3cQ";
-            
-            const chatPayload = {
-                "text": "🚨 *[자습 모드 소음 경고]*\n2학년 7반 교실의 소음이 기준치를 초과했습니다! 🤫\n정숙 지도가 필요합니다."
-            };
-
-            fetch(webhookUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(chatPayload)
-            })
-            .then(res => console.log("✅ 구글 챗 알림 전송 완료"))
-            .catch(err => console.error("❌ 구글 챗 알림 전송 실패:", err));
-
-            // 💡 2. 교실 전자칠판 파란색 팝업 띄우기 (기존 로직 유지)
-            if (!DASHBOARD_SERVER_URL || DASHBOARD_SERVER_URL.includes("발급받은")) return;
-
-            const messageText = `[공지] 🤫 2학년 7반 교실 자습 소음 발생! 정숙한 지도가 필요합니다.`;
-            
-            fetch(`${DASHBOARD_SERVER_URL}?action=call&name=${encodeURIComponent(messageText)}`)
-                .then(res => {
-                    if (res.ok) console.log("✅ 대시보드 긴급 팝업 전송 완료");
-                    else console.error("❌ 대시보드 팝업 전송 실패");
-                })
-                .catch(error => console.error('통신 오류:', error));
-        }
-    </script>
-</body>
-</html>
+                javascriptNode = audioContext.createScriptProcessor(2048,
