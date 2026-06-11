@@ -39,7 +39,7 @@
         .clock .ampm { font-size: 1.5rem; font-weight: 800; opacity: 0.9; }
         .clock .time { font-size: 3.2rem; font-weight: 900; letter-spacing: 2px; line-height: 1; }
         .clock .sec { font-size: 1.5rem; font-weight: 700; opacity: 0.8; }
-       
+        
         main { display: grid; grid-template-columns: 1fr 2.2fr 1fr; gap: 20px; align-items: stretch; }
 
         .panel {
@@ -178,7 +178,7 @@
         .bg-level-2 { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); } 
         .bg-level-3 { background: linear-gradient(135deg, #f39c12 0%, #d35400 100%); } 
         .bg-level-4 { background: rgba(231, 76, 60, 0.95); animation: siren-glow 1s infinite alternate; }
-       
+        
     </style>
 </head>
 <body>
@@ -203,7 +203,11 @@
                 </div>
             </div>
 
-            <div id="noise-db-display" style="font-size: 6rem; font-weight: 900; letter-spacing: 2px; text-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 280px; min-width: 280px; flex-shrink: 0; text-align: center; font-variant-numeric: tabular-nums;">0 dB</div>
+            <div style="width: 280px; min-width: 280px; flex-shrink: 0; display: flex; justify-content: center; align-items: baseline; gap: 12px; text-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                <div id="noise-db-display" style="font-size: 6.5rem; font-weight: 900; text-align: right; width: 140px; font-variant-numeric: tabular-nums; letter-spacing: 0;">0</div>
+                <div style="font-size: 3rem; font-weight: 900; letter-spacing: 2px; color: rgba(255,255,255,0.9);">dB</div>
+            </div>
+
             <div style="display:flex; flex-direction: column; gap: 15px;">
                 <button id="noise-start-btn" onclick="startNoiseMonitoring()" style="padding: 15px 30px; border-radius: 20px; font-size: 1.4rem; font-weight: 900; border: none; cursor: pointer; color: #2980b9; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">측정 시작 🎙️</button>
                 <button id="noise-stop-btn" onclick="stopNoiseMonitoring()" style="padding: 15px 30px; border-radius: 20px; font-size: 1.4rem; font-weight: 900; border: none; cursor: pointer; color: #e74c3c; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" disabled>측정 종료 🛑</button>
@@ -506,7 +510,7 @@
             }
         }
 
-       
+        
 
 
         async function clearCallHistory() {
@@ -559,11 +563,11 @@
                     </li>`;
                 }).join('');
             } else { document.getElementById('closing-content').innerHTML = '<li style="background: #f8fafc; color: #95a5a6;"><span>등록된 종례사항이 없습니다.</span></li>'; }
-           
+            
             currentSchedules = data.schedules;
             updateCalendarUI();
-           
-            /*  디데이 설정하는 부분:  나중에 날짜(new Date(2026, 3, 24))와 텍스트(중간고사)만 바꿔서 다시 쓰면됨. 자바스크립트 날짜 월(Month)은 1이 아닌 0부터 시작. 2026년 7월1일 이면  new Date(2026, 6, 1) 이케 입력해야함. */
+            
+            /* 디데이 설정하는 부분:  나중에 날짜(new Date(2026, 3, 24))와 텍스트(중간고사)만 바꿔서 다시 쓰면됨. 자바스크립트 날짜 월(Month)은 1이 아닌 0부터 시작. 2026년 7월1일 이면  new Date(2026, 6, 1) 이케 입력해야함. */
             const targetDate = new Date(2026, 6, 1); const dDayDiff = Math.round((targetDate - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / (1000 * 60 * 60 * 24));
             const dDayText = dDayDiff > 0 ? `D-${dDayDiff}` : (dDayDiff === 0 ? "D-Day" : "완료");
             document.querySelector('.main-title').innerHTML = `<img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/School/3D/school_3d.png"> 2학년 7반 대시보드 <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Sparkles/3D/sparkles_3d.png"> <span style="color:#e74c3c; margin-left:15px; font-size:1.8rem; background: #fee2e2; padding: 5px 15px; border-radius: 20px; display:flex; align-items:center; gap:8px;"><img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Fire/3D/fire_3d.png"> 기말고사 ${dDayText} <img class="fluent-emoji" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/Fire/3D/fire_3d.png"></span>`;
@@ -760,7 +764,7 @@
             
             document.getElementById('clock').innerHTML = `<span class="ampm">${ampm}</span><span class="time">${hours}:${minutes}</span><span class="sec">${seconds}</span>`;
             highlightCurrentPeriod(); 
-           
+            
             // 👇 ==== 여기서부터 추가 ==== 👇
             // ✨ 쉬는 시간(점심 포함) 자동 실행 로직
             const curMinTotal = hours * 60 + minutes; // 현재 시간을 분(Minute)으로 환산
@@ -794,7 +798,7 @@
                 isBreakTimeAppOpened = false;
             }
             // 👆 ==== 여기까지 추가 ==== 👆
-           
+            
         }
 
          // ✨ 새로 만든 소음 측정 웹앱을 여는 함수 추가
@@ -805,7 +809,7 @@
 
         setInterval(updateClock, 1000);             
         setInterval(fetchData, 3600000);            
-        setInterval(fetchCallStatus, 3000);       
+        setInterval(fetchCallStatus, 3000);        
 
          // ==========================================
         // ✨ 대시보드 통합형 소음 측정기 자바스크립트
@@ -863,7 +867,7 @@
                     for (let i = 0; i < array.length; i++) { values += array[i]; }
                     const decibel = Math.round(values / array.length); 
 
-                    document.getElementById('noise-db-display').innerText = decibel + " dB";
+                    document.getElementById('noise-db-display').innerText = decibel;
                     updateNoiseBgColor(decibel);
 
                     if (decibel >= NOISE_THRESHOLD) {
@@ -889,7 +893,7 @@
             document.getElementById('noise-stop-btn').disabled = true;
             overThresholdStartTime = 0; 
             stopNoiseAlarm(); 
-            document.getElementById('noise-db-display').innerText = "0 dB";
+            document.getElementById('noise-db-display').innerText = "0";
             updateNoiseBgColor(0); 
         }
 
@@ -943,7 +947,7 @@
         }
         // ==========================================
 
-      
+        
         
         updateClock(); fetchData(); fetchCallStatus(); 
     </script>
